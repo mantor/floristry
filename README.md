@@ -1,6 +1,3 @@
-# WARNING
-NOT READY FOR PRODUCTION
-
 # RuoteTrail
 
 The goal of this gem is to help you represent [Ruote's workflows](http://ruote.rubyforge.org/) using standard Rails
@@ -8,11 +5,7 @@ facilities, e.g. partials, helpers, render, models, etc.
 
 Ruote::Trail is an [isolated engine](http://guides.rubyonrails.org/engines.html) which provides basic
 behaviors and representation of Ruote's Flow Expression, e.g. define, sequence, concurrence, if, wait, participant, inc,
-set. You can easily override their default behaviors and representations by defining your own in your application.
-
-Adding new behaviors to the `participant expression` can be done by creating a new model in:
-
-    /app/models/ruote_trail/participant.rb
+set. Obviously, you can override their default behaviors and representations by defining your owns.
 
 To override a view, simply create a new one in:
 
@@ -59,6 +52,22 @@ RuoteKit.engine.add_service('trail',
 
 ## Usage
 
+TODO
+
+### Era - :pass, :present, :future
+
+The following methods are available on each Expressions to identify its era:
+
+```
+active?
+inactive?
+
+is_past?
+is_present?
+is_future?
+```
+
+## Extend
 New behaviors ca be added to low-level Expression such as Expression (root), BranchExpression or LeafExpression
 to affect all Expressions at once, only Leaves or only Branches.
 
@@ -81,21 +90,9 @@ RuoteTrail.configure do |config|
 end
 ```
 
-### :pass, :present, :future
-
-The following methods are available on each Expressions to identify its era:
-
-```
-active?
-disabled?
-in_past?
-in_present?
-in_future?
-```
-
 ## TODO
 
-1. Extract RuoteTrail::Observer in a separate gem.
+1. Extract RuoteTrail::Observer in a separate gem (ruote-trail).
 
 ## Contributing
 
@@ -115,4 +112,4 @@ https://github.com/northox/ruote-trail-on-rails
 
 ## Author
 
-Danny Fullerton - Mantor Organization
+Mantor Organization
