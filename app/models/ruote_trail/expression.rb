@@ -36,7 +36,7 @@ module RuoteTrail
     #
     def self.factory(id, era = :present, exp = nil)
 
-      name, workitem, params = params_workitem(id, era, exp)
+      name, workitem, params = extract(id, era, exp)
 
       klass = is_expression?(name.camelize) ? RuoteTrail::const_get(name.camelize) : RuoteTrail::Participant
       klass.new(id, name, params, workitem, era)
@@ -54,41 +54,29 @@ module RuoteTrail
 
     end
 
-    def self.params_workitem(id, era, exp = nil)
+    def self.extract(id, era, exp = nil)
 
       case era
         when :present
-          wi = RuoteKit.storage_participant[id]
+          wi = RuoteKit.storage_participant[id] # TODO error handling - no record
           [
               wi.participant_name,
               wi.fields.except(:params),
               wi.params
           ]
         when :past
-          if exp[1]['fields'].nil?
-            [
-                exp[0],
-                {},
-                {}
-            ]
-          elsif exp[1]['fields']['params'].nil?
-            [
-                exp[0],
-                exp[1]['fields'],
-                {}
-            ]
-          else
-            [
-                exp[0],
-                exp[1]['fields'].except(:params),
-                exp[1]['fields']['params']
-            ]
-          end
-        when :future # TODO should be load from non-trail to capture on-the-fly process modifications? Just like Present.
+          fields = exp[1]['fields'] ? exp[1]['fields'].except(:params): {} # TODO needed? in the past do we really have empty fields
+          params = exp[1]['fields']['params'] ? exp[1]['fields']['params'] : {}
+          [
+              exp[0],
+              fields,
+              params
+          ]
+        when :future # TODO should be load from non-trail to capture on-the-fly process modifications? Just like Present?
           [
               exp[0],
               {},
-              exp[1]
+              exp[1] # TODO test this. i believe it's supposed to be exp[1]['params'] ??
           ]
       end
     end
