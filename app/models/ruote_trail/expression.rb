@@ -65,12 +65,12 @@ module RuoteTrail
               wi.params
           ]
         when :past
-          fields = exp[1]['fields'] ? exp[1]['fields'].except(:params): {} # TODO needed? in the past do we really have empty fields
-          params = exp[1]['fields']['params'] ? exp[1]['fields']['params'] : {}
+          exp[1]['fields'] ||= {}
+          exp[1]['fields']['params'] ||= {}
           [
               exp[0],
-              fields,
-              params
+              exp[1]['fields'].except(:params),  # TODO needed? in the past do we really have empty fields
+              exp[1]['fields']['params']
           ]
         when :future # TODO should be load from non-trail to capture on-the-fly process modifications? Just like Present?
           [
