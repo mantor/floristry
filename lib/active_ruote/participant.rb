@@ -1,5 +1,7 @@
 require 'forwardable'
 
+# TODO Move to ruote-trail since other parts of active ruote is on that side...
+#
 module ActiveRuote
 
   class Participant
@@ -23,7 +25,7 @@ module ActiveRuote
       assign_attributes(new_attributes, options)
       load_attributes(new_attributes)
 
-      save_proceed if valid?
+      save(options[:proceed]) if valid?
     end
 
     # Override default path # TODO really? look at the real to_partial_path maybe that's better
@@ -31,7 +33,7 @@ module ActiveRuote
     def to_partial_path
 
       k = self.class.to_s.parameterize.underscore
-      "forms/tasks/#{k}/#{k}" # TODO is that really what we want? Segregated Components?
+      "forms/tasks/#{k}/#{k}" # TODO is that really what we want? Segregated Components? Why?
     end
 
     # To make sure form_for use edit action instead of new
@@ -55,12 +57,12 @@ module ActiveRuote
 
     # Save workitem back in the workflow engine and proceed if needed
     #
-    def save_proceed
+    def save(proceed = false)
 
       wi = to_ruote_wi
       RuoteKit.storage_participant.do_update(wi)
 
-      if @attributes['close'] == 'close'
+      if proceed
         #wi['outcome'] = outcome             # TODO should be a state machine?
         wi['exited_at'] = Ruote.now_to_utc_s # TODO get rid of this dependency
 
