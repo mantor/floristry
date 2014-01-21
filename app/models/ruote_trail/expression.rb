@@ -37,12 +37,49 @@ module RuoteTrail
     def self.factory(id, era = :present, exp = nil)
 
       name, workitem, params = extract(id, era, exp)
+      name = name.camelize
+      klass, options = is_expression?(name) ? RuoteTrail::const_get(name) : self.frontend_handler(name)
 
-      klass = is_expression?(name.camelize) ? RuoteTrail::const_get(name.camelize) : RuoteTrail::Participant
-      klass.new(id, name, params, workitem, era)
+      klass.new(id, name, params, workitem, era) # TODO pass options - via *args?
     end
 
     protected
+
+    def self.frontend_handler(name)
+
+      # TODO this should come from the DB, and the admin should have an interface
+      frontend_handlers = [
+          {
+              :regex => '_ssh$',
+              :classname => 'SshParticipant',
+              :options => {}
+          },
+          {
+              :regex => '_active$',
+              :classname => 'ActiveParticipant',
+              :options => {}
+          },
+          {
+              :regex => '.*',
+              :classname => 'Participant',
+              :options => {}
+          }
+      ]
+
+      i = 0
+      frontend_handlers.each do |h|
+        break if name =~ /#{h[:regex]}/i ###### i is ok??????????????????????????
+        i += 1
+      end
+
+      # TODO return exception if no frontend handlers match
+      # something_something(dark, side)
+
+      klass = RuoteTrail::const_get(frontend_handlers[i][:classname])
+      options = frontend_handlers[i][:options]
+
+      return klass, options
+    end
 
     def self.is_expression?(name)
 
