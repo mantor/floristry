@@ -6,5 +6,7 @@ require 'ruote/trail/configuration'
 
 require 'ruote/trail/engine'
 
+require 'ruote/trail/active_participant'
+
 module RuoteTrail
 end
