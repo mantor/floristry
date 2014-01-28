@@ -37,8 +37,8 @@ module RuoteTrail
     def self.factory(id, era = :present, exp = nil)
 
       name, workitem, params = extract(id, era, exp)
-      name = name.camelize
-      klass, options = is_expression?(name) ? RuoteTrail::const_get(name) : self.frontend_handler(name)
+      klassname = name.camelize # TODO CRAPPY camelize
+      klass, options = is_expression?(klassname) ? RuoteTrail::const_get(klassname) : self.frontend_handler(name) # TODO CRAPPY camelize
 
       klass.new(id, name, params, workitem, era) # TODO pass options - via *args?
     end
@@ -75,7 +75,7 @@ module RuoteTrail
       # TODO return exception if no frontend handlers match
       # something_something(dark, side)
 
-      klass = RuoteTrail::const_get(frontend_handlers[i][:classname])
+      klass = RuoteTrail::const_get(frontend_handlers[i][:classname].camelize) # TODO CRAPPY camelize
       options = frontend_handlers[i][:options]
 
       return klass, options
