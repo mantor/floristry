@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.summary     =  %q{Visualize and interact with Ruote's workflow using Rails.}
   s.description = %q{Represent Ruote's workflow (from Audit Trail) using standard rails facilities, e.g. render, partials, etc.}
 
-  s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile"] , ["README.md"]
+  s.files = Dir["{app,config,db,lib}/**/*"] + ["LICENSE", "Rakefile"] , ["README.md"]
   s.test_files = Dir["test/**/*"]
 
   s.add_dependency 'rails', '~> 3.2.9'
