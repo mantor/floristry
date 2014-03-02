@@ -1,5 +1,10 @@
+require 'forwardable'
+
 module RuoteTrail
   class BranchExpression < Expression
+    include Enumerable
+    extend Forwardable
+
     attr_reader :children
 
     def initialize (id, name, params = {}, workitem = {}, era = :present)
@@ -12,10 +17,6 @@ module RuoteTrail
       self.class.send(:include, mod) if mod
     end
 
-    def << (child) @children << child end
-
-    def each (&block) @children.each(&block) end
-
-    def [] (id) @children[id] end
+    def_delegators :@children, :<<, :[], :last, :size, :each, :each_with_index
   end
 end

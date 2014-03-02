@@ -1,3 +1,6 @@
 <div class="rat-sequence">
-  <%= render partial: sequence.children, spacer_template: 'ruote_trail/sequence_spacer' %>
+  <%- sequence.each_with_index do |child, index| %>
+    <%= render :partial => child.class.to_s.underscore, :layout => child.layout, :object => child %>
+    <%= render :partial => 'ruote_trail/sequence_spacer' unless index == sequence.size - 1 %>
+  <%- end %>
 </div>
