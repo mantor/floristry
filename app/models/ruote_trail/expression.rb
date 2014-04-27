@@ -24,6 +24,8 @@ module RuoteTrail
 
     def layout() false end
 
+    def model?() false end # TODO needed?
+
     def to_partial_path
 
       self.class.name.underscore
@@ -68,7 +70,7 @@ module RuoteTrail
 
       i = 0
       frontend_handlers.each do |h|
-        break if name =~ /#{h[:regex]}/i ###### i is ok??????????????????????????
+        break if name =~ /#{h[:regex]}/
         i += 1
       end
 
