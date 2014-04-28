@@ -6,7 +6,7 @@ require 'forwardable'
 module ActiveRuote
 
   class ActiveParticipant
-    include ActiveAttr::Model # TODO switch to ActiveModel::Model when Rails >= 4.
+    include ActiveModel::Model
     include ActiveModel::MassAssignmentSecurity
     extend Forwardable
 
