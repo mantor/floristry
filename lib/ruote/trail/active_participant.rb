@@ -6,7 +6,8 @@ require 'forwardable'
 module ActiveRuote
 
   class ActiveParticipant
-    include ActiveModel::Model
+    include ActiveAttr::Model
+    include ActiveAttr::MassAssignment
     include ActiveModel::MassAssignmentSecurity
     extend Forwardable
 
