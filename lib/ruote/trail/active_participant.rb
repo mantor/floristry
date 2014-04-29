@@ -1,5 +1,3 @@
-require 'forwardable'
-
 # TODO This should actually be within RuoteTrail::ActiveParticipant Expression but preliminary
 # attempts suggest incompatibilities between ActiveModel and LeafExpression.
 #
