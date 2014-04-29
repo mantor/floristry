@@ -10,8 +10,8 @@ Gem::Specification.new do |s|
   s.authors     = ['Danny Fullerton']
   s.email       = ['northox@mantor.org']
   s.homepage    = 'https://github.com/northox/ruote-trail-on-rails'
-  s.summary     =  %q{Visualize and interact with Ruote's workflow using Rails.}
-  s.description = %q{Represent Ruote's workflow (from Audit Trail) using standard rails facilities, e.g. render, partials, etc.}
+  s.summary     = %q{Ruote-kit for Rails missing part.}
+  s.description = %q{Represent complete Ruote's workflow using standard rails facilities, e.g. render, partials, etc.}
 
   s.files = Dir["{app,config,db,lib}/**/*"] + ["LICENSE", "Rakefile"] , ["README.md"]
   s.test_files = Dir["test/**/*"]
