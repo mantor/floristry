@@ -2,7 +2,7 @@ module RuoteTrail
   class Expression
     attr_reader :id, :name, :params, :workitem, :era
 
-    def initialize(id, name, params = {}, workitem = {}, era = :present)
+    def initialize(id, name, params = {}, workitem = {}, era = :present) # TODO defaults doesn't seems to make sense
 
       @id = id
       @name = name # TODO validate name ...
@@ -34,13 +34,13 @@ module RuoteTrail
     # Returns proper Expression type based on name.
     #
     # Anything not a Ruote Expression is considered a Participant Expression, e.g.,
-    # if == If, sequence == Sequence, admin == Participant
+    # if == If, sequence == Sequence, admin == Participant, xyz == Participant
     #
     def self.factory(id, era = :present, exp = nil)
 
       name, workitem, params = extract(id, era, exp)
-      klassname = name.camelize # TODO CRAPPY camelize
-      klass, options = is_expression?(klassname) ? RuoteTrail::const_get(klassname) : self.frontend_handler(name) # TODO CRAPPY camelize
+      klass_name = name.camelize # TODO CRAPPY camelize
+      klass, options = is_expression?(klass_name) ? RuoteTrail::const_get(klass_name) : self.frontend_handler(name) # TODO CRAPPY camelize
 
       klass.new(id, name, params, workitem, era) # TODO pass options - via *args?
     end
@@ -52,13 +52,13 @@ module RuoteTrail
       # TODO this should come from the DB, and the admin should have an interface
       frontend_handlers = [
           {
-              :regex => '_ssh$',
+              :regex => '^ssh_',
               :classname => 'SshParticipant',
               :options => {}
           },
           {
-              :regex => '_active$',
-              :classname => 'ActiveParticipant',
+              :regex => '^web_',
+              :classname => 'ActiveParticipant', # TODO change to WebParticipant
               :options => {}
           },
           {
@@ -70,7 +70,7 @@ module RuoteTrail
 
       i = 0
       frontend_handlers.each do |h|
-        break if name =~ /#{h[:regex]}/
+        break if name =~ /#{h[:regex]}/i
         i += 1
       end
 
@@ -80,7 +80,7 @@ module RuoteTrail
       klass = RuoteTrail::const_get(frontend_handlers[i][:classname].camelize) # TODO CRAPPY camelize
       options = frontend_handlers[i][:options]
 
-      return klass, options
+      [klass, options]
     end
 
     def self.is_expression?(name)
@@ -97,7 +97,8 @@ module RuoteTrail
 
       case era
         when :present
-          wi = RuoteKit.storage_participant[id] # TODO error handling - no record
+          # TODO our own exception? - https://github.com/rails/rails/blob/9aa7c25c28325f62815b6625bdfcc6dd7565165b/activerecord/lib/active_record/errors.rb
+          raise ActiveRecord::RecordNotFound unless (wi = RuoteKit.storage_participant[id])
           [
               wi.participant_name,
               wi.fields.except(:params),

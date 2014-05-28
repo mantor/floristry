@@ -1,9 +1,6 @@
-# TODO This should actually be within RuoteTrail::ActiveParticipant Expression but preliminary
-# attempts suggest incompatibilities between ActiveModel and LeafExpression.
-#
 module ActiveRuote
 
-  class ActiveParticipant
+  class Base # TODO should this be within Active::Participant ? First try failed.
     include ActiveAttr::Model
     include ActiveAttr::MassAssignment
     include ActiveModel::MassAssignmentSecurity

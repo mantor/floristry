@@ -1,6 +1,9 @@
 <div class="rat-concurrence">
   <%- concurrence.each do |child| %>
-    <%= render :partial => child.class.to_s.underscore, :layout => child.layout, :object => child, :locals => {:leaf => child} %>
+    <%= render :partial => child.class.to_s.underscore,
+               :layout => child.layout,
+               :object => child,
+               :locals => {:leaf => child} %>
     <%= render :partial => 'ruote_trail/concurrence_spacer' unless index == concurrence.size - 1 %> %>
   <%- end %>
 </div>

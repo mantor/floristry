@@ -1,7 +1,7 @@
 module RuoteTrail
   class LeafExpression < Expression
 
-    def initialize(id, name, params = {}, workitem = {}, era = :present)
+    def initialize(id, name, params = {}, workitem = {}, era = :present) # TODO defaults doesn't seems to make sense
 
       super(id, name, params, workitem, era) # TODO *args?
 
@@ -10,6 +10,7 @@ module RuoteTrail
     end
 
     def layout
+
       'layouts/ruote_trail/leaf-expression'
     end
   end

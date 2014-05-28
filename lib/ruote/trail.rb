@@ -10,7 +10,7 @@ require 'active_attr'
 require 'active_model'
 require 'active_model/mass_assignment_security'
 require 'active_model/mass_assignment_security/sanitizer'
-require 'ruote/trail/active_participant'
+require 'ruote/trail/active_ruote/base'
 
 module RuoteTrail
 end
