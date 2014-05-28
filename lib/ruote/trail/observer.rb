@@ -32,9 +32,11 @@ module RuoteTrail
 
       return unless accept?(msg)
 
+      raise ZeroDivisionError unless msg['fei']['wfid'] # TODO test - I've seen weird stuff
+
       doc = {
           'type' => 'trail',
-          '_id' => msg['wfid'],
+          '_id' => msg['fei']['wfid'],
           'trail' => msg['tree']
       }
 
@@ -81,7 +83,7 @@ module RuoteTrail
           'trail' => doc['trail']
       }
 
-      @callback.constantize.archive(trail) # TODO
+      @callback.constantize.archive(trail)
 
       @context.storage.delete(doc)
     end
