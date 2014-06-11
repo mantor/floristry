@@ -32,7 +32,7 @@ module RuoteTrail
 
     def params_handler(workitem)
 
-      @task = workitem['params']['ref'].sub(/^web_/, '') # TODO _active as a Constant? Also used within frontend_handler
+      @task = @name.sub(/^web_/, '') # TODO _active as a Constant? Also used within frontend_handler
       #@destination =
 
       #match = task_param.match /\A(\w+)(\/(\w+))?(#(\w+))?\z/
