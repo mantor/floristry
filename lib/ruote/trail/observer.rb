@@ -32,11 +32,11 @@ module RuoteTrail
 
       return unless accept?(msg)
 
-      raise ZeroDivisionError unless msg['fei']['wfid'] # TODO test - I've seen weird stuff
+      raise ZeroDivisionError unless msg['wfid'] # TODO test - I've seen weird stuff
 
       doc = {
           'type' => 'trail',
-          '_id' => msg['fei']['wfid'],
+          '_id' => msg['wfid'],
           'trail' => msg['tree']
       }
 
