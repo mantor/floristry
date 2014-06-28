@@ -49,6 +49,7 @@ module ActiveRuote
       attributes.each do |k, v|
         #attr[k] ||= nil  # TODO needed? e.g. if not already set in the ruote's workitem
         @attributes[k] = attrs[k]
+        self.write_attribute(k, attrs[k])
       end
     end
 
