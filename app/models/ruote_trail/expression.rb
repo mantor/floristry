@@ -98,7 +98,9 @@ module RuoteTrail
       case era
         when :present
           # TODO our own exception? - https://github.com/rails/rails/blob/9aa7c25c28325f62815b6625bdfcc6dd7565165b/activerecord/lib/active_record/errors.rb
-          raise ActiveRecord::RecordNotFound unless (wi = RuoteKit.storage_participant[id])
+          process = RuoteKit.engine.process(id)
+          wi = process.stored_workitems[0]
+          raise ActiveRecord::RecordNotFound unless wi
           [
               wi.participant_name,
               wi.fields.except(:params),
