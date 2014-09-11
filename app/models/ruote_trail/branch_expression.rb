@@ -1,9 +1,6 @@
-require 'forwardable'
-
 module RuoteTrail
   class BranchExpression < Expression
     include Enumerable
-    extend Forwardable
 
     attr_reader :children
 
@@ -17,6 +14,6 @@ module RuoteTrail
       self.class.send(:include, mod) if mod
     end
 
-    def_delegators :@children, :<<, :[], :last, :size, :each, :each_with_index
+    delegate :<<, :[], :last, :size, :each, :each_with_index, to: :@children
   end
 end
