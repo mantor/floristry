@@ -36,17 +36,19 @@ module RuoteTrail
     # Anything not a Ruote Expression is considered a Participant Expression, e.g.,
     # if == If, sequence == Sequence, admin == Participant, xyz == Participant
     #
-    def self.factory(id, era = :present, exp = nil)
+    def self.factory(sid, era = :present, exp = nil)
 
-      name, workitem, params = extract(id, era, exp)
+      name, workitem, params = extract(sid, era, exp)
       klass_name = name.camelize # TODO CRAPPY camelize
       klass, options = is_expression?(klass_name) ? RuoteTrail::const_get(klass_name) : self.frontend_handler(name) # TODO CRAPPY camelize
 
-      klass.new(id, name, params, workitem, era) # TODO pass options - via *args?
+      klass.new(sid, name, params, workitem, era) # TODO pass options - via *args?
     end
 
     protected
 
+    # Participant frontend handler defining how the participant will be /viewed/rendered/
+    #
     def self.frontend_handler(name)
 
       # TODO this should come from the DB, and the admin should have an interface
@@ -93,7 +95,7 @@ module RuoteTrail
 
     end
 
-    def self.extract(id, era, exp = nil)
+    def self.extract(id, era, exp)
 
       case era
         when :present
