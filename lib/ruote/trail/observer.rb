@@ -72,18 +72,20 @@ module RuoteTrail
       return unless accept?(msg)
 
       doc = @context.storage.get('trail', msg['wfid'])
+      t = Time.now
 
-      trail = {
+      # TODO why do we need to create something new? Why couldn't we use Workflow directly? Workflow.to_h?
+      wf = {
 
-          'id' => msg['wfid'],
-          'name' => msg['wf_name'],
-          'version' => msg['wf_revision'],
-          'launched_at' => msg['wf_launched_at'],
-          # 'terminated_at' => xyz,
+          'wfid' => msg['wfid'],
+          'name' => msg['workitem']['wf_name'],
+          'version' => msg['workitem']['wf_revision'],
+          'launched_at' => msg['workitem']['wf_launched_at'],
+          'completed_at' => "#{t.utc.strftime('%Y-%m-%d %H:%M:%S')}.#{sprintf('%06d', t.usec)} UTC",
           'trail' => doc['trail']
       }
 
-      @callback.constantize.archive(trail)
+      @callback.constantize.archive(wf)
 
       @context.storage.delete(doc)
     end
