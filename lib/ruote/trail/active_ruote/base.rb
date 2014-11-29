@@ -2,6 +2,11 @@ module RuoteTrail::ActiveRuote
 
   class Base < ActiveRecord::Base
 
+    attr_accessor :era
+
+    after_initialize :default_values
+
+
     self.abstract_class = true
 
     # attr_accessible :__workitem__ # TODO should be a mixin??!?!
@@ -11,9 +16,48 @@ module RuoteTrail::ActiveRuote
     def self.create(wi_h)
 
       wi_h['__workitem__'] = JSON.generate(wi_h)
-      wi_h['__feid__'] = wi_h['blahbalbhalbh']
-      super(wi_h)
+      wi_h['__feid__'] = wi_h['fei'].dup.delete_if {| key, value | key == 'engine_id'}.values.reverse.join('!')
+
+      super(wi_h.keep_if {| key, value | self.column_names.include?(key) })
     end
+
+    # @TODO explain this
+    #
+    def self.find id
+
+      if id.is_a? Integer
+        object = self.where(id: id).first
+      else
+        object = self.where(__feid__: id).first
+      end
+
+      raise ActiveRecord::RecordNotFound unless object
+      object
+    end
+
+    def wfid
+
+      __feid__.split('!').third
+    end
+
+    def layout
+
+      'layouts/ruote_trail/leaf-expression'
+    end
+
+    def image
+
+      false
+    end
+
+    def active?()     @era == :present end
+    def inactive?()   @era != :present end
+    # alias inactive? disabled?
+
+    def is_past?()    @era == :past    end
+    def is_present?() @era == :present end
+    def is_future?()  @era == :future  end
+
 
     # # Get an instance that will behave like a Participant Expression
     # #
@@ -28,25 +72,24 @@ module RuoteTrail::ActiveRuote
 
     # If proceeding, merge back attributes within saved workitem and reply to Workflow Engine
     #
-    def update_attributes(new_attributes, options={})
+    def proceed
 
-      if super(new_attributes, options) && proceed?
+      # TODO should update state machine
 
-        # TODO should update state machine
+      # TODO remove __feid__ from new_attributes
+      wi = merge_attributes_into_fields
 
-        # TODO remove __feid__ from new_attributes
-        original_wi = JSON.parse(attributes['__workitem__']) # TODO error handling
-        wi = original_wi['something_I_cant_remember'].merge(new_attributes)
+      # wi['exited_at'] = Ruote.now_to_utc_s # TODO get rid of this dependency
 
-        # wi['exited_at'] = Ruote.now_to_utc_s # TODO get rid of this dependency
-
-        Ruote::ActiveRecord::Receiver.proceed(wi)
-      end
+      receiver = RuoteTrail::ActiveRuote::Receiver.new(RuoteKit.engine)
+      receiver.proceed(wi)
     end
 
-    def proceed?
-
-      params['commit'] == 'Close'
+    def merge_attributes_into_fields
+      original_wi = JSON.parse(attributes['__workitem__']) # TODO error handling
+      new_attributes = attributes.reject { |key, value| ['id', '__workitem__', 'created_at', 'updated_at'].include? key }
+      original_wi['fields'] = original_wi['fields'].merge!(new_attributes)
+      original_wi
     end
 
     # def save
@@ -62,6 +105,26 @@ module RuoteTrail::ActiveRuote
     #   k = self.class.to_s.parameterize.underscore
     #   "forms/tasks/#{k}/#{k}" # TODO is that really what we want? Segregated Components? Why?
     # end
+
+    private
+
+    def default_values
+      @era = :future
+    end
+  end
+
+  class Receiver < Ruote::Receiver
+
+    # def initialize(engine) # TODO should be a Thread waiting for REST/MQ proceed request.
+    #
+    #   super(engine)
+    #   Thread.new { listen }
+    # end
+
+    def proceed(workitem)
+
+      reply(workitem)
+    end
   end
 
   # class Base # TODO should this be within Active::Participant ? First try failed.
