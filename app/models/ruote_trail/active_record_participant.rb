@@ -1,6 +1,5 @@
-module Ruote::ActiveRecord
-
-  class Participant
+module RuoteTrail
+  class ActiveRecordParticipant
     include Ruote::LocalParticipant
 
     def initialize(options)
@@ -17,7 +16,7 @@ module Ruote::ActiveRecord
 
       push( participant_name, workitem )
 
-      proceed if forget
+      # proceed if forget
     end
 
     # Removes the document/workitem from the storage.
@@ -43,17 +42,4 @@ module Ruote::ActiveRecord
     end
   end
 
-  class Receiver < Ruote::Receiver
-
-    # def initialize(engine) # TODO should be a Thread waiting for REST/MQ proceed request.
-    #
-    #   super(engine)
-    #   Thread.new { listen }
-    # end
-
-    def proceed(workitem)
-
-      reply(workitem)
-    end
-  end
 end
