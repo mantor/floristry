@@ -14,7 +14,10 @@ module RuoteTrail
 
     def instance
 
-      @instance ||= task.camelize.constantize.find(@id)
+      @instance unless @instance.nil?
+      @instance = task.camelize.constantize.find(@id)
+      @instance.era = @era
+      @instance
     end
 
     # TODO _active as a Constant? Also used within frontend_handler
