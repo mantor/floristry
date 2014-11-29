@@ -25,7 +25,6 @@ module RuoteTrail
     def layout() false end
 
     def model?() false end # TODO needed?
-
     def to_partial_path
 
       self.class.name.underscore
@@ -36,9 +35,9 @@ module RuoteTrail
     # Anything not a Ruote Expression is considered a Participant Expression, e.g.,
     # if == If, sequence == Sequence, admin == Participant, xyz == Participant
     #
-    def self.factory(sid, era = :present, exp = nil)
+    def self.factory(sid, era = :present, exp = nil, wi)
 
-      name, workitem, params = extract(sid, era, exp)
+      name, workitem, params = extract(sid, era, exp, wi)
       klass_name = name.camelize # TODO CRAPPY camelize
       klass, options = is_expression?(klass_name) ? RuoteTrail::const_get(klass_name) : self.frontend_handler(name) # TODO CRAPPY camelize
 
@@ -95,17 +94,27 @@ module RuoteTrail
 
     end
 
-    def self.extract(id, era, exp)
+    def self.extract(id, era, exp, wi)
 
       case era
-        when :present
-          # TODO our own exception? - https://github.com/rails/rails/blob/9aa7c25c28325f62815b6625bdfcc6dd7565165b/activerecord/lib/active_record/errors.rb
-          raise ActiveRecord::RecordNotFound unless (wi = RuoteKit.storage_participant[id])
-          [
-              wi.participant_name,
-              wi.fields.except(:params),
-              wi.params
-          ]
+        when :present #@TODO this seems to never be used
+          begin
+            ar = wi
+            [
+                exp[0],
+                exp[1],#JSON.parse(wi.__workitem__).merge(wi.attributes), #except __workitem___ and __feid__
+                exp[2]
+            ]
+          rescue ActiveRecord::RecordNotFound
+            exp[1]['fields'] ||= {}
+            exp[1]['fields']['params'] ||= {}
+            [
+                exp[0],
+                exp[1]['fields'].except(:params),  # TODO needed? do we really have empty fields
+                exp[1]['fields']['params']
+            ]
+          end
+
         when :past
           exp[1]['fields'] ||= {}
           exp[1]['fields']['params'] ||= {}
@@ -114,6 +123,7 @@ module RuoteTrail
               exp[1]['fields'].except(:params),  # TODO needed? in the past do we really have empty fields
               exp[1]['fields']['params']
           ]
+
         when :future # TODO should be load from non-trail to capture on-the-fly process modifications? Just like Present?
           [
               exp[0],
