@@ -35,13 +35,21 @@ module RuoteTrail
     # Anything not a Ruote Expression is considered a Participant Expression, e.g.,
     # if == If, sequence == Sequence, admin == Participant, xyz == Participant
     #
-    def self.factory(sid, era = :present, exp = nil, wi)
+    def self.factory(sid, era = :present, exp = nil)
 
-      name, workitem, params = extract(sid, era, exp, wi)
-      klass_name = name.camelize # TODO CRAPPY camelize
-      klass, options = is_expression?(klass_name) ? RuoteTrail::const_get(klass_name) : self.frontend_handler(name) # TODO CRAPPY camelize
-
-      klass.new(sid, name, params, workitem, era) # TODO pass options - via *args?
+      name, workitem, params = extract(sid, era, exp)
+      klass_name = name.camelize
+      if is_expression? (klass_name)
+        klass, options =  RuoteTrail::const_get(klass_name)
+        klass.new(sid, name, params, workitem, era) # TODO pass options - via *args?
+      else
+        klass, options =  self.frontend_handler(name)
+        if klass == RuoteTrail::ActiveParticipant
+          klass.new(sid, name, params, workitem, era).instance # TODO pass options - via *args?
+        else
+          klass.new(sid, name, params, workitem, era) # TODO pass options - via *args?
+        end
+      end
     end
 
     protected
@@ -77,8 +85,7 @@ module RuoteTrail
 
       # TODO return exception if no frontend handlers match
       # something_something(dark, side)
-
-      klass = RuoteTrail::const_get(frontend_handlers[i][:classname].camelize) # TODO CRAPPY camelize
+      klass = RuoteTrail::const_get(frontend_handlers[i][:classname].gsub(/web_/, '').camelize) # TODO CRAPPY camelize
       options = frontend_handlers[i][:options]
 
       [klass, options]
@@ -94,12 +101,12 @@ module RuoteTrail
 
     end
 
-    def self.extract(id, era, exp, wi)
+    def self.extract(sid, era, exp)
 
       case era
         when :present #@TODO this seems to never be used
           begin
-            ar = wi
+            # ar = wi
             [
                 exp[0],
                 exp[1],#JSON.parse(wi.__workitem__).merge(wi.attributes), #except __workitem___ and __feid__

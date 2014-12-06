@@ -78,7 +78,8 @@ module RuoteTrail::ActiveRuote
 
       # TODO remove __feid__ from new_attributes
       wi = merge_attributes_into_fields
-
+      self.__workitem__ = JSON::generate(wi)
+      self.save
       # wi['exited_at'] = Ruote.now_to_utc_s # TODO get rid of this dependency
 
       receiver = RuoteTrail::ActiveRuote::Receiver.new(RuoteKit.engine)

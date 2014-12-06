@@ -15,7 +15,12 @@ module RuoteTrail
     def instance
 
       @instance unless @instance.nil?
-      @instance = task.camelize.constantize.find(@id)
+      begin
+        @instance = task.camelize.constantize.find(@id)
+      rescue
+        @instance = task.camelize.constantize.new
+      end
+
       @instance.era = @era
       @instance
     end
