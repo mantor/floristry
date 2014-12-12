@@ -84,6 +84,8 @@ module RuoteTrail::ActiveRuote
 
       receiver = RuoteTrail::ActiveRuote::Receiver.new(RuoteKit.engine)
       receiver.proceed(wi)
+
+      sleep(1) #@todo this sucks, but the trail seems to be written each time ruote 'steps' (@each 0.8s)
     end
 
     def merge_attributes_into_fields
