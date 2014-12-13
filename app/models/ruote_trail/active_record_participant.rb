@@ -7,10 +7,7 @@ module RuoteTrail
       @options = options
     end
 
-    def do_not_thread
-
-      true
-    end
+    def do_not_thread() true end
 
     def on_workitem
 
@@ -37,7 +34,7 @@ module RuoteTrail
     #
     def push(participant_name, workitem)
 
-      klass = participant_name.sub(/^web_/, '').camelize.constantize # TODO take special string from frontend handler
+      klass = participant_name.sub(/^web_/, '').camelize.constantize # Temporary until migrated to frontend - mq/rest
       klass.create(workitem.to_h)
     end
   end
