@@ -24,9 +24,7 @@ module RuoteTrail
 
     def layout() false end
 
-    def model?() false end # TODO needed?
     def to_partial_path
-
       self.class.name.underscore
     end
 
@@ -39,22 +37,22 @@ module RuoteTrail
 
       name, workitem, params = extract(sid, era, exp)
       klass_name = name.camelize
+
       if is_expression? (klass_name)
-        klass, options =  RuoteTrail::const_get(klass_name)
+
+        klass = RuoteTrail.const_get(klass_name)
         klass.new(sid, name, params, workitem, era) # TODO pass options - via *args?
       else
+
         klass, options =  self.frontend_handler(name)
-        if klass == RuoteTrail::ActiveParticipant
-          klass.new(sid, name, params, workitem, era).instance # TODO pass options - via *args?
-        else
-          klass.new(sid, name, params, workitem, era) # TODO pass options - via *args?
-        end
+        obj = klass.new(sid, name, params, workitem, era)
+        (klass == RuoteTrail::ActiveParticipant) ? obj.instance : obj
       end
     end
 
     protected
 
-    # Participant frontend handler defining how the participant will be /viewed/rendered/
+    # Participant frontend handler defining how the participant will be rendered
     #
     def self.frontend_handler(name)
 
@@ -62,33 +60,27 @@ module RuoteTrail
       frontend_handlers = [
           {
               :regex => '^ssh_',
-              :classname => 'SshParticipant',
+              :class => 'SshParticipant',
               :options => {}
           },
           {
               :regex => '^web_',
-              :classname => 'ActiveParticipant', # TODO change to WebParticipant
+              :class => 'ActiveParticipant', # TODO change to WebParticipant
               :options => {}
           },
           {
               :regex => '.*',
-              :classname => 'Participant',
+              :class => 'Participant',
               :options => {}
           }
       ]
 
-      i = 0
-      frontend_handlers.each do |h|
-        break if name =~ /#{h[:regex]}/i
-        i += 1
-      end
+      handler = frontend_handlers.select { |h| name =~ /#{h[:regex]}/i }.first
 
       # TODO return exception if no frontend handlers match
       # something_something(dark, side)
-      klass = RuoteTrail::const_get(frontend_handlers[i][:classname].gsub(/web_/, '').camelize) # TODO CRAPPY camelize
-      options = frontend_handlers[i][:options]
 
-      [klass, options]
+      [ RuoteTrail.const_get(handler[:class]), handler[:options] ]
     end
 
     def self.is_expression?(name)
@@ -104,30 +96,21 @@ module RuoteTrail
     def self.extract(sid, era, exp)
 
       case era
-        when :present #@TODO this seems to never be used
-          begin
-            # ar = wi
-            [
-                exp[0],
-                exp[1],#JSON.parse(wi.__workitem__).merge(wi.attributes), #except __workitem___ and __feid__
-                exp[2]
-            ]
-          rescue ActiveRecord::RecordNotFound
-            exp[1]['fields'] ||= {}
-            exp[1]['fields']['params'] ||= {}
-            [
-                exp[0],
-                exp[1]['fields'].except(:params),  # TODO needed? do we really have empty fields
-                exp[1]['fields']['params']
-            ]
-          end
+        when :present
+          exp[1]['fields'] ||= {}
+          exp[1]['fields']['params'] ||= {}
+          [
+              exp[0],
+              exp[1]['fields'].except('params'),  # TODO to test with a participant with params
+              exp[1]['fields']['params']          # TODO to test with a participant with params
+          ]
 
         when :past
           exp[1]['fields'] ||= {}
           exp[1]['fields']['params'] ||= {}
           [
               exp[0],
-              exp[1]['fields'].except(:params),  # TODO needed? in the past do we really have empty fields
+              exp[1]['fields'].except('params'),
               exp[1]['fields']['params']
           ]
 
@@ -135,7 +118,7 @@ module RuoteTrail
           [
               exp[0],
               {},
-              exp[1] # TODO test this. i believe it's supposed to be exp[1]['params'] ??
+              exp[1] # Params are directly at [1]
           ]
       end
     end
