@@ -75,8 +75,7 @@ module RuoteTrail::ActiveRuote
 
       # TODO should update state machine
 
-      # TODO remove __feid__ from new_attributes
-      wi = merge_attributes_into_fields
+      wi = merged_wi
       self.__workitem__ = JSON::generate(wi)
       self.save
       # wi['exited_at'] = Ruote.now_to_utc_s # TODO get rid of this dependency
@@ -87,13 +86,18 @@ module RuoteTrail::ActiveRuote
       sleep(1) # TODO this sucks, but the trail seems to be written each time ruote 'steps' (@each 0.8s)
     end
 
-    def merge_attributes_into_fields
+    # Provide the original wi with fields merged with model's attributes
+    #
+    # The wi submitted by the workflow engine is kept untouched in the __workitem__ field.
+    # We merge every attributes except a few back within the workitem.
+    #
+    def merged_wi
 
-      original_wi = JSON.parse(attributes['__workitem__']) # TODO error handling
-      new_attributes = attributes.reject { |key, value| %w(id __workitem__ created_at updated_at).include? key } # TODO centralize list
-      original_wi['fields'] = original_wi['fields'].merge!(new_attributes)
+      wi = JSON.parse(attributes['__workitem__'])
+      new_attrs = attributes.reject { |k, v| %w(id __feid__ __workitem__ created_at updated_at).include? k } # TODO centralize list
+      wi['fields'] = wi['fields'].merge!(new_attrs)
 
-      original_wi
+      wi
     end
 
     # def save
