@@ -76,8 +76,6 @@ module RuoteTrail::ActiveRuote
       # TODO should update state machine
 
       wi = merged_wi
-      self.__workitem__ = JSON::generate(wi)
-      self.save
       # wi['exited_at'] = Ruote.now_to_utc_s # TODO get rid of this dependency
 
       receiver = RuoteTrail::ActiveRuote::Receiver.new(RuoteKit.engine)
