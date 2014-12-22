@@ -68,7 +68,7 @@ module RuoteTrail
               :class => 'ActiveParticipant', # TODO change to WebParticipant
               :options => {}
           },
-          {
+          {   # Default: This one should not be editable by the user
               :regex => '.*',
               :class => 'Participant',
               :options => {}
@@ -76,9 +76,6 @@ module RuoteTrail
       ]
 
       handler = frontend_handlers.select { |h| name =~ /#{h[:regex]}/i }.first
-
-      # TODO return exception if no frontend handlers match
-      # something_something(dark, side)
 
       [ RuoteTrail.const_get(handler[:class]), handler[:options] ]
     end
