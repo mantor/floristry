@@ -43,25 +43,13 @@ module RuoteTrail::ActiveRuote
 
     def image() false end
 
-    def active?()     @era == :present end
-    def inactive?()   @era != :present end
-    # alias inactive? disabled?
-
     def is_past?()    @era == :past    end
     def is_present?() @era == :present end
     def is_future?()  @era == :future  end
 
-
-    # # Get an instance that will behave like a Participant Expression
-    # #
-    # def self.new_with_participant(p)
-    #
-    #   o = new() # or find? What's the diff between this ActiveRecord obj and the ActivePart obj?
-    #
-    #   @participant = p
-    #   def_delegators :@participant, :active?, :inactive?, :is_past?, :is_present?, :is_future?,
-    #                  :id, :name, :params, :workitem, :era
-    # end
+    alias_method :is_present?, :active?
+    def inactive?()   @era != :present end
+    alias_method :inactive?, :disabled?
 
     # If proceeding, merge back attributes within saved workitem and reply to Workflow Engine
     #
@@ -98,12 +86,18 @@ module RuoteTrail::ActiveRuote
     #   super
     # end
 
-    # # Override default path # TODO really? look at the real to_partial_path maybe that's better
+    # # Override default path to adjust namespace
+    # #
+    # # TODO to we really need this if we use a namespace? Aren't namespace directory directly followed?
     # #
     # def to_partial_path
     #
     #   k = self.class.to_s.parameterize.underscore
     #   "forms/tasks/#{k}/#{k}" # TODO is that really what we want? Segregated Components? Why?
+    #                           # Yes but not necessarily at this place. We want workflows forms
+    #                           # to act like standards rails stuff but creating an namespace would
+    #                           # be important to make sure we can easily know what's part of Mantor
+    #                           # and what's not and avoid conflicts. components/#{k}/#{k} ?
     # end
   end
 
