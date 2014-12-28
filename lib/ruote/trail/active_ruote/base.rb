@@ -3,9 +3,6 @@ module RuoteTrail::ActiveRuote
   class Base < ActiveRecord::Base
 
     attr_accessor :era
-
-    after_initialize :default_values
-
     self.abstract_class = true
 
     # attr_accessible :__workitem__ # TODO should be a mixin??!?!
@@ -16,8 +13,9 @@ module RuoteTrail::ActiveRuote
 
       wi_h['__workitem__'] = JSON.generate(wi_h)
       wi_h['__feid__'] = wi_h['fei'].dup.delete_if {| key, value | key == 'engine_id'}.values.reverse.join('!')
+      wi_h.keep_if { |key, value| self.column_names.include?(key) }
 
-      super(wi_h.keep_if {| key, value | self.column_names.include?(key) })
+      super(wi_h)
     end
 
     # ActiveRecords participants can be search by their Rails ID or Workflow id (feid)
@@ -27,11 +25,7 @@ module RuoteTrail::ActiveRuote
     #
     def self.find id
 
-      if id.is_a? Integer
-        obj = self.where(id: id).first
-      else
-        obj = self.where(__feid__: id).first
-      end
+      obj = (id.is_a? Integer) ? self.where(id: id).first : self.where(__feid__: id).first
 
       raise ActiveRecord::RecordNotFound unless obj
       obj
@@ -111,12 +105,6 @@ module RuoteTrail::ActiveRuote
     #   k = self.class.to_s.parameterize.underscore
     #   "forms/tasks/#{k}/#{k}" # TODO is that really what we want? Segregated Components? Why?
     # end
-
-    private
-
-    def default_values
-      @era = :future
-    end
   end
 
   class Receiver < Ruote::Receiver
