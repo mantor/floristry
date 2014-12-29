@@ -47,9 +47,9 @@ module RuoteTrail::ActiveRuote
     def is_present?() @era == :present end
     def is_future?()  @era == :future  end
 
-    alias_method :is_present?, :active?
     def inactive?()   @era != :present end
-    alias_method :inactive?, :disabled?
+    alias_method :disabled?, :inactive?
+    alias_method :active?, :is_present?
 
     # If proceeding, merge back attributes within saved workitem and reply to Workflow Engine
     #
