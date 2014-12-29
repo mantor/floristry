@@ -1,4 +1,4 @@
-module RuoteTrail::ActiveRuote
+module RuoteTrail::ActiveRecord
 
   class Base < ActiveRecord::Base
 
@@ -12,7 +12,7 @@ module RuoteTrail::ActiveRuote
     def self.create(wi_h)
 
       wi_h['__workitem__'] = JSON.generate(wi_h)
-      wi_h['__feid__'] = wi_h['fei'].dup.delete_if {| key, value | key == 'engine_id'}.values.reverse.join('!')
+      wi_h['__feid__'] = wi_h['fei'].dup.delete_if { |key, value| key == 'engine_id'}.values.reverse.join('!')
       wi_h.keep_if { |key, value| self.column_names.include?(key) }
 
       super(wi_h)
@@ -43,6 +43,7 @@ module RuoteTrail::ActiveRuote
 
     def image() false end
 
+    # TODO This is also in expression.rb. Should RuoteTrail::ActiveParticipant forward to RuoteTrail::Expression?
     def is_past?()    @era == :past    end
     def is_present?() @era == :present end
     def is_future?()  @era == :future  end
@@ -60,7 +61,7 @@ module RuoteTrail::ActiveRuote
       wi = merged_wi
       # wi['exited_at'] = Ruote.now_to_utc_s # TODO get rid of this dependency
 
-      receiver = RuoteTrail::ActiveRuote::Receiver.new(RuoteKit.engine)
+      receiver = RuoteTrail::ActiveRecord::Receiver.new(RuoteKit.engine)
       receiver.proceed(wi)
 
       sleep(1) # TODO this sucks, but the trail seems to be written each time ruote 'steps' (@each 0.8s)

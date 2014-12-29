@@ -1,5 +1,10 @@
 module RuoteTrail
-  class ActiveRecordParticipant
+
+  # ActiveRecord backend participant - TODO to move out of RuoteTrail !!
+  #
+  # Once we remove Ruote-kit, change this for a real Restful HTTP client - e.g. Ruote-Jig
+  #
+  class DummyRestParticipant
     include Ruote::LocalParticipant
 
     def initialize(options)

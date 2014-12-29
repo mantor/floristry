@@ -14,13 +14,13 @@ module RuoteTrail
       self.class.send(:include, mod) if mod
     end
 
-    def active?()     @era == :present end
-    def inactive?()   @era != :present end
-    # alias inactive? disabled?
-
     def is_past?()    @era == :past    end
     def is_present?() @era == :present end
     def is_future?()  @era == :future  end
+
+    def inactive?()   @era != :present end
+    alias_method :disabled?, :inactive?
+    alias_method :active?, :is_present?
 
     def layout() false end
 
@@ -46,7 +46,7 @@ module RuoteTrail
 
         klass, options =  self.frontend_handler(name)
         obj = klass.new(sid, name, params, workitem, era)
-        (klass == RuoteTrail::ActiveParticipant) ? obj.instance : obj
+        (klass == RuoteTrail::ActiveRecord::Participant) ? obj.instance : obj
       end
     end
 
@@ -58,26 +58,26 @@ module RuoteTrail
 
       # TODO this should come from the DB, and the admin should have an interface
       frontend_handlers = [
-          {
-              :regex => '^ssh_',
-              :class => 'SshParticipant',
-              :options => {}
-          },
+          # {
+          #     :regex => '^ssh_',
+          #     :class => RuoteTrail::SshParticipant,
+          #     :options => {}
+          # },
           {
               :regex => '^web_',
-              :class => 'ActiveParticipant', # TODO change to WebParticipant
+              :class => RuoteTrail::ActiveRecord::Participant,
               :options => {}
           },
           {   # Default: This one should not be editable by the user
               :regex => '.*',
-              :class => 'Participant',
+              :class => RuoteTrail::Participant,
               :options => {}
           }
       ]
 
       handler = frontend_handlers.select { |h| name =~ /#{h[:regex]}/i }.first
 
-      [ RuoteTrail.const_get(handler[:class]), handler[:options] ]
+      [ handler[:class], handler[:options] ]
     end
 
     def self.is_expression?(name)

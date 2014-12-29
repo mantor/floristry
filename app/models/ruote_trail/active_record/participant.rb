@@ -1,6 +1,6 @@
-module RuoteTrail
+module RuoteTrail::ActiveRecord
 
-  class ActiveParticipant < LeafExpression
+  class Participant < LeafExpression
 
     def update_attributes(new_attributes, options={})
 
