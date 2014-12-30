@@ -2,8 +2,12 @@ module RuoteTrail::ActiveRecord
 
   class Base < ActiveRecord::Base
 
-    attr_accessor :era
     self.abstract_class = true
+
+    include RuoteTrail::ExpressionMixin
+    include RuoteTrail::LeafExpressionMixin
+
+    attr_accessor :era
 
     # attr_accessible :__workitem__ # TODO should be a mixin??!?!
 
@@ -31,26 +35,16 @@ module RuoteTrail::ActiveRecord
       obj
     end
 
+    # TODO show proper participant image
+    #
+    def image() false end
+
+    # TODO check if we could create a RuoteHelperMixin for this. Add expid, feid, etc
+    #
     def wfid
 
       __feid__.split('!').third
     end
-
-    def layout
-
-      'layouts/ruote_trail/leaf-expression'
-    end
-
-    def image() false end
-
-    # TODO This is also in expression.rb. Should RuoteTrail::ActiveParticipant forward to RuoteTrail::Expression?
-    def is_past?()    @era == :past    end
-    def is_present?() @era == :present end
-    def is_future?()  @era == :future  end
-
-    def inactive?()   @era != :present end
-    alias_method :disabled?, :inactive?
-    alias_method :active?, :is_present?
 
     # If proceeding, merge back attributes within saved workitem and reply to Workflow Engine
     #
@@ -67,6 +61,14 @@ module RuoteTrail::ActiveRecord
       sleep(1) # TODO this sucks, but the trail seems to be written each time ruote 'steps' (@each 0.8s)
     end
 
+    # def save
+    #
+    #   # TODO should update state machine
+    #   super
+    # end
+
+    private
+
     # Provide the original wi with fields merged with model's attributes
     #
     # The wi submitted by the workflow engine is kept untouched in the __workitem__ field.
@@ -80,12 +82,6 @@ module RuoteTrail::ActiveRecord
 
       wi
     end
-
-    # def save
-    #
-    #   # TODO should update state machine
-    #   super
-    # end
 
     # # Override default path to adjust namespace
     # #

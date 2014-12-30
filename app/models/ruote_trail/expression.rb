@@ -1,5 +1,24 @@
 module RuoteTrail
+
+  module ExpressionMixin
+
+    def is_past?()    @era == :past    end
+    def is_present?() @era == :present end
+    def is_future?()  @era == :future  end
+
+    def inactive?()   @era != :present end
+    alias_method :disabled?, :inactive?
+    alias_method :active?, :is_present?
+
+    def layout() false end
+
+    def to_partial_path() self.class.name.underscore end
+  end
+
   class Expression
+
+    include ExpressionMixin
+
     attr_reader :id, :name, :params, :workitem, :era
 
     def initialize(id, name, params = {}, workitem = {}, era = :present) # TODO defaults doesn't seems to make sense
@@ -14,21 +33,7 @@ module RuoteTrail
       self.class.send(:include, mod) if mod
     end
 
-    def is_past?()    @era == :past    end
-    def is_present?() @era == :present end
-    def is_future?()  @era == :future  end
-
-    def inactive?()   @era != :present end
-    alias_method :disabled?, :inactive?
-    alias_method :active?, :is_present?
-
-    def layout() false end
-
-    def to_partial_path
-      self.class.name.underscore
-    end
-
-    # Returns proper Expression type based on name.
+    # Returns proper Expression type based on its name.
     #
     # Anything not a Ruote Expression is considered a Participant Expression, e.g.,
     # if == If, sequence == Sequence, admin == Participant, xyz == Participant
@@ -46,6 +51,7 @@ module RuoteTrail
 
         klass, options =  self.frontend_handler(name)
         obj = klass.new(sid, name, params, workitem, era)
+
         (klass == RuoteTrail::ActiveRecord::Participant) ? obj.instance : obj
       end
     end
