@@ -97,17 +97,4 @@ module RuoteTrail::ActiveRecord
     #                           # and what's not and avoid conflicts. components/#{k}/#{k} ?
     # end
   end
-
-  class Receiver < Ruote::Receiver
-
-    # def initialize(engine) # TODO should be a Thread waiting for REST/MQ proceed request.
-    #
-    #   super(engine)
-    #   Thread.new { listen }
-    # end
-
-    def proceed(workitem)
-      reply(workitem)
-    end
-  end
 end
