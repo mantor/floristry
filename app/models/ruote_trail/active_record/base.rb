@@ -77,7 +77,7 @@ module RuoteTrail::ActiveRecord
     def merged_wi
 
       wi = JSON.parse(attributes['__workitem__'])
-      new_attrs = attributes.reject { |k, v| %w(id __feid__ __workitem__ created_at updated_at).include? k } # TODO centralize list
+      new_attrs = attributes.reject { |k, v| %w(id __workitem__ created_at updated_at).include? k } # TODO centralize list
       wi['fields'] = wi['fields'].merge!(new_attrs)
 
       wi

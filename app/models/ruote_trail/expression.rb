@@ -1,20 +1,5 @@
 module RuoteTrail
 
-  module ExpressionMixin
-
-    def is_past?()    @era == :past    end
-    def is_present?() @era == :present end
-    def is_future?()  @era == :future  end
-
-    def inactive?()   @era != :present end
-    alias_method :disabled?, :inactive?
-    alias_method :active?, :is_present?
-
-    def layout() false end
-
-    def to_partial_path() self.class.name.underscore end
-  end
-
   class Expression
 
     include ExpressionMixin

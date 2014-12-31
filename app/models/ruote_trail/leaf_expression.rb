@@ -1,10 +1,5 @@
 module RuoteTrail
 
-  module LeafExpressionMixin
-
-    def layout() 'layouts/ruote_trail/leaf-expression' end
-  end
-
   class LeafExpression < Expression
 
     include LeafExpressionMixin
