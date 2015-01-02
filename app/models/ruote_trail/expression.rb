@@ -1,5 +1,35 @@
 module RuoteTrail
 
+  module ExpressionMixin
+
+    def is_past?()    @era == :past    end
+    def is_present?() @era == :present end
+    def is_future?()  @era == :future  end
+
+    def inactive?()   @era != :present end
+    alias_method :disabled?, :inactive?
+    alias_method :active?, :is_present?
+
+    def layout() false end
+
+    # # Override default path to adjust namespace
+    # #
+    # # TODO to we really need this if we use a namespace? Aren't namespace directory directly followed?
+    # #
+    def to_partial_path
+    #
+      self.class.name.underscore # temp
+    #
+    #   k = self.class.to_s.parameterize.underscore
+    #   "forms/tasks/#{k}/#{k}" # TODO is that really what we want? Segregated Components? Why?
+    #                           # Yes but not necessarily at this place. We want workflows forms
+    #                           # to act like standards rails stuff but creating an namespace would
+    #                           # be important to make sure we can easily know what's part of Mantor
+    #                           # and what's not and avoid conflicts. components/#{k}/#{k} ?
+    end
+
+  end
+
   class Expression
 
     include ExpressionMixin
