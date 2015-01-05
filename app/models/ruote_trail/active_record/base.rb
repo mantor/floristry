@@ -9,6 +9,8 @@ module RuoteTrail::ActiveRecord
 
     attr_accessor :era
 
+    delegate :current_state, :trigger!, :available_events, to: :state_machine
+
     # attr_accessible :__workitem__ # TODO should be a mixin??!?!
 
     # Create obj but first inject serialized workitem as an attribute
@@ -61,11 +63,17 @@ module RuoteTrail::ActiveRecord
       sleep(1) # TODO this sucks, but the trail seems to be written each time ruote 'steps' (@each 0.8s)
     end
 
-    # def save
-    #
-    #   # TODO should update state machine
-    #   super
-    # end
+    def state_machine
+      @state_machine ||= StateMachine.new(self)
+    end
+
+    def save
+      require 'pp'
+
+      pp "MY NEW STATE IS #{current_state} AND IVE BEEN SAVED!!!"
+      # TODO should update state machine
+      super
+    end
 
     private
 
@@ -81,6 +89,34 @@ module RuoteTrail::ActiveRecord
       wi['fields'] = wi['fields'].merge!(new_attrs)
 
       wi
+    end
+  end
+
+  class StateMachine
+    include Statesman::Machine
+
+    state :unstarted, initial: true
+    state :started
+    state :proceeded
+
+    event :start do
+      transition from: :unstarted,  to: :started
+    end
+
+    event :proceed do
+      transition from: :started,    to: :proceeded
+    end
+
+    def last_transition
+      if @storage_adapter.last.nil? && @object.state
+        return @transition_class.new(@object.state, 0)
+      end
+      @storage_adapter.last
+    end
+
+    after_transition do |object, transition|
+      object.state = object.current_state
+      object.save
     end
   end
 end
