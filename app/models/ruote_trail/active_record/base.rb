@@ -67,14 +67,6 @@ module RuoteTrail::ActiveRecord
       @state_machine ||= StateMachine.new(self)
     end
 
-    def save
-      require 'pp'
-
-      pp "MY NEW STATE IS #{current_state} AND IVE BEEN SAVED!!!"
-      # TODO should update state machine
-      super
-    end
-
     private
 
     # Provide the original wi with fields merged with model's attributes
