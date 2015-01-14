@@ -13,7 +13,10 @@ module RuoteTrail::ActiveRecord
 
     # attr_accessible :__workitem__ # TODO should be a mixin??!?!
 
-    # Create obj but first inject serialized workitem as an attribute
+    # Create obj from serialized workitem as an attribute and bypass validations,
+    # since some Participant models may have required attributes that we won't
+    # initialize with default, valid values, since it defeats the purpose.
+    # Think of a Web Form.
     #
     def self.create(wi_h)
 
@@ -21,7 +24,9 @@ module RuoteTrail::ActiveRecord
       wi_h['__feid__'] = wi_h['fei'].dup.delete_if { |key, value| key == 'engine_id'}.values.reverse.join('!')
       wi_h.keep_if { |key, value| self.column_names.include?(key) }
 
-      super(wi_h)
+      object = new(wi_h)
+      object.save({validate: false})
+      object
     end
 
     # ActiveRecords participants can be search by their Rails ID or Workflow id (feid)
