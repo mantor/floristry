@@ -53,19 +53,19 @@ module RuoteTrail
     # Anything not a Ruote Expression is considered a Participant Expression, e.g.,
     # if == If, sequence == Sequence, admin == Participant, xyz == Participant
     #
-    def self.factory(sid, era = :present, exp = nil)
+    def self.factory(id, era = :present, exp = nil)
 
-      name, workitem, params = extract(sid, era, exp)
+      name, workitem, params = extract(era, exp)
       klass_name = name.camelize
 
       if is_expression? (klass_name)
 
         klass = RuoteTrail.const_get(klass_name)
-        klass.new(sid, name, params, workitem, era) # TODO pass options - via *args?
+        klass.new(id, name, params, workitem, era) # TODO pass options - via *args?
       else
 
         klass, options =  self.frontend_handler(name)
-        obj = klass.new(sid, name, params, workitem, era)
+        obj = klass.new(id, name, params, workitem, era)
 
         (klass == RuoteTrail::ActiveRecord::Participant) ? obj.instance : obj
       end
@@ -111,7 +111,7 @@ module RuoteTrail
 
     end
 
-    def self.extract(sid, era, exp)
+    def self.extract(era, exp)
 
       case era
         when :present
