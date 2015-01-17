@@ -23,6 +23,7 @@ module RuoteTrail::ActiveRecord
       wi_h['__workitem__'] = JSON.generate(wi_h)
       wi_h['__feid__'] = wi_h['fei'].dup.delete_if { |key, value| key == 'engine_id'}.values.reverse.join('!')
       wi_h.keep_if { |key, value| self.column_names.include?(key) }
+      wi_h['state'] = StateMachine.initial_state
 
       object = new(wi_h)
       object.save({validate: false})
@@ -42,6 +43,11 @@ module RuoteTrail::ActiveRecord
       obj
     end
 
+    def save(*)
+      trigger!(:start) if state == StateMachine.initial_state && persisted?
+      super
+    end
+
     # TODO show proper participant image
     #
     def image() false end
@@ -57,7 +63,7 @@ module RuoteTrail::ActiveRecord
     #
     def proceed
 
-      # TODO should update state machine
+      self.trigger!(:proceed)
 
       wi = merged_wi
       # wi['exited_at'] = Ruote.now_to_utc_s # TODO get rid of this dependency
