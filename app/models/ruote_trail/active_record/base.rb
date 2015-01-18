@@ -59,17 +59,23 @@ module RuoteTrail::ActiveRecord
       __feid__.split('!').third
     end
 
+    # TODO check if we could create a RuoteHelperMixin for this.
+    #
+    def ruote_timestamp
+      t = Time.now
+      "#{t.utc.strftime('%Y-%m-%d %H:%M:%S')}.#{sprintf('%06d', t.usec)} UTC"
+    end
+
     # If proceeding, merge back attributes within saved workitem and reply to Workflow Engine
     #
-    def proceed
-
-      self.trigger!(:proceed)
+    def proceed #TODO should be atomic
 
       wi = merged_wi
-      # wi['exited_at'] = Ruote.now_to_utc_s # TODO get rid of this dependency
 
       receiver = RuoteTrail::ActiveRecord::Receiver.new(RuoteKit.engine)
       receiver.proceed(wi)
+
+      self.trigger!(:proceed)
 
       sleep(1) # TODO this sucks, but the trail seems to be written each time ruote 'steps' (@each 0.8s)
     end
@@ -90,6 +96,7 @@ module RuoteTrail::ActiveRecord
       wi = JSON.parse(attributes['__workitem__'])
       new_attrs = attributes.reject { |k, v| %w(id __workitem__ created_at updated_at).include? k } # TODO centralize list
       wi['fields'] = wi['fields'].merge!(new_attrs)
+      wi['fields']['exited_at'] = ruote_timestamp
 
       wi
     end
