@@ -60,9 +60,9 @@ module CommonMixin
       @wfid = s[-1]
     end
 
-    def to_s(arg)
+    def to_id(opts = {})
 
-      t_expid = arg['expid'] || expid
+      t_expid = opts.include?('expid') ? opts['expid'] : expid
 
       [ t_expid, subid, wfid ].join(SEP)
     end
