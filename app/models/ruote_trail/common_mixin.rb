@@ -6,6 +6,7 @@ module CommonMixin
   ROOT_EXPID = '0' # Root expression id - yes, it's a string (e.g. 0_1_0)
   SEP = '!'        # FEID's field separator
   CHILD_SEP = '_'  # Expression id's child separator
+  FEID_REGEX = /\A.*!.*!.*\z/ # TODO add engine option
 
   def self.included(base)
 
