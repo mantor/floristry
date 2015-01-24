@@ -1,5 +1,8 @@
 module RuoteTrail
+
   class LeafExpression < Expression
+
+    include LeafExpressionMixin
 
     def initialize(id, name, params = {}, workitem = {}, era = :present) # TODO defaults doesn't seems to make sense
 
@@ -9,9 +12,7 @@ module RuoteTrail
       self.class.send(:include, mod) if mod
     end
 
-    def layout
-
-      'layouts/ruote_trail/leaf-expression'
-    end
+    def leaf?() true end
+    def branch?() false end
   end
 end

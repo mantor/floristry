@@ -1,12 +1,14 @@
-module Ruote
-  module Trail
-    module Archive
-      class ActiveRecord
-        def archive(trail)
-          # Massage the trail and save accordingly
-          puts "Trail saved to active record!"
-        end
-      end
+module RuoteTrail
+module Archive
+
+  class ActiveRecord
+    def self.archive(wf)
+
+      wf['wfid'] = wf.delete 'id' # Don't override ActiveRecord surrogate key.
+      wfa = WorkflowArchive.new(wf)
+      wfa.save
     end
   end
+
+end
 end

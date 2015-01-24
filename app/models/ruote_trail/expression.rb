@@ -1,5 +1,39 @@
 module RuoteTrail
+
+  module ExpressionMixin
+
+    def is_past?()    @era == :past    end
+    def is_present?() @era == :present end
+    def is_future?()  @era == :future  end
+
+    def inactive?()   @era != :present end
+    alias_method :disabled?, :inactive?
+    alias_method :active?, :is_present?
+
+    def layout() false end
+
+    # # Override default path to adjust namespace
+    # #
+    # # TODO to we really need this if we use a namespace? Aren't namespace directory directly followed?
+    # #
+    def to_partial_path
+    #
+      self.class.name.underscore # temp
+    #
+    #   k = self.class.to_s.parameterize.underscore
+    #   "forms/tasks/#{k}/#{k}" # TODO is that really what we want? Segregated Components? Why?
+    #                           # Yes but not necessarily at this place. We want workflows forms
+    #                           # to act like standards rails stuff but creating an namespace would
+    #                           # be important to make sure we can easily know what's part of Mantor
+    #                           # and what's not and avoid conflicts. components/#{k}/#{k} ?
+    end
+
+  end
+
   class Expression
+
+    include ExpressionMixin
+
     attr_reader :id, :name, :params, :workitem, :era
 
     def initialize(id, name, params = {}, workitem = {}, era = :present) # TODO defaults doesn't seems to make sense
@@ -14,73 +48,57 @@ module RuoteTrail
       self.class.send(:include, mod) if mod
     end
 
-    def active?()     @era == :present end
-    def inactive?()   @era != :present end
-    # alias inactive? disabled?
-
-    def is_past?()    @era == :past    end
-    def is_present?() @era == :present end
-    def is_future?()  @era == :future  end
-
-    def layout() false end
-
-    def model?() false end # TODO needed?
-
-    def to_partial_path
-
-      self.class.name.underscore
-    end
-
-    # Returns proper Expression type based on name.
+    # Returns proper Expression type based on its name.
     #
     # Anything not a Ruote Expression is considered a Participant Expression, e.g.,
     # if == If, sequence == Sequence, admin == Participant, xyz == Participant
     #
     def self.factory(id, era = :present, exp = nil)
 
-      name, workitem, params = extract(id, era, exp)
-      klass_name = name.camelize # TODO CRAPPY camelize
-      klass, options = is_expression?(klass_name) ? RuoteTrail::const_get(klass_name) : self.frontend_handler(name) # TODO CRAPPY camelize
+      name, workitem, params = extract(era, exp)
+      klass_name = name.camelize
 
-      klass.new(id, name, params, workitem, era) # TODO pass options - via *args?
+      if is_expression? (klass_name)
+
+        klass = RuoteTrail.const_get(klass_name)
+        klass.new(id, name, params, workitem, era) # TODO pass options - via *args?
+      else
+
+        klass, options =  self.frontend_handler(name)
+        obj = klass.new(id, name, params, workitem, era)
+
+        (klass == RuoteTrail::ActiveRecord::Participant) ? obj.instance : obj
+      end
     end
 
     protected
 
+    # Participant frontend handler defining how the participant will be rendered
+    #
     def self.frontend_handler(name)
 
       # TODO this should come from the DB, and the admin should have an interface
       frontend_handlers = [
-          {
-              :regex => '^ssh_',
-              :classname => 'SshParticipant',
-              :options => {}
-          },
+          # {
+          #     :regex => '^ssh_',
+          #     :class => RuoteTrail::SshParticipant,
+          #     :options => {}
+          # },
           {
               :regex => '^web_',
-              :classname => 'ActiveParticipant', # TODO change to WebParticipant
+              :class => RuoteTrail::ActiveRecord::Participant,
               :options => {}
           },
-          {
+          {   # Default: This one should not be editable by the user
               :regex => '.*',
-              :classname => 'Participant',
+              :class => RuoteTrail::Participant,
               :options => {}
           }
       ]
 
-      i = 0
-      frontend_handlers.each do |h|
-        break if name =~ /#{h[:regex]}/i
-        i += 1
-      end
+      handler = frontend_handlers.select { |h| name =~ /#{h[:regex]}/i }.first
 
-      # TODO return exception if no frontend handlers match
-      # something_something(dark, side)
-
-      klass = RuoteTrail::const_get(frontend_handlers[i][:classname].camelize) # TODO CRAPPY camelize
-      options = frontend_handlers[i][:options]
-
-      [klass, options]
+      [ handler[:class], handler[:options] ]
     end
 
     def self.is_expression?(name)
@@ -93,32 +111,32 @@ module RuoteTrail
 
     end
 
-    def self.extract(id, era, exp = nil)
+    def self.extract(era, exp)
 
       case era
         when :present
-          # TODO our own exception? - https://github.com/rails/rails/blob/9aa7c25c28325f62815b6625bdfcc6dd7565165b/activerecord/lib/active_record/errors.rb
-          process = RuoteKit.engine.process(id)
-          wi = process.stored_workitems[0]
-          raise ActiveRecord::RecordNotFound unless wi
+          exp[1]['fields'] ||= {}
+          exp[1]['fields']['params'] ||= {}
           [
-              wi.participant_name,
-              wi.fields.except(:params),
-              wi.params
+              exp[0],
+              exp[1]['fields'].except('params'),  # TODO to test with a participant with params
+              exp[1]['fields']['params']          # TODO to test with a participant with params
           ]
+
         when :past
           exp[1]['fields'] ||= {}
           exp[1]['fields']['params'] ||= {}
           [
               exp[0],
-              exp[1]['fields'].except(:params),  # TODO needed? in the past do we really have empty fields
+              exp[1]['fields'].except('params'),
               exp[1]['fields']['params']
           ]
+
         when :future # TODO should be load from non-trail to capture on-the-fly process modifications? Just like Present?
           [
               exp[0],
               {},
-              exp[1] # TODO test this. i believe it's supposed to be exp[1]['params'] ??
+              exp[1] # Params are directly at [1]
           ]
       end
     end
