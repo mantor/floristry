@@ -6,7 +6,7 @@ module CommonMixin
   ROOT_EXPID = '0' # Root expression id - yes, it's a string (e.g. 0_1_0)
   SEP = '!'        # FEID's field separator
   CHILD_SEP = '_'  # Expression id's child separator
-  SUBID_REPLACEMENT = 'empty_subid' # Replacement for the subid part of a FEID.
+  SUBID = 'empty_subid' # Replacement for the subid part of a FEID. We are not using the subid.
   FEID_REGEX = /\A.*!.*!.*\z/ # TODO add engine option
 
   def self.included(base)
@@ -52,9 +52,8 @@ module CommonMixin
 
         if id.is_a? Hash
 
-          @engineid = id['engine_id']
+          @engineid = id['engine_id'] || 'engine'
           @expid = id['expid']
-          @subid = SUBID_REPLACEMENT
           @wfid = id['wfid']
           @id = to_id
         else
@@ -63,14 +62,14 @@ module CommonMixin
           s = id.split(SEP)
           @engineid = s[-4] || 'engine'
           @expid = s[-3]
-          @subid = SUBID_REPLACEMENT
           @wfid = s[-1]
         end
+        @subid = SUBID
       end
 
       def to_id(opts = {})
 
-        t_expid = opts.include?('expid') ? opts['expid'] : expid
+        t_expid = (opts.include?(:expid)) ? opts[:expid] : expid
 
         [ t_expid, subid, wfid ].join(SEP)
       end
