@@ -4,6 +4,7 @@ module RuoteTrail::ActiveRecord
 
     self.abstract_class = true
 
+    include RuoteTrail::CommonMixin
     include RuoteTrail::ExpressionMixin
     include RuoteTrail::LeafExpressionMixin
 
@@ -21,7 +22,8 @@ module RuoteTrail::ActiveRecord
     def self.create(wi_h)
 
       wi_h['__workitem__'] = JSON.generate(wi_h)
-      wi_h['__feid__'] = wi_h['fei'].dup.delete_if { |key, value| key == 'engine_id'}.values.reverse.join('!')
+      @fei = FlowExpressionId.new(wi_h['fei'])
+      wi_h['__feid__'] = @fei.to_id
       wi_h.keep_if { |key, value| self.column_names.include?(key) }
       wi_h['state'] = StateMachine.initial_state
 
