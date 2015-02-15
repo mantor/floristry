@@ -14,10 +14,8 @@ module RuoteTrail::ActiveRecord
 
     delegate :current_state, :trigger!, :available_events, to: :state_machine
 
-    # Create obj from serialized workitem as an attribute and bypass validations,
-    # since some Participant models may have required attributes that we won't
-    # initialize with default, valid values, since it defeats the purpose.
-    # Think of a Web Form.
+    # Save the workitem as an special attribute to be merged at proceed. Bypassing validation is necessary
+    # since some Participant's model may have attributes that aren't currently present/valid.
     #
     def self.create(wi_h)
 
@@ -26,9 +24,9 @@ module RuoteTrail::ActiveRecord
       wi_h['state'] = StateMachine.initial_state
       wi_h.keep_if { |key, value| self.column_names.include?(key) }
 
-      object = new(wi_h)
-      object.save({validate: false})
-      object
+      obj = new(wi_h)
+      obj.save({validate: false})
+      obj
     end
 
     # ActiveRecords participants can be search by their Rails ID or Workflow id (feid)
