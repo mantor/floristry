@@ -8,7 +8,7 @@ module RuoteTrail::ActiveRecord
     include RuoteTrail::ExpressionMixin
     include RuoteTrail::LeafExpressionMixin
 
-    ATTRIBUTES_TO_REMOVE = %w(id __feid__ __workitem__ created_at updated_at)
+    ATTRIBUTES_TO_REMOVE = %w(id __feid__ __workitem__ created_at updated_at state)
 
     attr_accessor :era
 
@@ -22,10 +22,9 @@ module RuoteTrail::ActiveRecord
     def self.create(wi_h)
 
       wi_h['__workitem__'] = JSON.generate(wi_h)
-      @fei = FlowExpressionId.new(wi_h['fei'])
-      wi_h['__feid__'] = @fei.to_id
-      wi_h.keep_if { |key, value| self.column_names.include?(key) }
+      wi_h['__feid__'] = FlowExpressionId.new(wi_h['fei']).to_id
       wi_h['state'] = StateMachine.initial_state
+      wi_h.keep_if { |key, value| self.column_names.include?(key) }
 
       object = new(wi_h)
       object.save({validate: false})
