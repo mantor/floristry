@@ -8,11 +8,11 @@ module RuoteTrail::ActiveRecord
     include RuoteTrail::ExpressionMixin
     include RuoteTrail::LeafExpressionMixin
 
+    ATTRIBUTES_TO_REMOVE = %w(id __feid__ __workitem__ created_at updated_at)
+
     attr_accessor :era
 
     delegate :current_state, :trigger!, :available_events, to: :state_machine
-
-    # attr_accessible :__workitem__ # TODO should be a mixin??!?!
 
     # Create obj from serialized workitem as an attribute and bypass validations,
     # since some Participant models may have required attributes that we won't
@@ -96,7 +96,13 @@ module RuoteTrail::ActiveRecord
     def merged_wi
 
       wi = JSON.parse(attributes['__workitem__'])
-      new_attrs = attributes.reject { |k, v| %w(id __workitem__ created_at updated_at).include? k } # TODO centralize list
+
+      # TODO It doesn't make sense to keep the __feid__ attribute within the workitem once we get out of ActiveRecord.
+      # The Expression is supposed to have all this info (expids).
+      #
+      # new_attrs = attributes.keys - ATTRIBUTES_TO_REMOVE
+      new_attrs = attributes.reject { |k, v| %w(id __workitem__ created_at updated_at).include? k }
+
       wi['fields'] = wi['fields'].merge!(new_attrs)
       wi['fields']['exited_at'] = ruote_timestamp
 
