@@ -11,8 +11,5 @@ module RuoteTrail
       mod = RuoteTrail.configuration.add_leaf_expression_behavior
       self.class.send(:include, mod) if mod
     end
-
-    def leaf?() true end
-    def branch?() false end
   end
 end
