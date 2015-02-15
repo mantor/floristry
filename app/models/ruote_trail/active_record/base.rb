@@ -51,21 +51,12 @@ module RuoteTrail::ActiveRecord
     #
     def image() false end
 
-    # TODO check if we could create a RuoteHelperMixin for this. Add expid, feid, etc
-    #
-    def wfid
-
-      __feid__.split('!').third
-    end
-
     # If proceeding, merge back attributes within saved workitem and reply to Workflow Engine
     #
     def proceed #TODO should be atomic
 
-      wi = merged_wi
-
       receiver = RuoteTrail::ActiveRecord::Receiver.new(RuoteKit.engine)
-      receiver.proceed(wi)
+      receiver.proceed(merged_wi)
 
       self.trigger!(:proceed)
 
