@@ -58,12 +58,6 @@ module RuoteTrail::ActiveRecord
       __feid__.split('!').third
     end
 
-    def timestamp
-
-      t = Time.now
-      "#{t.utc.strftime('%Y-%m-%d %H:%M:%S')}.#{sprintf('%06d', t.usec)} UTC"
-    end
-
     # If proceeding, merge back attributes within saved workitem and reply to Workflow Engine
     #
     def proceed #TODO should be atomic
@@ -82,7 +76,13 @@ module RuoteTrail::ActiveRecord
       @state_machine ||= StateMachine.new(self)
     end
 
-    private
+    protected
+
+    def timestamp
+
+      t = Time.now
+      "#{t.utc.strftime('%Y-%m-%d %H:%M:%S')}.#{sprintf('%06d', t.usec)} UTC"
+    end
 
     # Provide the original wi with fields merged with model's attributes
     #
