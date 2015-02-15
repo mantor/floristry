@@ -5,7 +5,7 @@ module CommonMixin
   CHILDREN = 2     # Branch expressions stores children expressions in the 3rd element
   ROOT_EXPID = '0' # Root expression id - yes, it's a string (e.g. 0_1_0)
   SEP = '!'        # FEID's field separator
-  CHILD_SEP = '_'  # Expression id's child separator
+  EXPID_SEP = '_'  # Expression id's child separator
   SUBID = 'empty_subid' # Replacement for the subid part of a FEID. We are not using the subid.
   FEID_REGEX = /\A.*!.*!.*\z/ # TODO add engine option
 
@@ -88,14 +88,14 @@ module CommonMixin
       #
       def child_id
 
-        h.expid.split(CHILD_SEP).last.to_i
+        h.expid.split(EXPID_SEP).last.to_i
       end
 
       # Returns child_id... For an expid of '0_1_4', this will be 4.
       #
       def self.child_id(h)
 
-        h['expid'].split(CHILD_SEP).last.to_i
+        h['expid'].split(EXPID_SEP).last.to_i
       end
 
       # Returns true if other_fei is the fei of a child expression of
@@ -107,7 +107,7 @@ module CommonMixin
           return false if parent_fei[k] != other_fei[k]
         end
 
-        pei = other_fei['expid'].split(CHILD_SEP)[0..-2].join(CHILD_SEP)
+        pei = other_fei['expid'].split(EXPID_SEP)[0..-2].join(EXPID_SEP)
 
         (pei == parent_fei['expid'])
       end
