@@ -58,9 +58,8 @@ module RuoteTrail::ActiveRecord
       __feid__.split('!').third
     end
 
-    # TODO check if we could create a RuoteHelperMixin for this.
-    #
-    def ruote_timestamp
+    def timestamp
+
       t = Time.now
       "#{t.utc.strftime('%Y-%m-%d %H:%M:%S')}.#{sprintf('%06d', t.usec)} UTC"
     end
@@ -101,7 +100,7 @@ module RuoteTrail::ActiveRecord
       new_attrs = attributes.reject { |k, v| %w(id __workitem__ created_at updated_at).include? k }
 
       wi['fields'] = wi['fields'].merge!(new_attrs)
-      wi['fields']['exited_at'] = ruote_timestamp
+      wi['fields']['exited_at'] = timestamp
 
       wi
     end
