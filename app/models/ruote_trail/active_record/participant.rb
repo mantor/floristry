@@ -2,6 +2,8 @@ module RuoteTrail::ActiveRecord
 
   class Participant < LeafExpression
 
+    PREFIX = '^web_'
+
     def update_attributes(new_attributes, options={})
 
       instance.update_attributes(new_attributes, options)
@@ -25,10 +27,9 @@ module RuoteTrail::ActiveRecord
       @instance
     end
 
-    # TODO _active as a Constant? Also used within frontend_handler
     def task
 
-      @name.sub(/^web_/, '')
+      @name.sub(/#{PREFIX}/, '')
     end
   end
 

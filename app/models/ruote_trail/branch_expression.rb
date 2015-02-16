@@ -13,8 +13,8 @@ module RuoteTrail
 
       @children = Array.new
 
-      mod = RuoteTrail.configuration.add_branch_expression_behavior
-      self.class.send(:include, mod) if mod
+      mixin = RuoteTrail.configuration.add_branch_expression_behavior
+      self.class.send(:include, mixin) if mixin
     end
 
     def_delegators :@children, :<<, :[], :last, :size, :each, :each_with_index

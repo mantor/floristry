@@ -39,13 +39,13 @@ module RuoteTrail
     def initialize(id, name, params = {}, workitem = {}, era = :present) # TODO defaults doesn't seems to make sense
 
       @id = id
-      @name = name # TODO validate name ...
+      @name = name
       @params = params
       @workitem = workitem
       @era = era
 
-      mod = RuoteTrail.configuration.add_expression_behavior
-      self.class.send(:include, mod) if mod
+      mixin = RuoteTrail.configuration.add_expression_behavior
+      self.class.send(:include, mixin) if mixin
     end
 
     # Returns proper Expression type based on its name.
@@ -85,7 +85,7 @@ module RuoteTrail
           #     :options => {}
           # },
           {
-              :regex => '^web_',
+              :regex => RuoteTrail::ActiveRecord::Participant::PREFIX,
               :class => RuoteTrail::ActiveRecord::Participant,
               :options => {}
           },

@@ -60,7 +60,10 @@ module RuoteTrail::ActiveRecord
 
       self.trigger!(:proceed)
 
-      sleep(1) # TODO this sucks, but the trail seems to be written each time ruote 'steps' (@each 0.8s)
+      # TODO this sucks ass!
+      # The trail seems to be written each time ruote 'steps' (each 0.8s).
+      # Food for thought - If nothing better: Could we emulate atomicity by simply increasing the expid?
+      sleep(1)
     end
 
     def state_machine
@@ -90,7 +93,7 @@ module RuoteTrail::ActiveRecord
       # new_attrs = attributes.keys - ATTRIBUTES_TO_REMOVE
       new_attrs = attributes.reject { |k, v| %w(id __workitem__ created_at updated_at).include? k }
 
-      wi['fields'] = wi['fields'].merge!(new_attrs)
+      wi['fields'].merge!(new_attrs)
       wi['fields']['exited_at'] = timestamp
 
       wi

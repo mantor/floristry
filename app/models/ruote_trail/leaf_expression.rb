@@ -8,8 +8,8 @@ module RuoteTrail
 
       super(id, name, params, workitem, era) # TODO *args?
 
-      mod = RuoteTrail.configuration.add_leaf_expression_behavior
-      self.class.send(:include, mod) if mod
+      mixin = RuoteTrail.configuration.add_leaf_expression_behavior
+      self.class.send(:include, mixin) if mixin
     end
   end
 end
