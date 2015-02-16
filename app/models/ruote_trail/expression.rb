@@ -53,7 +53,7 @@ module RuoteTrail
     # Anything not a Ruote Expression is considered a Participant Expression, e.g.,
     # if == If, sequence == Sequence, admin == Participant, xyz == Participant
     #
-    def self.factory(id, era = :present, exp = nil)
+    def self.factory(id, era, exp)
 
       name, workitem, params = extract(era, exp)
       klass_name = name.camelize
