@@ -114,31 +114,18 @@ module RuoteTrail
     def self.extract(era, exp)
 
       case era
-        when :present
+        when :present, :past
           exp[1]['fields'] ||= {}
           exp[1]['fields']['params'] ||= {}
-          [
-              exp[0],
-              exp[1]['fields'].except('params'),  # TODO to test with a participant with params
-              exp[1]['fields']['params']          # TODO to test with a participant with params
-          ]
+          fields = exp[1]['fields'].except('params'),  # TODO to test with a participant with params
+          params = exp[1]['fields']['params']          # TODO to test with a participant with params
 
-        when :past
-          exp[1]['fields'] ||= {}
-          exp[1]['fields']['params'] ||= {}
-          [
-              exp[0],
-              exp[1]['fields'].except('params'),
-              exp[1]['fields']['params']
-          ]
-
-        when :future # TODO should be load from non-trail to capture on-the-fly process modifications? Just like Present?
-          [
-              exp[0],
-              {},
-              exp[1] # Params are directly at [1]
-          ]
+        when :future # TODO should be load from non-trail to capture on-the-fly process modifications? Like Present?
+          fields = {}
+          params = exp[1] # Params are directly at [1]
       end
+
+      [ exp[0], fields, params ]
     end
   end
 end
