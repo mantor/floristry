@@ -84,20 +84,18 @@ module RuoteTrail
           #     :options => {}
           # },
           {
-              :regex => RuoteTrail::ActiveRecord::Participant::PREFIX,
-              :class => RuoteTrail::ActiveRecord::Participant,
-              :options => {}
+              regex: RuoteTrail::ActiveRecord::Participant::PREFIX,
+              class: RuoteTrail::ActiveRecord::Participant,
+              options: {}
           },
           {   # Default: This one should not be editable by the user
-              :regex => '.*',
-              :class => RuoteTrail::Participant,
-              :options => {}
+              regex: '.*',
+              class: RuoteTrail::Participant,
+              options: {}
           }
       ]
 
-      h = frontend_handlers.select { |h| name =~ /#{h[:regex]}/i }.first
-
-      { class: h[:class], options: h[:options] }
+      frontend_handlers.select { |h| name =~ /#{h[:regex]}/i }.first
     end
 
     def self.is_expression?(name)
