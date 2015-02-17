@@ -70,6 +70,14 @@ module RuoteTrail::ActiveRecord
       @state_machine ||= StateMachine.new(self)
     end
 
+    def issues
+      @issues ||= Issue.where(:__feid__ => __feid__)
+    end
+
+    def expid
+      __feid__.split('!').last
+    end
+
     protected
 
     def timestamp
