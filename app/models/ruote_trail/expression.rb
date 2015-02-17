@@ -60,14 +60,13 @@ module RuoteTrail
 
       if is_expression? (klass_name)
 
-        klass = RuoteTrail.const_get(klass_name)
-        klass.new(id, name, params, workitem, era) # TODO pass options - via *args?
+        RuoteTrail.const_get(klass_name).new(id, name, params, workitem, era) # TODO pass options via *args - if it's a good idea?!
       else
 
-        klass, options =  self.frontend_handler(name)
-        obj = klass.new(id, name, params, workitem, era)
+        fh = self.frontend_handler(name)
+        obj = fh[:class].new(id, name, params, workitem, era) # TODO pass options via *args - if it's a good idea?!
 
-        (klass == RuoteTrail::ActiveRecord::Participant) ? obj.instance : obj
+        ( fh[:class] == RuoteTrail::ActiveRecord::Participant ) ? obj.instance : obj  # TODO try to get rid of this crap
       end
     end
 
@@ -96,9 +95,9 @@ module RuoteTrail
           }
       ]
 
-      handler = frontend_handlers.select { |h| name =~ /#{h[:regex]}/i }.first
+      h = frontend_handlers.select { |h| name =~ /#{h[:regex]}/i }.first
 
-      [ handler[:class], handler[:options] ]
+      { class: h[:class], options: h[:options] }
     end
 
     def self.is_expression?(name)
