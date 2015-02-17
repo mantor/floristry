@@ -69,9 +69,9 @@ module CommonMixin
 
       def to_id(opts = {})
 
-        t_expid = (opts.include?(:expid)) ? opts[:expid] : expid
+        expid = (opts.include?(:expid)) ? opts[:expid] : @expid
 
-        [ t_expid, subid, wfid ].join(SEP)
+        [ expid, @subid, @wfid ].join(SEP)
       end
 
       # def self.to_storage_id(hfei)
