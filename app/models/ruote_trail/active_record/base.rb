@@ -75,7 +75,7 @@ module RuoteTrail::ActiveRecord
     end
 
     def expid
-      __feid__.split('!').last
+      __feid__.split('!').first
     end
 
     protected
