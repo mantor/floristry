@@ -1,5 +1,4 @@
 module RuoteTrail
-
   module ExpressionMixin
 
     def is_past?()    @era == :past    end
@@ -47,6 +46,8 @@ module RuoteTrail
       mixin = RuoteTrail.configuration.add_expression_behavior
       self.class.send(:include, mixin) if mixin
     end
+
+    def is_participant?() false end
 
     # Returns proper Expression type based on its name.
     #
