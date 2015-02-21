@@ -1,6 +1,6 @@
 module RuoteTrail::ActiveRecord
 
-  class Participant < LeafExpression
+  class Participant < RuoteTrail::Participant
 
     PREFIX = '^web_'
 
