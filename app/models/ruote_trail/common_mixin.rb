@@ -1,5 +1,4 @@
 module RuoteTrail
-
 module CommonMixin
 
   CHILDREN = 2     # Branch expressions stores children expressions in the 3rd element
@@ -7,7 +6,12 @@ module CommonMixin
   SEP = '!'        # FEID's field separator
   EXPID_SEP = '_'  # Expression id's child separator
   SUBID = 'empty_subid' # Replacement for the subid part of a FEID. We are not using the subid.
-  FEID_REGEX = /\A.*!.*!.*\z/ # TODO add engine option
+  FEID_REGEX = /\A.*!.*!\d{8}-\d{4}-((?!-).)+-((?!-).)+\z/ # 0_0_0!523f41ebdbc878b5b2226898e49efc30!20150216-0011-gofumihi-moribeshi
+  WFID_REGEX = /\A\d{8}-\d{4}-((?!-).)+-((?!-).)+\z/ # 20150216-0011-gofumihi-moribeshi
+
+  attr_reader :engineid, :wfid, :subid, :expid
+
+  delegate :engineid, :wfid, :subid, :expid, to: :@fei
 
   def self.included(base)
 
@@ -17,15 +21,9 @@ module CommonMixin
 
   module InstanceMethods
 
-    def to_wfid(id)
+    def to_wfid(feid) feid.split(SEP).last end
 
-      id.split(SEP).last
-    end
-
-    def to_expid(id)
-
-      id.split(SEP).first
-    end
+    def to_expid(feid) feid.split(SEP).first end
 
     # The FlowExpressionId (fei for short) is an process expression identifier.
     # Each expression when instantiated gets a unique fei.
@@ -46,17 +44,20 @@ module CommonMixin
 
       include RuoteTrail::CommonMixin
 
-      attr_reader :id, :engineid, :wfid, :subid, :expid
+      attr_accessor :id, :engineid, :wfid, :subid, :expid
 
       def initialize(id)
 
+        @subid = SUBID
+
         if id.is_a? Hash
 
-          @engineid = id['engine_id'] || 'engine'
-          @expid = id['expid']
-          @wfid = id['wfid']
+          @engineid = id[:engine_id] || 'engine'
+          @expid = id[:expid]
+          @wfid = id[:wfid]
           @id = to_id
-        else
+
+        else # String
 
           @id = id
           s = id.split(SEP)
@@ -64,68 +65,28 @@ module CommonMixin
           @expid = s[-3]
           @wfid = s[-1]
         end
-        @subid = SUBID
       end
 
-      def to_id(opts = {})
+      def to_feid(opts = {})
 
         expid = (opts.include?(:expid)) ? opts[:expid] : @expid
 
         [ expid, @subid, @wfid ].join(SEP)
-      end
-
-      # def self.to_storage_id(hfei)
-      #
-      #   if hfei.respond_to?(:to_storage_id)
-      #     hfei.to_storage_id
-      #   else
-      #     "#{hfei['expid']}!#{hfei['subid'] || hfei['sub_wfid']}!#{hfei['wfid']}"
-      #   end
-      # end
-
-      # Returns the last number in the expid. For instance, if the expid is
-      # '0_5_7', the child_id will be '7'.
-      #
-      def child_id
-
-        h.expid.split(EXPID_SEP).last.to_i
-      end
-
-      # Returns child_id... For an expid of '0_1_4', this will be 4.
-      #
-      def self.child_id(h)
-
-        h['expid'].split(EXPID_SEP).last.to_i
-      end
-
-      # Returns true if other_fei is the fei of a child expression of
-      # parent_fei.
-      #
-      def self.direct_child?(parent_fei, other_fei)
-
-        %w[ wfid engine_id ].each do |k|
-          return false if parent_fei[k] != other_fei[k]
-        end
-
-        pei = other_fei['expid'].split(EXPID_SEP)[0..-2].join(EXPID_SEP)
-
-        (pei == parent_fei['expid'])
       end
     end
   end
 
   module ClassMethods
 
-    def to_wfid(id)
+    def to_wfid(feid)
 
-      id.split(SEP).last
+      feid.split(SEP).last
     end
 
-    def to_expid(id)
+    def to_expid(feid)
 
-      id.split(SEP).first
+      feid.split(SEP).first
     end
   end
-
 end
 end

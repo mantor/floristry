@@ -10,19 +10,23 @@ module RuoteTrail::ActiveRecord
 
     ATTRIBUTES_TO_REMOVE = %w(id __feid__ __workitem__ created_at updated_at state)
 
+    after_find :init_fei
+
     attr_accessor :era
 
     delegate :current_state, :trigger!, :available_events, to: :state_machine
 
+    # The workflow engine pass the workitem through this method
+    #
     # Save the workitem as an special attribute to be merged at proceed. Bypassing validation is necessary
     # since some Participant's model may have attributes that aren't currently present/valid.
     #
     def self.create(wi_h)
 
       wi_h['__workitem__'] = JSON.generate(wi_h)
-      wi_h['__feid__'] = FlowExpressionId.new(wi_h['fei']).to_id
+      wi_h['__feid__'] = FlowExpressionId.new(wi_h['fei']).to_feid
       wi_h['state'] = StateMachine.initial_state
-      wi_h.keep_if { |key, value| self.column_names.include?(key) }
+      wi_h.keep_if { |k, v| self.column_names.include?(k) }
 
       obj = new(wi_h)
       obj.save({validate: false})
@@ -37,14 +41,21 @@ module RuoteTrail::ActiveRecord
     def self.find id
 
       obj = (id.is_a? Integer) ? self.where(id: id).first : self.where(__feid__: id).first
-
-      raise ActiveRecord::RecordNotFound unless obj
-      obj
+      obj || raise(ActiveRecord::RecordNotFound)
     end
 
+    def new_record?() false end
+
     def save(*)
+
       trigger!(:start) if state == StateMachine.initial_state && persisted?
       super
+    end
+
+    def fei=(fei)
+
+      @fei = fei
+      write_attribute(:__feid__, @fei.to_feid)
     end
 
     # TODO show proper participant image
@@ -74,11 +85,12 @@ module RuoteTrail::ActiveRecord
       @issues ||= Issue.where(:__feid__ => __feid__)
     end
 
-    def expid
-      __feid__.split('!').first
-    end
-
     protected
+
+    def init_fei
+
+      @fei = FlowExpressionId.new(__feid__)
+    end
 
     def timestamp
 

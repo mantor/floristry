@@ -1,6 +1,6 @@
 <div class="rat-sequence">
   <%- sequence.each_with_index do |child, index| %>
-    <%= render :partial => child.class.to_s.underscore,
+    <%= render :partial => child,
                :layout => child.layout,
                :object => child,
                :locals => {:leaf => child} %>

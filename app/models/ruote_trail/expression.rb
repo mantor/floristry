@@ -11,13 +11,9 @@ module RuoteTrail
 
     def layout() false end
 
-    # # Override default path to adjust namespace
-    # #
-    # # TODO to we really need this if we use a namespace? Aren't namespace directory directly followed?
-    # #
     def to_partial_path
     #
-      self.class.name.underscore # temp
+      self.class.name.underscore
     #
     #   k = self.class.to_s.parameterize.underscore
     #   "forms/tasks/#{k}/#{k}" # TODO is that really what we want? Segregated Components? Why?
@@ -26,18 +22,19 @@ module RuoteTrail
     #                           # be important to make sure we can easily know what's part of Mantor
     #                           # and what's not and avoid conflicts. components/#{k}/#{k} ?
     end
-
   end
 
   class Expression
 
     include ExpressionMixin
+    include RuoteTrail::CommonMixin
 
     attr_reader :id, :name, :params, :workitem, :era
 
     def initialize(id, name, params = {}, workitem = {}, era = :present) # TODO defaults doesn't seems to make sense
 
       @id = id
+      @fei = FlowExpressionId.new(id)
       @name = name
       @params = params
       @workitem = workitem
@@ -54,20 +51,18 @@ module RuoteTrail
     # Anything not a Ruote Expression is considered a Participant Expression, e.g.,
     # if == If, sequence == Sequence, admin == Participant, xyz == Participant
     #
-    def self.factory(id, era, exp)
+    def self.factory(feid, era, exp)
 
       name, workitem, params = extract(era, exp)
       klass_name = name.camelize
 
       if is_expression? (klass_name)
 
-        RuoteTrail.const_get(klass_name).new(id, name, params, workitem, era) # TODO pass options via *args - if it's a good idea?!
+        RuoteTrail.const_get(klass_name).new(feid, name, params, workitem, era) # TODO pass options via *args - if it's a good idea?!
       else
 
         fh = self.frontend_handler(name)
-        obj = fh[:class].new(id, name, params, workitem, era) # TODO pass options via *args - if it's a good idea?!
-
-        ( fh[:class] == RuoteTrail::ActiveRecord::Participant ) ? obj.instance : obj  # TODO try to get rid of this crap
+        fh[:class].new(feid, name, params, workitem, era) # TODO pass options via *args - if it's a good idea?!
       end
     end
 

@@ -17,13 +17,16 @@ module RuoteTrail::ActiveRecord
     def instance
 
       @instance unless @instance.nil?
-      begin
-        @instance = task.camelize.constantize.find(@id)
-      rescue
-        @instance = task.camelize.constantize.new
+        begin
+          @instance = task.camelize.constantize.find(@id)
+
+        rescue
+          @instance = task.camelize.constantize.new
+          @instance.fei = @fei
       end
 
       @instance.era = @era
+
       @instance
     end
 
