@@ -55,7 +55,7 @@ module CommonMixin
           @engineid = id[:engine_id] || 'engine'
           @expid = id[:expid]
           @wfid = id[:wfid]
-          @id = to_id
+          @id = to_feid
 
         else # String
 
