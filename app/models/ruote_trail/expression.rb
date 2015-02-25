@@ -62,7 +62,9 @@ module RuoteTrail
       else
 
         fh = self.frontend_handler(name)
-        fh[:class].new(feid, name, params, workitem, era) # TODO pass options via *args - if it's a good idea?!
+        obj = fh[:class].new(feid, name, params, workitem, era) # TODO pass options via *args - if it's a good idea?!
+        #TODO Danny - Last commit removed the above line. We need this behaviour. Maybe somewhere else??
+        ( fh[:class] == RuoteTrail::ActiveRecord::Participant ) ? obj.instance : obj
       end
     end
 
