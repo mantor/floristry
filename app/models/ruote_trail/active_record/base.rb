@@ -24,7 +24,7 @@ module RuoteTrail::ActiveRecord
     def self.create(wi_h)
 
       wi_h['__workitem__'] = JSON.generate(wi_h)
-      wi_h['__feid__'] = FlowExpressionId.new(wi_h['fei']).to_feid
+      wi_h['__feid__'] = FlowExpressionId.new(wi_h['fei'].symbolize_keys).to_feid
       wi_h['state'] = StateMachine.initial_state
       wi_h.keep_if { |k, v| self.column_names.include?(k) }
 
