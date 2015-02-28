@@ -44,8 +44,6 @@ module RuoteTrail::ActiveRecord
       obj || raise(ActiveRecord::RecordNotFound)
     end
 
-    def new_record?() false end
-
     def save(*)
 
       trigger!(:start) if state == StateMachine.initial_state && persisted?

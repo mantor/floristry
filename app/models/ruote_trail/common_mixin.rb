@@ -52,9 +52,9 @@ module CommonMixin
 
         if id.is_a? Hash
 
-          @engineid = id[:engine_id] || 'engine'
-          @expid = id[:expid]
-          @wfid = id[:wfid]
+          @engineid = id['engine_id'] || 'engine'
+          @expid = id['expid']
+          @wfid = id['wfid']
           @id = to_feid
 
         else # String
