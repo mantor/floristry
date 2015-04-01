@@ -45,8 +45,13 @@ module RuoteTrail::ActiveRecord
     end
 
     def save(*)
+      trigger!(:open) if state == StateMachine.initial_state
+      super
+    end
 
-      trigger!(:start) if state == StateMachine.initial_state && persisted?
+    def update_attributes(*)
+
+      trigger!(:start) if state == :open
       super
     end
 
@@ -121,16 +126,22 @@ module RuoteTrail::ActiveRecord
   class StateMachine
     include Statesman::Machine
 
-    state :unstarted, initial: true
-    state :started
-    state :proceeded
+    state :upcoming, initial: true
+    state :open
+    state :in_progress
+    state :closed
+
+    event :open do
+      transition from: :upcoming,     to: :open
+      transition from: :open,         to: :open
+    end
 
     event :start do
-      transition from: :unstarted,  to: :started
+      transition from: :open,         to: :in_progress
     end
 
     event :proceed do
-      transition from: :started,    to: :proceeded
+      transition from: :in_progress,  to: :closed
     end
 
     def last_transition
@@ -141,8 +152,7 @@ module RuoteTrail::ActiveRecord
     end
 
     after_transition do |object, transition|
-      object.state = object.current_state
-      object.save
+      object.update_attribute(:state, object.current_state)
     end
   end
 end
