@@ -62,6 +62,18 @@ module RuoteTrail
       else
 
         fh = self.frontend_handler(name)
+
+        if fh[:class] == RuoteTrail::Participant
+          case era
+            when :present
+              workitem['current_state'] = 'in_progress'
+            when :past
+              workitem['current_state'] = 'completed'
+            else
+              workitem['current_state'] = 'upcoming'
+          end
+        end
+
         fh[:class].new(feid, name, params, workitem, era) # TODO pass options via *args - if it's a good idea?!
       end
     end
@@ -110,10 +122,10 @@ module RuoteTrail
         when :present, :past
           exp[1]['fields'] ||= {}
           exp[1]['fields']['params'] ||= {}
-          fields = exp[1]['fields'].except('params'),  # TODO to test with a participant with params
-          params = exp[1]['fields']['params']          # TODO to test with a participant with params
+          fields = exp[1]['fields'].except('params')  # TODO to test with a participant with params
+          params = exp[1]['fields']['params']         # TODO to test with a participant with params
 
-        when :future # TODO should be load from non-trail to capture on-the-fly process modifications? Like Present?
+        else :future # TODO should be load from non-trail to capture on-the-fly process modifications? Like Present?
           fields = {}
           params = exp[1] # Params are directly at [1]
       end
