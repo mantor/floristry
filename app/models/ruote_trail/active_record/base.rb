@@ -46,7 +46,11 @@ module RuoteTrail::ActiveRecord
 
     def save(*)
 
-      trigger!(:open) if state == StateMachine.initial_state
+      #@TODO move this class to a module included where needed?
+      #@TODO because is causes inheritance conflicts.
+      if self.respond_to?(:participant_state)
+        trigger!(:open) if participant_state == StateMachine.initial_state
+      end
       super
     end
 
