@@ -8,7 +8,7 @@ module RuoteTrail::ActiveRecord
     include RuoteTrail::ExpressionMixin
     include RuoteTrail::LeafExpressionMixin
 
-    ATTRIBUTES_TO_REMOVE = %w(id __feid__ __workitem__ created_at updated_at state)
+    ATTRIBUTES_TO_REMOVE = %w(id __feid__ __workitem__ created_at updated_at )
 
     after_find :init_fei
 
@@ -25,7 +25,7 @@ module RuoteTrail::ActiveRecord
 
       wi_h['__workitem__'] = JSON.generate(wi_h)
       wi_h['__feid__'] = FlowExpressionId.new(wi_h['fei'].symbolize_keys).to_feid
-      wi_h['state'] = StateMachine.initial_state
+      wi_h['participant_state'] = StateMachine.initial_state
       wi_h.keep_if { |k, v| self.column_names.include?(k) }
 
       obj = new(wi_h)
@@ -45,13 +45,14 @@ module RuoteTrail::ActiveRecord
     end
 
     def save(*)
+
       trigger!(:open) if state == StateMachine.initial_state
       super
     end
 
     def update_attributes(*)
 
-      trigger!(:start) if state == :open.to_s
+      trigger!(:start) if participant_state == :open.to_s
       super
     end
 
@@ -145,14 +146,14 @@ module RuoteTrail::ActiveRecord
     end
 
     def last_transition
-      if @storage_adapter.last.nil? && @object.state
-        return @transition_class.new(@object.state, 0)
+      if @storage_adapter.last.nil? && @object.participant_state
+        return @transition_class.new(@object.participant_state, 0)
       end
       @storage_adapter.last
     end
 
     after_transition do |object, transition|
-      object.update_attribute(:state, object.current_state)
+      object.update_attribute(:participant_state, object.current_state)
     end
   end
 end
