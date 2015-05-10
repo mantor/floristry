@@ -125,7 +125,7 @@ module RuoteTrail
           fields = exp[1]['fields'].except('params')  # TODO to test with a participant with params
           params = exp[1]['fields']['params']         # TODO to test with a participant with params
 
-        else :future # TODO should be load from non-trail to capture on-the-fly process modifications? Like Present?
+        when :future # TODO should be load from non-trail to capture on-the-fly process modifications? Like Present?
           fields = {}
           params = exp[1] # Params are directly at [1]
       end
