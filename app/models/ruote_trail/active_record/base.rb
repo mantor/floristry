@@ -21,7 +21,7 @@ module RuoteTrail::ActiveRecord
     # Save the workitem as an special attribute to be merged at proceed. Bypassing validation is necessary
     # since some Participant's model may have attributes that aren't currently present/valid.
     #
-      def self.create(wi_h)
+    def self.create(wi_h)
 
       wi_h['__workitem__'] = JSON.generate(wi_h)
       wi_h['__feid__'] = FlowExpressionId.new(wi_h['fei'].symbolize_keys).to_feid
