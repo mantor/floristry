@@ -25,6 +25,10 @@ module CommonMixin
 
     def to_expid(feid) feid.split(SEP).first end
 
+    def retrieve_field_from_workitem(field)
+      JSON.parse(__workitem__)['fields'][field]
+    end
+
     # The FlowExpressionId (fei for short) is an process expression identifier.
     # Each expression when instantiated gets a unique fei.
     #
