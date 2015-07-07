@@ -8,5 +8,10 @@ class WorkflowArchive < ActiveRecord::Base
 
     super(t.to_json)
   end
+
+  def trail
+
+    JSON::parse(self[:trail])
+  end
 end
 end
