@@ -12,7 +12,7 @@ module RuoteTrail::ActiveRecord
 
     after_find :init_fei
 
-    attr_accessor :era
+    attr_accessor :era, :fei
 
     delegate :current_state, :trigger!, :available_events, to: :state_machine
 
@@ -25,12 +25,35 @@ module RuoteTrail::ActiveRecord
 
       wi_h['__workitem__'] = JSON.generate(wi_h)
       wi_h['__feid__'] = FlowExpressionId.new(wi_h['fei'].symbolize_keys).to_feid
-      wi_h['participant_state'] = StateMachine.initial_state
+      wi_h['participant_state'] = StateMachine.initial_state # TODO ?????????????????????????????
       wi_h.keep_if { |k, v| self.column_names.include?(k) }
 
       obj = new(wi_h)
       obj.save({validate: false})
       obj
+    end
+
+    def fields(f)
+
+      init_workitem unless @workitem
+      @workitem['fields'][f]
+    end
+
+    def wf_name
+
+      init_workitem unless @workitem
+      @workitem['wf_name']
+    end
+
+    def class_name
+
+      self.class.to_s
+    end
+
+    def participant_name
+
+      init_workitem unless @workitem
+      @workitem['participant_name']
     end
 
     # ActiveRecords participants can be search by their Rails ID or Workflow id (feid)
@@ -94,6 +117,11 @@ module RuoteTrail::ActiveRecord
     end
 
     protected
+
+    def init_workitem
+
+      @workitem = JSON.parse(__workitem__)
+    end
 
     def init_fei
 

@@ -23,9 +23,9 @@ module RuoteTrail::ActiveRecord
 
       rescue
         @instance = task.camelize.constantize.new
-        @instance.fei = @fei
       end
 
+      @instance.fei = @fei
       @instance.era = @era
       @instance
     end
