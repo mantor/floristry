@@ -16,6 +16,14 @@ module RuoteTrail::ActiveRecord
 
     delegate :current_state, :trigger!, :available_events, to: :state_machine
 
+    def initialize(attributes = nil, options = {})
+
+      super(attributes, options)
+
+      mixin = RuoteTrail.configuration.add_active_record_base_behavior
+      self.class.send(:include, mixin) if mixin
+    end
+
     # The workflow engine pass the workitem through this method
     #
     # Save the workitem as an special attribute to be merged at proceed. Bypassing validation is necessary
@@ -67,12 +75,23 @@ module RuoteTrail::ActiveRecord
       obj || raise(ActiveRecord::RecordNotFound)
     end
 
+    def name
+      participant_name
+    end
+
+    def email
+      'opensec@mantor.org'
+    end
+
     def save(*)
 
       #@TODO move this class to a module included where needed?
       #@TODO because is causes inheritance conflicts.
       if self.respond_to?(:participant_state)
-        trigger!(:open) if participant_state == StateMachine.initial_state
+        if participant_state == StateMachine.initial_state
+          trigger!(:open)
+          self.notify!
+        end
       end
       super
     end
