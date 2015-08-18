@@ -15,14 +15,6 @@ module RuoteTrail
       @context.storage.add_type('trail')
     end
 
-    # Returns the audit trail for a given wfid (process instance id).
-    #
-    def by_process(wfid)    # TODO CHECKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK
-
-      @context.storage.get_many('trail', wfid)
-    end
-    alias :by_wfid :by_process
-
     # On launch, save tree structure.
     #
     # At that moment, the entire process and every expression involved
