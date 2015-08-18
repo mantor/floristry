@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.summary     = %q{Ruote-kit for Rails missing part.}
   s.description = %q{Represent complete Ruote's workflow using standard rails facilities, e.g. render, partials, etc.}
 
-  s.files = Dir["{app,config,db,lib}/**/*"] + ["LICENSE", "Rakefile"] , ["README.md"]
+  s.files = Dir["{app,config,lib}/**/*"] + %w(LICENSE Rakefile README.md)
   s.test_files = Dir["test/**/*"]
 
   s.add_runtime_dependency 'rails', '>= 4.1.0'
