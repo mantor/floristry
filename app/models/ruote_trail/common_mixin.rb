@@ -1,5 +1,4 @@
-module RuoteTrail
-module CommonMixin
+module RuoteTrail::CommonMixin
 
   CHILDREN = 2     # Branch expressions stores children expressions in the 3rd element
   ROOT_EXPID = '0' # Root expression id - yes, it's a string (e.g. 0_1_0)
@@ -88,5 +87,4 @@ module CommonMixin
       feid.split(SEP).first
     end
   end
-end
 end
