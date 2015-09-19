@@ -90,7 +90,7 @@ module RuoteTrail::ActiveRecord
       if self.respond_to?(:participant_state)
         if participant_state == StateMachine.initial_state
           trigger!(:open)
-          self.notify!
+          self.notify! self.__feid__
         end
       end
       super
