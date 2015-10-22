@@ -90,7 +90,7 @@ module RuoteTrail::ActiveRecord
       if self.respond_to?(:participant_state)
         if participant_state == StateMachine.initial_state
           trigger!(:open)
-          self.notify! self.__feid__
+          self.notify! self.__feid__ # @TODO what if we have something automatic before? State won't be open == no notificaitons
         end
       end
       super
@@ -181,6 +181,7 @@ module RuoteTrail::ActiveRecord
     state :upcoming, initial: true
     state :open
     state :in_progress
+    state :late
     state :closed
 
     event :open do
@@ -194,6 +195,13 @@ module RuoteTrail::ActiveRecord
 
     event :proceed do
       transition from: :in_progress,  to: :closed
+      transition from: :late,         to: :closed
+    end
+
+    event :late do
+      transition from: :late,          to: :late
+      transition from: :open,          to: :late
+      transition from: :in_progress,   to: :late
     end
 
     def last_transition
