@@ -119,12 +119,20 @@ module RuoteTrail::ActiveRecord
       receiver = RuoteTrail::ActiveRecord::Receiver.new(RuoteKit.engine)
       receiver.proceed(merged_wi)
 
-      self.trigger!(:proceed)
+      if has_active_issues?
+        self.trigger!(:proceed_with_issues)
+      else
+        self.trigger!(:proceed)
+      end
 
       # TODO this sucks ass!
       # The trail seems to be written each time ruote 'steps' (each 0.8s).
       # Food for thought - If nothing better: Could we emulate atomicity by simply increasing the expid?
       sleep(1)
+    end
+
+    def has_active_issues?
+      issues.map(&:status).uniq != ['closed']
     end
 
     def state_machine
@@ -183,6 +191,7 @@ module RuoteTrail::ActiveRecord
     state :in_progress
     state :late
     state :closed
+    state :completed_with_issues
 
     event :open do
       transition from: :upcoming,     to: :open
@@ -196,6 +205,11 @@ module RuoteTrail::ActiveRecord
     event :proceed do
       transition from: :in_progress,  to: :closed
       transition from: :late,         to: :closed
+    end
+
+    event :proceed_with_issues do
+      transition from: :in_progress,  to: :completed_with_issues
+      transition from: :late,         to: :completed_with_issues
     end
 
     event :late do
