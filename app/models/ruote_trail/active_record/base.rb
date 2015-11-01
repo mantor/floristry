@@ -132,7 +132,7 @@ module RuoteTrail::ActiveRecord
     end
 
     def has_active_issues?
-      issues.map(&:status).uniq != ['closed']
+      issues.map(&:active?)
     end
 
     def state_machine
