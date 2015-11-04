@@ -132,7 +132,8 @@ module RuoteTrail::ActiveRecord
     end
 
     def has_active_issues?
-      issues.map(&:active?)
+      
+      issues.map(&:active?).size > 0
     end
 
     def state_machine
