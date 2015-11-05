@@ -141,7 +141,8 @@ module RuoteTrail::ActiveRecord
     end
 
     def issues
-      @issues ||= Issue.where(:__feid__ => __feid__)
+
+      @issues ||= Issue.where(:feid => self.fei.id) #TODO Move to ruote_trail_participant_extension ???
     end
 
     protected
