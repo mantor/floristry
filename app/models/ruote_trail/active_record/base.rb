@@ -90,7 +90,6 @@ module RuoteTrail::ActiveRecord
       if self.respond_to?(:participant_state)
         if participant_state == StateMachine.initial_state
           trigger!(:open)
-          self.notify! self.__feid__ # @TODO what if we have something automatic before? State won't be open == no notificaitons
         end
       end
       super
