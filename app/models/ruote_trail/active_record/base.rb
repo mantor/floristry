@@ -116,7 +116,6 @@ module RuoteTrail::ActiveRecord
     def proceed #TODO should be atomic
 
       receiver = RuoteTrail::ActiveRecord::Receiver.new(RuoteKit.engine)
-      RuoteKit.engine.process(self.wfid).schedules.clear
       receiver.proceed(merged_wi)
 
       if has_active_issues?
