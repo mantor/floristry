@@ -63,7 +63,7 @@ module RuoteTrail
 
         fh = self.frontend_handler(name)
 
-        if fh[:class] == RuoteTrail::Participant
+        if fh[:class] == RuoteTrail::Participant # TODO what's the point of current_state if it simply depends on era? A helper could replace this.
           case era
             when :present
               workitem['current_state'] = 'in_progress'

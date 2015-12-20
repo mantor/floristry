@@ -47,10 +47,16 @@ module RuoteTrail::ActiveRecord
       @workitem['fields'][f]
     end
 
-    def wf_name
+    def wf_name # TODO rename name. Actually, seems like this should in wf, not in wi but
+                # maybe there's a reason why it's in wi.workitem (not wi.workitem.fields)
 
       init_workitem unless @workitem
       @workitem['wf_name']
+    end
+
+    def launched_at
+      init_workitem unless @workitem
+      @workitem['wf_launched_at']
     end
 
     def class_name
@@ -63,6 +69,7 @@ module RuoteTrail::ActiveRecord
       init_workitem unless @workitem
       @workitem['participant_name']
     end
+    alias_method :name, :participant_name
 
     # ActiveRecords participants can be search by their Rails ID or Workflow id (feid)
     #
@@ -75,11 +82,8 @@ module RuoteTrail::ActiveRecord
       obj || raise(ActiveRecord::RecordNotFound)
     end
 
-    def name
-      participant_name
-    end
+    def email # TODO is this really used? WTF is it here?
 
-    def email
       'opensec@mantor.org'
     end
 
@@ -136,6 +140,7 @@ module RuoteTrail::ActiveRecord
     end
 
     def state_machine
+
       @state_machine ||= StateMachine.new(self)
     end
 
@@ -220,6 +225,7 @@ module RuoteTrail::ActiveRecord
     end
 
     def last_transition
+
       if @storage_adapter.last.nil? && @object.participant_state
         return @transition_class.new(@object.participant_state, 0)
       end
