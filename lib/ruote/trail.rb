@@ -4,6 +4,7 @@ require 'ruote/workitem'
 require 'ruote/trail/observer'
 require 'ruote/trail/configuration'
 require 'ruote/trail/engine'
+require 'ruote/trail/workflow_engine'
 
 require 'forwardable'
 require 'active_attr'
