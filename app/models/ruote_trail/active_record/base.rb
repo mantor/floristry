@@ -211,6 +211,7 @@ module RuoteTrail::ActiveRecord
     event :proceed do
       transition from: :in_progress,  to: :closed
       transition from: :late,         to: :closed
+      transition from: :closed,       to: :closed
     end
 
     event :proceed_with_issues do
