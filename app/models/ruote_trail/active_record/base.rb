@@ -119,7 +119,7 @@ module RuoteTrail::ActiveRecord
     #
     def proceed #TODO should be atomic
 
-      receiver = RuoteTrail::ActiveRecord::Receiver.new(WorkflowEngine.engine)
+      receiver = RuoteTrail::ActiveRecord::Receiver.new(RuoteTrail::WorkflowEngine.engine)
       receiver.proceed(merged_wi)
 
       if has_active_issues?

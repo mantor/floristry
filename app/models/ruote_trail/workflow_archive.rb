@@ -4,6 +4,12 @@ class WorkflowArchive < ::ActiveRecord::Base
   #ActiveRecord table resolution/guess was expecting the table to be named:
   # ruotetrail_workflow_archive
   self.table_name = 'workflow_archives'
+
+  def last_active_at
+
+    completed_at
+  end
+
   def trail=(t)
 
     super(t.to_json)

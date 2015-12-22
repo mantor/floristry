@@ -34,7 +34,7 @@ module RuoteTrail
     def initialize(id, name, params = {}, workitem = {}, era = :present) # TODO defaults doesn't seems to make sense
 
       @id = id
-      @fei = FlowExpressionId.new(id)
+      @fei ||= FlowExpressionId.new(id) #todo really useful?
       @name = name
       @params = params
       @workitem = workitem
@@ -53,12 +53,12 @@ module RuoteTrail
     #
     def self.factory(feid, era, exp)
 
-      name, workitem, params = extract(era, exp)
+      name, fields, params = extract(era, exp)
       klass_name = name.camelize
 
       if is_expression? (klass_name)
 
-        RuoteTrail.const_get(klass_name).new(feid, name, params, workitem, era) # TODO pass options via *args - if it's a good idea?!
+        RuoteTrail.const_get(klass_name).new(feid, name, params, fields, era) # TODO pass options via *args - if it's a good idea?!
       else
 
         fh = self.frontend_handler(name)
@@ -66,15 +66,15 @@ module RuoteTrail
         if fh[:class] == RuoteTrail::Participant # TODO what's the point of current_state if it simply depends on era? A helper could replace this.
           case era
             when :present
-              workitem['current_state'] = 'in_progress'
+              fields['current_state'] = 'in_progress'
             when :past
-              workitem['current_state'] = 'completed'
+              fields['current_state'] = 'completed'
             else
-              workitem['current_state'] = 'upcoming'
+              fields['current_state'] = 'upcoming'
           end
         end
 
-        fh[:class].new(feid, name, params, workitem, era) # TODO pass options via *args - if it's a good idea?!
+        fh[:class].new(feid, name, params, fields, era) # TODO pass options via *args - if it's a good idea?!
       end
     end
 

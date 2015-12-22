@@ -24,7 +24,7 @@ module RuoteTrail
 
       return unless accept?(msg)
 
-      raise ZeroDivisionError unless msg['wfid'] # TODO test - I've seen weird stuff
+      msg['tree'][1]['launched_at'] = Support.ruote_to_rails_time(msg['workitem']['wf_launched_at'])
 
       doc = {
           'type' => 'trail',

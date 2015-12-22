@@ -1,9 +1,15 @@
 module RuoteTrail
   class WorkflowEngine
+
     def self.trail(wfid)
 
       record = engine.storage.get('trail', wfid)
-      t = record.key?('trail') ? record['trail'] : WorkflowArchive.find_by(wfid: wfid).trail
+
+      t = if record && record.key?('trail')
+        record['trail']
+      else
+        WorkflowArchive.find_by(wfid: wfid).trail
+      end
 
       raise ActiveRecord::RecordNotFound unless t
 
@@ -11,6 +17,22 @@ module RuoteTrail
     end
 
     def self.engine() RuoteKit.engine end
+
+    def self.query(wfid, query = [])
+
+      r = []
+
+      process_info = engine.process(wfid)
+      process_info = WorkflowArchive.find_by(wfid: wfid) unless process_info
+
+      raise ActiveRecord::RecordNotFound unless process_info
+
+      query.each do |q|
+        r << process_info.send(q)
+      end
+
+      r.size == 1 ? r.first : r
+    end
 
     def self.process(wfid) engine.process(wfid) end
 
