@@ -42,10 +42,4 @@ module RuoteTrail
 
     def layout() 'layouts/ruote_trail/leaf-expression' end
   end
-
-  class Support
-    def self.ruote_to_rails_time (ruote_time)
-      Time.parse(ruote_time).strftime('%Y-%m-%d %H:%M:%S.%6N')
-    end
-  end
 end

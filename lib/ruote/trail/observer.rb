@@ -24,7 +24,7 @@ module RuoteTrail
 
       return unless accept?(msg)
 
-      msg['tree'][1]['launched_at'] = Support.ruote_to_rails_time(msg['workitem']['wf_launched_at'])
+      msg['tree'][1]['launched_at'] = msg['workitem']['wf_launched_at']
 
       doc = {
           'type' => 'trail',

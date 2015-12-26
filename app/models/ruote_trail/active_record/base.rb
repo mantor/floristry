@@ -163,8 +163,7 @@ module RuoteTrail::ActiveRecord
 
     def timestamp
 
-      t = Time.now
-      "#{t.utc.strftime('%Y-%m-%d %H:%M:%S')}.#{sprintf('%06d', t.usec)} UTC"
+      Time.current.utc.strftime('%Y-%m-%d %H:%M:%S %6N %Z')
     end
 
     # Provide the original wi with fields merged with model's attributes
@@ -183,7 +182,7 @@ module RuoteTrail::ActiveRecord
       new_attrs = attributes.reject { |k, v| %w(id __workitem__ created_at updated_at).include? k }
 
       wi['fields'].merge!(new_attrs)
-      wi['fields']['exited_at'] = timestamp
+      wi['fields']['proceeded_at'] = timestamp
 
       wi
     end

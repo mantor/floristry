@@ -24,7 +24,6 @@ module RuoteTrail
 
       process_info = engine.process(wfid)
       process_info = WorkflowArchive.find_by(wfid: wfid) unless process_info
-
       raise ActiveRecord::RecordNotFound unless process_info
 
       query.each do |q|
@@ -39,6 +38,7 @@ module RuoteTrail
     def self.processes(opts = {}) engine.processes(opts) end
 
     def self.launch(pdef, fields={}, vars={}, root_stash=nil)
+
       engine.launch(pdef, fields, vars, root_stash)
     end
   end
