@@ -5,6 +5,7 @@ class WorkflowArchive < ::ActiveRecord::Base
   # ruotetrail_workflow_archive
   self.table_name = 'workflow_archives'
 
+  alias_attribute :last_active, :last_active_at
   def last_active_at
 
     completed_at
