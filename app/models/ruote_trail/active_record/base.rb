@@ -1,6 +1,7 @@
 module RuoteTrail::ActiveRecord
 
   class Base < ActiveRecord::Base
+    after_initialize :include_configured_mixin
 
     self.abstract_class = true
 
@@ -19,6 +20,9 @@ module RuoteTrail::ActiveRecord
     def initialize(attributes = nil, options = {})
 
       super(attributes, options)
+    end
+
+    def include_configured_mixin
 
       mixin = RuoteTrail.configuration.add_active_record_base_behavior
       self.class.send(:include, mixin) if mixin
