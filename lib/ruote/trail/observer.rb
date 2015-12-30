@@ -64,6 +64,8 @@ module RuoteTrail
       return unless accept?(msg)
 
       doc = @context.storage.get('trail', msg['wfid'])
+      doc['trail'][1]['variables'] = msg['variables']
+
       t = Time.now
 
       # TODO why do we need to create something new? Why couldn't we use Workflow directly? Workflow.to_h?

@@ -20,5 +20,10 @@ class WorkflowArchive < ::ActiveRecord::Base
 
     JSON::parse(self[:trail])
   end
+
+  def variables
+
+    trail[1]['variables']
+  end
 end
 end
