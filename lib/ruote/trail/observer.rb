@@ -82,6 +82,10 @@ module RuoteTrail
       @callback.constantize.archive(wf)
 
       @context.storage.delete(doc)
+
+      wfid = msg['wfid']
+      #TODO This only mocks the real thing, which will be a REST callback to Rails
+      RuoteTrail::OpenSecRequest.new("/workflow/complete/#{wfid}").send
     end
 
     protected
@@ -113,5 +117,22 @@ module RuoteTrail
       tree
     end
 
+  end
+
+  # Simple class to mock calls to a future OpenSec REST api
+  class OpenSecRequest
+    def initialize(url)
+
+      call_parts = url.split('/')
+      call_parts.shift if call_parts[0].empty?
+      @resource = call_parts.shift.camelize.constantize
+      @action = call_parts.shift
+      @args = call_parts.first
+    end
+
+    def send
+
+      @resource.send(@action, @args)
+    end
   end
 end
