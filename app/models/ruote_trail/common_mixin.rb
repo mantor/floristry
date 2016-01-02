@@ -4,7 +4,7 @@ module RuoteTrail::CommonMixin
   ROOT_EXPID = '0' # Root expression id - yes, it's a string (e.g. 0_1_0)
   SEP = '!'        # FEID's field separator
   EXPID_SEP = '_'  # Expression id's child separator
-  SUBID = 'empty_subid' # Replacement for the subid part of a FEID. We are not using the subid.
+  NO_SUBID = 'empty_subid' # Replacement for the subid part of a FEID.
   FEID_REGEX = /\A.*!.*!\d{8}-\d{4}-((?!-).)+-((?!-).)+\z/ # 0_0_0!523f41ebdbc878b5b2226898e49efc30!20150216-0011-gofumihi-moribeshi
   WFID_REGEX = /\A\d{8}-\d{4}-((?!-).)+-((?!-).)+\z/ # 20150216-0011-gofumihi-moribeshi
 
@@ -47,12 +47,11 @@ module RuoteTrail::CommonMixin
 
       def initialize(id)
 
-        @subid = SUBID
-
         if id.is_a? Hash
 
           @engineid = id[:engine_id] || 'engine'
           @expid = id[:expid]
+          @subid = id[:subid] || NO_SUBID
           @wfid = id[:wfid]
           @id = to_feid
 
@@ -61,16 +60,18 @@ module RuoteTrail::CommonMixin
           @id = id
           s = id.split(SEP)
           @engineid = s[-4] || 'engine'
-          @expid = s[-3]
+          @expid = s[-3] || '0'
+          @subid = s[-2] || NO_SUBID
           @wfid = s[-1]
         end
       end
 
       def to_feid(opts = {})
 
-        expid = (opts.include?(:expid)) ? opts[:expid] : @expid
+        expid = opts.include?(:expid) ? opts[:expid] : @expid
+        subid = opts.include?(:no_subid) ? NO_SUBID  : @subid
 
-        [ expid, @subid, @wfid ].join(SEP)
+        [ expid, subid, @wfid ].join(SEP)
       end
     end
   end

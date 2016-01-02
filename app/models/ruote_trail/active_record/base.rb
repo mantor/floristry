@@ -36,7 +36,7 @@ module RuoteTrail::ActiveRecord
     def self.create(wi_h)
 
       wi_h['__workitem__'] = JSON.generate(wi_h)
-      wi_h['__feid__'] = FlowExpressionId.new(wi_h['fei'].symbolize_keys).to_feid
+      wi_h['__feid__'] = FlowExpressionId.new(wi_h['fei'].symbolize_keys).to_feid({ no_subid: true })
       wi_h['participant_state'] = StateMachine.initial_state # TODO ?????????????????????????????
       wi_h.keep_if { |k, v| self.column_names.include?(k) }
 
@@ -94,12 +94,9 @@ module RuoteTrail::ActiveRecord
     def save(*)
 
       #@TODO move this class to a module included where needed?
-      #@TODO because is causes inheritance conflicts.
-      if self.respond_to?(:participant_state)
-        if participant_state == StateMachine.initial_state
-          trigger!(:open)
-        end
-      end
+      #@TODO It's causing inheritance conflicts.
+      trigger!(:open) if self.respond_to?(:participant_state) && participant_state == StateMachine.initial_state
+
       super
     end
 

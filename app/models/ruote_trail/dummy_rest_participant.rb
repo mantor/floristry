@@ -1,4 +1,5 @@
 module RuoteTrail
+  NO_SUBID = 'empty_subid' # Replacement for the subid part of a FEID.
 
   # ActiveRecord backend participant - TODO to move out of RuoteTrail !!
   #
@@ -21,17 +22,10 @@ module RuoteTrail
       # proceed if forget
     end
 
-    # Removes the document/workitem from the storage.
-    # Warning: this method is called by the engine (worker), i.e. not by you.
-    #
-    # def on_cancel
-    #
-    #   doc = fetch(fei)
-    #
-    #   return unless doc
-    #
-    #   r = @context.storage.delete(doc) # TODO remove from ActiveRecord
-    # end
+    def on_cancel
+
+      delete(participant_name, fei)
+    end
 
     protected
 
@@ -39,9 +33,17 @@ module RuoteTrail
     #
     def push(participant_name, workitem)
 
-      klass = participant_name.sub(/^web_/, '').camelize.constantize # Temporary until migrated to frontend - mq/rest
+      klass = participant_name.sub(/^web_/, '').camelize.constantize
       klass.create(workitem.to_h)
     end
-  end
 
+    # TODO implement MQ/REST interface
+    #
+    def delete(participant_name, fei)
+
+      klass = participant_name.sub(/^web_/, '').camelize.constantize
+      fei.h['subid'] = NO_SUBID
+      klass.find(fei.sid).destroy
+    end
+  end
 end
