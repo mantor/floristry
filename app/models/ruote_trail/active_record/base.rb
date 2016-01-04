@@ -125,6 +125,9 @@ module RuoteTrail::ActiveRecord
 
       if has_active_issues?
         self.trigger!(:proceed_with_issues)
+        issues.each { |i|
+          i.trigger!(:zombify) if i.active?
+        }
       else
         self.trigger!(:proceed)
       end
