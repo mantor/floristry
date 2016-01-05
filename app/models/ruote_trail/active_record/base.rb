@@ -1,5 +1,4 @@
 module RuoteTrail::ActiveRecord
-
   class Base < ActiveRecord::Base
     after_initialize :include_configured_mixin
 
@@ -37,7 +36,7 @@ module RuoteTrail::ActiveRecord
 
       wi_h['__workitem__'] = JSON.generate(wi_h)
       wi_h['__feid__'] = FlowExpressionId.new(wi_h['fei'].symbolize_keys).to_feid({ no_subid: true })
-      wi_h['participant_state'] = StateMachine.initial_state # TODO ?????????????????????????????
+      wi_h['participant_state'] = StateMachine.initial_state # TODO move to ruote-trail-extensions
       wi_h.keep_if { |k, v| self.column_names.include?(k) }
 
       obj = new(wi_h)
@@ -59,6 +58,7 @@ module RuoteTrail::ActiveRecord
     end
 
     def launched_at
+
       init_workitem unless @workitem
       @workitem['wf_launched_at']
     end
@@ -86,17 +86,14 @@ module RuoteTrail::ActiveRecord
       obj || raise(ActiveRecord::RecordNotFound)
     end
 
-    def email # TODO is this really used? WTF is it here?
+    def email # TODO move to ruote-trail-extensions
 
-      'opensec@mantor.org'
+      'opensec@mantor.org' #TODO use a constant
     end
 
-    def save(*)
+    def save(*) #TODO move to ruote-trail-extensions
 
-      #@TODO move this class to a module included where needed?
-      #@TODO It's causing inheritance conflicts.
       trigger!(:open) if self.respond_to?(:participant_state) && participant_state == StateMachine.initial_state
-
       super
     end
 
@@ -112,18 +109,15 @@ module RuoteTrail::ActiveRecord
       write_attribute(:__feid__, @fei.to_feid)
     end
 
-    # TODO show proper participant image
-    #
     def image() false end
 
     # If proceeding, merge back attributes within saved workitem and reply to Workflow Engine
-    #
     def proceed #TODO should be atomic
 
       receiver = RuoteTrail::ActiveRecord::Receiver.new(RuoteTrail::WorkflowEngine.engine)
       receiver.proceed(merged_wi)
 
-      if has_active_issues?
+      if has_active_issues? # TODO move to ruote-trail-extensions
         self.trigger!(:proceed_with_issues)
         issues.each { |i|
           i.trigger!(:zombify) if i.active?
@@ -138,19 +132,19 @@ module RuoteTrail::ActiveRecord
       sleep(1)
     end
 
-    def has_active_issues?
-      
+    def has_active_issues? # TODO move to ruote-trail-extensions
+
       issues.map(&:active?).size > 0
     end
 
-    def state_machine
+    def state_machine # TODO move to ruote-trail-extensions
 
       @state_machine ||= StateMachine.new(self)
     end
 
-    def issues
+    def issues # TODO move to ruote-trail-extensions
 
-      @issues ||= Issue.where(:feid => self.fei.id) #TODO Move to ruote_trail_participant_extension ???
+      @issues ||= Issue.where(:feid => self.fei.id)
     end
 
     protected
@@ -174,7 +168,6 @@ module RuoteTrail::ActiveRecord
     #
     # The wi submitted by the workflow engine is kept untouched in the __workitem__ field.
     # We merge every attributes except a few back within the workitem.
-    #
     def merged_wi
 
       wi = JSON.parse(attributes['__workitem__'])
@@ -192,7 +185,7 @@ module RuoteTrail::ActiveRecord
     end
   end
 
-  class StateMachine
+  class StateMachine # TODO move to ruote-trail-extensions
     include Statesman::Machine
 
     state :upcoming, initial: true

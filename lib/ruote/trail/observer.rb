@@ -6,7 +6,8 @@ module RuoteTrail
 
       @context = context
 
-      #unless callback.respond_to?(:archive) do
+      # TODO
+      # unless callback.respond_to?(:archive) do
       #  # error, the callback must respond to the archive method
       #end
       @callback = options['archive']
