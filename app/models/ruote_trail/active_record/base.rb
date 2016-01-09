@@ -117,34 +117,15 @@ module RuoteTrail::ActiveRecord
       receiver = RuoteTrail::ActiveRecord::Receiver.new(RuoteTrail::WorkflowEngine.engine)
       receiver.proceed(merged_wi)
 
-      if has_active_issues? # TODO move to ruote-trail-extensions
-        self.trigger!(:proceed_with_issues)
-        issues.each { |i|
-          i.trigger!(:zombify) if i.active?
-        }
-      else
-        self.trigger!(:proceed)
-      end
-
       # TODO this sucks ass!
       # The trail seems to be written each time ruote 'steps' (each 0.8s).
       # Food for thought - If nothing better: Could we emulate atomicity by simply increasing the expid?
       sleep(1)
     end
 
-    def has_active_issues? # TODO move to ruote-trail-extensions
-
-      issues.map(&:active?).size > 0
-    end
-
     def state_machine # TODO move to ruote-trail-extensions
 
       @state_machine ||= StateMachine.new(self)
-    end
-
-    def issues # TODO move to ruote-trail-extensions
-
-      @issues ||= Issue.where(:feid => self.fei.id)
     end
 
     protected
