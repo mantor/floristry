@@ -215,3 +215,7 @@ module RuoteTrail::ActiveRecord
     end
   end
 end
+
+# Must be done outside of initialize, since we are dealing with class methods.
+mixin = RuoteTrail.configuration.add_active_record_base_behavior
+RuoteTrail::ActiveRecord::Base.send(:extend, "#{mixin}::ClassMethods".constantize) if mixin
