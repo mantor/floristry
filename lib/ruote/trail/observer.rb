@@ -89,6 +89,23 @@ module RuoteTrail
       RuoteTrail::OpenSecRequest.new("/workflow/complete/#{wfid}").send
     end
 
+    def on_msg_error_intercepted(msg)
+
+      #TODO This only mocks the real thing, which will be a REST callback to Rails
+      RuoteTrail::OpenSecRequest.new("/workflow/fail/#{msg['wfid']}").send
+
+
+      doc = @context.storage.get('trail', msg['wfid'])
+
+      # The above mocked REST callback triggers the event. It should be
+      # enough, but right now the state is not persisted on Rails side...
+      # So I set it here, and read it from Workflow initializer, temporarily.
+      # @see Workflow.current_state
+      doc['trail'][1]['current_state'] = 'error'
+
+      @context.storage.put(doc)
+    end
+
     protected
 
     # By default, all messages received are recorded.
