@@ -184,6 +184,7 @@ module RuoteTrail::ActiveRecord
 
     event :start do
       transition from: :open,         to: :in_progress
+      transition from: :upcoming,     to: :in_progress
     end
 
     event :proceed do
