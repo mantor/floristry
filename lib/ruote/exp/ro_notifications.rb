@@ -1,3 +1,5 @@
+# This belongs in the Workflow Engine and will be migrated once decoupled with Rails.
+#
 require 'ruote/exp/flow_expression'
 require 'ruote/exp/ro_timers'
 
@@ -10,15 +12,20 @@ module Ruote::Exp
 
       original_consider_timers
 
-      ndefs = attribute(:notifications) || ''
-      deadline = attribute(:deadline)
+      return unless attribute(:notifications)
 
-      participant_name = self.h.original_tree[0].sub(/^web_/, '').camelize #TODO call common mixin
-      wfid = self.applied_workitem.h['fei']['wfid']
-      scoped_assets = self.applied_workitem.h['fields']['scope_ids']
+      params = Hash.new
+      params[:name] = self.h.original_tree[0].sub(/^web_/, '').camelize #TODO call common mixin
+      params[:wfid] = self.applied_workitem.h['fei']['wfid']
+      params[:assets] = self.applied_workitem.h['fields']['scope_ids']
 
-      #TODO This should be a restful callback to Rails
-      Notifications.enqueue(deadline, participant_name, wfid, scoped_assets, ndefs) unless ndefs.empty?
+      callback(attribute(:notifications), attribute(:deadline), params)
+    end
+
+    # This will eventually be a RESTful call from Ruote to Rails
+    def callback(ndefs, deadline, params)
+
+      Notification::Jobber.schedule(Notification::ParticipantJob, ndefs, deadline, params)
     end
   end
 end
