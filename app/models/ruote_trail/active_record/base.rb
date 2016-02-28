@@ -168,6 +168,7 @@ module RuoteTrail::ActiveRecord
 
   class StateMachine # TODO move to ruote-trail-extensions
     include Statesman::Machine
+    include Statesman::Events
 
     state :upcoming, initial: true
     state :open
@@ -200,14 +201,6 @@ module RuoteTrail::ActiveRecord
       transition from: :late,          to: :late
       transition from: :open,          to: :late
       transition from: :in_progress,   to: :late
-    end
-
-    def last_transition
-
-      if @storage_adapter.last.nil? && @object.participant_state
-        return @transition_class.new(@object.participant_state, 0)
-      end
-      @storage_adapter.last
     end
 
     after_transition do |object, transition|
