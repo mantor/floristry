@@ -25,7 +25,7 @@ module Ruote::Exp
     # This will eventually be a RESTful call from Ruote to Rails
     def callback(ndefs, deadline, params)
 
-      Notification::Jobber.schedule(Notification::ParticipantJob, ndefs, deadline, params)
+      Notification::Scheduler.schedule(Notification::ParticipantJob, ndefs, deadline, params)
     end
   end
 end
