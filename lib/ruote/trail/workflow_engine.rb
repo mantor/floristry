@@ -8,10 +8,9 @@ module RuoteTrail
       t = if record && record.key?('trail')
         record['trail']
       else
-        WorkflowArchive.find_by(wfid: wfid).trail
+        wa = WorkflowArchive.find_by(wfid: wfid)
+        wa.trail unless wa.nil?
       end
-
-      raise ActiveRecord::RecordNotFound unless t
 
       t
     end
