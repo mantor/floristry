@@ -184,7 +184,7 @@ module RuoteTrail::ActiveRecord
 
     event :start do
       transition from: :open,         to: :in_progress
-      transition from: :upcoming,     to: :in_progress
+      transition from: :upcoming,     to: :in_progress # TODO this is probably wrong
     end
 
     event :proceed do
@@ -194,6 +194,7 @@ module RuoteTrail::ActiveRecord
     end
 
     event :proceed_with_issues do
+      transition from: :upcoming,     to: :closed # TODO this is probably wrong
       transition from: :in_progress,  to: :completed_with_issues
       transition from: :late,         to: :completed_with_issues
     end
