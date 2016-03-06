@@ -36,7 +36,7 @@ module RuoteTrail::ActiveRecord
 
       wi_h['__workitem__'] = JSON.generate(wi_h)
       wi_h['__feid__'] = FlowExpressionId.new(wi_h['fei'].symbolize_keys).to_feid({ no_subid: true })
-      wi_h['participant_state'] = StateMachine.initial_state # TODO move to ruote-trail-extensions
+      wi_h['current_state'] = StateMachine.initial_state # TODO move to ruote-trail-extensions
       wi_h.keep_if { |k, v| self.column_names.include?(k) }
 
       obj = new(wi_h)
@@ -93,13 +93,13 @@ module RuoteTrail::ActiveRecord
 
     def save(*) #TODO move to ruote-trail-extensions
 
-      trigger!(:open) if self.respond_to?(:participant_state) && participant_state == StateMachine.initial_state
+      trigger!(:open) if self.respond_to?(:current_state) && current_state == StateMachine.initial_state
       super
     end
 
     def update_attributes(*)
 
-      trigger!(:start) if participant_state == :open.to_s
+      trigger!(:start) if current_state == :open.to_s
       super
     end
 
@@ -126,12 +126,6 @@ module RuoteTrail::ActiveRecord
     def state_machine # TODO move to ruote-trail-extensions
 
       @state_machine ||= StateMachine.new(self)
-    end
-
-    # The state saved in our participant is the current_state
-    def current_state
-
-      participant_state
     end
 
     protected
@@ -213,12 +207,12 @@ module RuoteTrail::ActiveRecord
     # in order to return the latest transition 'to_state'.
     def current_state(force_reload: false)
 
-      @object.participant_state
+      @object.current_state
     end
 
     after_transition do |object, transition|
 
-      object.update_attribute(:participant_state, transition.to_state)
+      object.update_attribute(:current_state, transition.to_state)
     end
   end
 end
