@@ -14,7 +14,7 @@ module RuoteTrail::ActiveRecord
 
     attr_accessor :era, :fei
 
-    delegate :current_state, :trigger!, :available_events, to: :state_machine
+    delegate :trigger!, :available_events, to: :state_machine
 
     def initialize(attributes = nil, options = {})
 
@@ -128,6 +128,12 @@ module RuoteTrail::ActiveRecord
       @state_machine ||= StateMachine.new(self)
     end
 
+    # The state saved in our participant is the current_state
+    def current_state
+
+      participant_state
+    end
+
     protected
 
     def init_workitem
@@ -184,7 +190,6 @@ module RuoteTrail::ActiveRecord
 
     event :start do
       transition from: :open,         to: :in_progress
-      transition from: :upcoming,     to: :in_progress # TODO this is probably wrong
     end
 
     event :proceed do
@@ -194,7 +199,6 @@ module RuoteTrail::ActiveRecord
     end
 
     event :proceed_with_issues do
-      transition from: :upcoming,     to: :closed # TODO this is probably wrong
       transition from: :in_progress,  to: :completed_with_issues
       transition from: :late,         to: :completed_with_issues
     end
@@ -205,8 +209,16 @@ module RuoteTrail::ActiveRecord
       transition from: :in_progress,   to: :late
     end
 
+    # This avoids the default behavior which is to check in the transition history,
+    # in order to return the latest transition 'to_state'.
+    def current_state(force_reload: false)
+
+      @object.participant_state
+    end
+
     after_transition do |object, transition|
-      object.update_attribute(:participant_state, object.current_state)
+
+      object.update_attribute(:participant_state, transition.to_state)
     end
   end
 end
