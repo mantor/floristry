@@ -1,6 +1,5 @@
 module RuoteTrail::ActiveRecord
   class Base < ActiveRecord::Base
-    after_initialize :include_configured_mixin
 
     self.abstract_class = true
 
@@ -10,21 +9,20 @@ module RuoteTrail::ActiveRecord
 
     ATTRIBUTES_TO_REMOVE = %w(id __feid__ __workitem__ created_at updated_at )
 
+    after_initialize :include_configured_mixin
     after_find :init_fei
 
     attr_accessor :era, :fei
 
-    delegate :trigger!, :available_events, to: :state_machine
+    # ActiveRecords participants can be search by their Rails ID or Workflow id (feid)
+    #
+    # This is required since the information in hand from a Workflow perspective is always the
+    # Workflow ID, not it's Rails representation.
+    #
+    def self.find id
 
-    def initialize(attributes = nil, options = {})
-
-      super(attributes, options)
-    end
-
-    def include_configured_mixin
-
-      mixin = RuoteTrail.configuration.add_active_record_base_behavior
-      self.class.send(:include, mixin) if mixin
+      obj = (id.is_a? Integer) ? self.where(id: id).first : self.where(__feid__: id).first
+      obj || raise(ActiveRecord::RecordNotFound)
     end
 
     # The workflow engine pass the workitem through this method
@@ -42,6 +40,14 @@ module RuoteTrail::ActiveRecord
       obj = new(wi_h)
       obj.save({validate: false})
       obj
+    end
+
+    delegate :trigger!, :available_events, to: :state_machine
+
+    def include_configured_mixin
+
+      mixin = RuoteTrail.configuration.add_active_record_base_behavior
+      self.class.send(:include, mixin) if mixin
     end
 
     def fields(f)
@@ -67,17 +73,6 @@ module RuoteTrail::ActiveRecord
       @workitem['participant_name']
     end
     alias_method :name, :participant_name
-
-    # ActiveRecords participants can be search by their Rails ID or Workflow id (feid)
-    #
-    # This is required since the information in hand from a Workflow perspective is always the
-    # Workflow ID, not it's Rails representation.
-    #
-    def self.find id
-
-      obj = (id.is_a? Integer) ? self.where(id: id).first : self.where(__feid__: id).first
-      obj || raise(ActiveRecord::RecordNotFound)
-    end
 
     def email # TODO move to ruote-trail-extensions
 
