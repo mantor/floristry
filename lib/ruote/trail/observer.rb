@@ -1,5 +1,7 @@
 module RuoteTrail
 
+  # The observer is responsible to set the current_state via it's hooks (launch, completed, error).
+  #
   class Observer < Ruote::Observer
 
     def initialize(context, options={})
@@ -26,6 +28,7 @@ module RuoteTrail
       return unless accept?(msg)
 
       msg['tree'][1]['launched_at'] = msg['workitem']['wf_launched_at']
+      msg['tree'][1]['current_state'] = 'launched'
 
       doc = {
           'type' => 'trail',
@@ -46,6 +49,9 @@ module RuoteTrail
       doc = @context.storage.get('trail', msg['fei']['wfid'])
       wi = msg['workitem']
 
+      t = Time.now
+      wi['fields']['replied_at'] = "#{t.utc.strftime('%Y-%m-%d %H:%M:%S')}.#{sprintf('%06d', t.usec)} UTC"
+
       trail = insert_in_tree(doc['trail'], msg['fei']['expid'], wi['fields'])
 
       new_doc = {
@@ -53,7 +59,6 @@ module RuoteTrail
           '_id' => msg['fei']['wfid'],
           '_rev' => doc['_rev'],
           'trail' => trail
-          # TODO add replied time?
       }
       @context.storage.put(new_doc)
     end
@@ -66,7 +71,7 @@ module RuoteTrail
 
       doc = @context.storage.get('trail', msg['wfid'])
       doc['trail'][1]['variables'] = msg['variables']
-
+      doc['trail'][1]['current_state'] = 'completed'
       t = Time.now
 
       # TODO why do we need to create something new? Why couldn't we use Workflow directly? Workflow.to_h?
@@ -76,32 +81,20 @@ module RuoteTrail
           'name' => msg['workitem']['wf_name'],
           'version' => msg['workitem']['wf_revision'],
           'launched_at' => msg['workitem']['wf_launched_at'],
-          'completed_at' => "#{t.utc.strftime('%Y-%m-%d %H:%M:%S')}.#{sprintf('%06d', t.usec)} UTC",
+          'completed_at' => "#{t.utc.strftime('%Y-%m-%d %H:%M:%S')}.#{sprintf('%06d', t.usec)} UTC", # TODO
           'trail' => doc['trail']
       }
 
-      @callback.constantize.archive(wf)
-
+      @callback.constantize.archive(wf) # TODO completed workflow should be sent to Rails
       @context.storage.delete(doc)
-
-      wfid = msg['wfid']
-      #TODO This only mocks the real thing, which will be a REST callback to Rails
-      RuoteTrail::OpenSecRequest.new("/workflow/complete/#{wfid}").send
+      # RuoteTrail::OpenSecRequest.new("/workflow/completed/#{msg['wfid']}").send
     end
 
     def on_msg_error_intercepted(msg)
 
-      #TODO This only mocks the real thing, which will be a REST callback to Rails
-      RuoteTrail::OpenSecRequest.new("/workflow/fail/#{msg['wfid']}").send
-
-
       doc = @context.storage.get('trail', msg['wfid'])
-
-      # The above mocked REST callback triggers the event. It should be
-      # enough, but right now the state is not persisted on Rails side...
-      # So I set it here, and read it from Workflow initializer, temporarily.
-      # @see Workflow.current_state
       doc['trail'][1]['current_state'] = 'error'
+      # RuoteTrail::OpenSecRequest.new("/workflow/failed/#{msg['wfid']}").send
 
       @context.storage.put(doc)
     end
@@ -112,10 +105,7 @@ module RuoteTrail
     #
     # Feel free to override this method in a subclass.
     #
-    def accept?(msg)
-
-      true
-    end
+    def accept?(msg) true end
 
     # Insert hash in a Ruote tree based on an expression id.
     #
@@ -137,20 +127,20 @@ module RuoteTrail
 
   end
 
-  # Simple class to mock calls to a future OpenSec REST api
-  class OpenSecRequest
-    def initialize(url)
-
-      call_parts = url.split('/')
-      call_parts.shift if call_parts[0].empty?
-      @resource = call_parts.shift.camelize.constantize
-      @action = call_parts.shift
-      @args = call_parts.first
-    end
-
-    def send
-
-      @resource.send(@action, @args)
-    end
-  end
+  # # Simple class to mock calls to a future OpenSec REST api
+  # class OpenSecApi # TODO implement authentication mechanism
+  #   def initialize(url)
+  #
+  #     call_parts = url.split('/')
+  #     call_parts.shift if call_parts[0].empty?
+  #     @resource = call_parts.shift.camelize.constantize
+  #     @action = call_parts.shift
+  #     @args = call_parts.first
+  #   end
+  #
+  #   def send
+  #
+  #     @resource.send(@action, @args)
+  #   end
+  # end
 end

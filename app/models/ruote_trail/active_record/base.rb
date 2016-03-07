@@ -6,7 +6,7 @@ module RuoteTrail::ActiveRecord
 
     include RuoteTrail::CommonMixin
     include RuoteTrail::ExpressionMixin
-    include RuoteTrail::LeafExpressionMixin
+    include RuoteTrail::ParticipantExpressionMixin
 
     ATTRIBUTES_TO_REMOVE = %w(id __feid__ __workitem__ created_at updated_at )
 
@@ -50,13 +50,6 @@ module RuoteTrail::ActiveRecord
       @workitem['fields'][f]
     end
 
-    def wf_name # TODO rename name. Actually, seems like this should in wf, not in wi but
-                # maybe there's a reason why it's in wi.workitem (not wi.workitem.fields)
-
-      init_workitem unless @workitem
-      @workitem['wf_name']
-    end
-
     def launched_at
 
       init_workitem unless @workitem
@@ -91,7 +84,7 @@ module RuoteTrail::ActiveRecord
       'opensec@mantor.org' #TODO use a constant
     end
 
-    def save(*) #TODO move to ruote-trail-extensions
+    def save(*)
 
       trigger!(:open) if self.respond_to?(:current_state) && current_state == StateMachine.initial_state
       super
@@ -123,7 +116,7 @@ module RuoteTrail::ActiveRecord
       sleep(1)
     end
 
-    def state_machine # TODO move to ruote-trail-extensions
+    def state_machine
 
       @state_machine ||= StateMachine.new(self)
     end
@@ -166,7 +159,7 @@ module RuoteTrail::ActiveRecord
     end
   end
 
-  class StateMachine # TODO move to ruote-trail-extensions
+  class StateMachine
     include Statesman::Machine
     include Statesman::Events
 

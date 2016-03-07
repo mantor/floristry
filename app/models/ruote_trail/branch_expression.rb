@@ -4,6 +4,7 @@ module RuoteTrail
   class BranchExpression < Expression
     include Enumerable
     extend Forwardable
+    include BranchExpressionMixin
 
     attr_reader :children
 
@@ -18,8 +19,5 @@ module RuoteTrail
     end
 
     def_delegators :@children, :<<, :[], :first, :last, :size, :each, :each_with_index
-
-    def leaf?() false end
-    def branch?() true end
   end
 end

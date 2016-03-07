@@ -1,7 +1,7 @@
 module RuoteTrail
   class Participant < LeafExpression
 
-    def is_participant?() true end
+    include ParticipantExpressionMixin
 
     def current_state
 
