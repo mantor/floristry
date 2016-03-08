@@ -29,6 +29,9 @@ module RuoteTrail
     def to_partial_path() self.class.name.underscore end
   end
 
+  # BranchExpression isn't complete as it requires forwardable for def_delegate
+  # and ultimately, @children.
+  #
   module BranchExpressionMixin
 
     def is_leaf?() false end
