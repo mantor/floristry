@@ -16,6 +16,7 @@ module RuoteTrail
     attr_accessor :add_leaf_expression_behavior,
                   :add_branch_expression_behavior,
                   :add_expression_behavior,
+                  :add_workflow_behavior,
                   :add_active_record_base_behavior
   end
 end
