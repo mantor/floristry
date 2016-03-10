@@ -74,11 +74,6 @@ module RuoteTrail::ActiveRecord
     end
     alias_method :name, :participant_name
 
-    def email # TODO move to ruote-trail-extensions
-
-      'opensec@mantor.org' #TODO use a constant
-    end
-
     def save(*)
 
       trigger!(:open) if self.respond_to?(:current_state) && current_state == StateMachine.initial_state
