@@ -34,7 +34,7 @@ module RuoteTrail::ActiveRecord
 
       wi_h['__workitem__'] = JSON.generate(wi_h)
       wi_h['__feid__'] = FlowExpressionId.new(wi_h['fei'].symbolize_keys).to_feid({ no_subid: true })
-      wi_h['current_state'] = StateMachine.initial_state # TODO move to ruote-trail-extensions
+      wi_h['current_state'] = StateMachine.initial_state
       wi_h.keep_if { |k, v| self.column_names.include?(k) }
 
       obj = new(wi_h)
