@@ -4,9 +4,9 @@ module RuoteTrail
 
     include LeafExpressionMixin
 
-    def initialize(id, name, params = {}, workitem = {}, era = :present)
+    def initialize(id, name, params, fields, era)
 
-      super(id, name, params, workitem, era)
+      super(id, name, params, fields, era)
 
       mixin = RuoteTrail.configuration.add_leaf_expression_behavior
       self.class.send(:include, mixin) if mixin

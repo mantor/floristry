@@ -8,9 +8,9 @@ module RuoteTrail
 
     attr_reader :children
 
-    def initialize (id, name, params = {}, workitem = {}, era = :present)
+    def initialize (id, name, params, fields, era)
 
-      super(id, name, params, workitem, era)
+      super(id, name, params, fields, era)
 
       @children = Array.new
 

@@ -1,4 +1,4 @@
-# This belongs in the Workflow Engine and will be migrated once decoupled with Rails.
+# This belongs with the Workflow Engine and will be migrated once decoupled with Rails.
 #
 require 'ruote/exp/flow_expression'
 require 'ruote/exp/ro_timers'
@@ -15,8 +15,8 @@ module Ruote::Exp
       return unless attribute(:notifications)
 
       params = Hash.new
-      params[:name] = self.h.original_tree[0].sub(/^web_/, '').camelize #TODO call common mixin
-      params[:wfid] = self.applied_workitem.h['fei']['wfid']
+      params[:name] = self.h.original_tree[0].sub(RuoteTrail::WEB_PARTICIPANT_REGEX, '').camelize
+      params[:id] = self.applied_workitem.h['fei']['wfid']
       params[:assets] = self.applied_workitem.h['fields']['scope_ids']
 
       callback(attribute(:notifications), attribute(:deadline), params)

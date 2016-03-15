@@ -1,9 +1,8 @@
+# This belongs with the Workflow Engine and will be migrated once decoupled with Rails.
+#
 module RuoteTrail
-  NO_SUBID = 'empty_subid' # Replacement for the subid part of a FEID.
 
-  # ActiveRecord backend participant - TODO to move out of RuoteTrail !!
-  #
-  # Once we remove Ruote-kit, change this for a real Restful HTTP client - e.g. Ruote-Jig
+  # ActiveRecord backend participant
   #
   class DummyRestParticipant
     include Ruote::LocalParticipant
@@ -29,19 +28,15 @@ module RuoteTrail
 
     protected
 
-    # TODO implement MQ/REST interface
-    #
-    def push(participant_name, workitem)
+    def push(backend_part_name, workitem)
 
-      klass = participant_name.sub(/^web_/, '').camelize.constantize
+      klass = backend_part_name.sub(WEB_PARTICIPANT_REGEX, '').camelize.constantize
       klass.create(workitem.to_h)
     end
 
-    # TODO implement MQ/REST interface
-    #
-    def delete(participant_name, fei)
+    def delete(backend_part_name, fei)
 
-      klass = participant_name.sub(/^web_/, '').camelize.constantize
+      klass = backend_part_name.sub(WEB_PARTICIPANT_REGEX, '').camelize.constantize
       fei.h['subid'] = NO_SUBID
       klass.find(fei.sid).destroy
     end

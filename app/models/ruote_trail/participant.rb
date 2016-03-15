@@ -5,7 +5,7 @@ module RuoteTrail
 
     def current_state
 
-      self.workitem['current_state']
+      self.fields['current_state']
     end
   end
 end

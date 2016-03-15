@@ -22,11 +22,11 @@ module RuoteTrail::ActiveRecord
         @instance = task.camelize.constantize.find(@id)
 
       rescue
-        @instance = task.camelize.constantize.new
+        @instance = task.camelize.constantize.new()  # TODO when does this happens?
       end
 
-      @instance.fei = @fei
-      @instance.era = @era
+      @instance.fei = @fei  # TODO is this needed? could it be immutable?
+      @instance.era = @era  # TODO
       @instance
     end
 

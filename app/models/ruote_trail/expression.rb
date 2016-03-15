@@ -4,14 +4,14 @@ module RuoteTrail
     include RuoteTrail::CommonMixin
     include ExpressionMixin
 
-    attr_reader :id, :name, :params, :workitem, :era
+    attr_reader :id, :name, :params, :fields, :era
 
-    def initialize(id, name, params = {}, workitem = {}, era = :present)
+    def initialize(id, name, params, fields, era)
 
       if id.is_a? FlowExpressionId
 
         @fei = id
-        @id = @fei.to_feid    # TODO isn't @id forwarded to @fei?
+        @id = @fei.to_feid
       else
 
         @fei = FlowExpressionId.new(id)
@@ -20,7 +20,7 @@ module RuoteTrail
 
       @name = name
       @params = params
-      @workitem = workitem # TODO fields??
+      @fields = fields
       @era = era
 
       mixin = RuoteTrail.configuration.add_expression_behavior

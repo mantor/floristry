@@ -1,5 +1,8 @@
 module RuoteTrail::ActiveRecord
-  class Base < ActiveRecord::Base
+
+  # Emulates an Expression by implementing interface and using mixins instead of inheritance.
+  #
+  class Base < ::ActiveRecord::Base
 
     self.abstract_class = true
 
@@ -7,12 +10,16 @@ module RuoteTrail::ActiveRecord
     include RuoteTrail::ExpressionMixin
     include RuoteTrail::ParticipantExpressionMixin
 
-    ATTRIBUTES_TO_REMOVE = %w(id __feid__ __workitem__ created_at updated_at )
+    ATTRIBUTES_TO_EXCLUDE = %w(id __feid__ __workitem__ created_at updated_at )
+
+    serialize :__workitem__, JSON
 
     after_initialize :include_configured_mixin
-    after_find :init_fei
+    after_find :init_fei, :init_fields_and_params
+    after_create :init_fields_and_params
 
-    attr_accessor :era, :fei
+    attr_accessor :era # TODO really?
+    attr_reader :fei, :fields, :params
 
     # ActiveRecords participants can be search by their Rails ID or Workflow id (feid)
     #
@@ -21,8 +28,8 @@ module RuoteTrail::ActiveRecord
     #
     def self.find id
 
-      obj = (id.is_a? Integer) ? self.where(id: id).first : self.where(__feid__: id).first
-      obj || raise(ActiveRecord::RecordNotFound)
+      obj = (id.is_a? Integer) ? find_by_id(id) : find_by___feid__(id)
+      obj || raise(ActiveRecord::RecordNotFound)   # TODO this doesn't work, why ?
     end
 
     # The workflow engine pass the workitem through this method
@@ -30,49 +37,28 @@ module RuoteTrail::ActiveRecord
     # Save the workitem as an special attribute to be merged at proceed. Bypassing validation is necessary
     # since some Participant's model may have attributes that aren't currently present/valid.
     #
-    def self.create(wi_h)
+    def self.create(wi)
 
-      wi_h['__workitem__'] = JSON.generate(wi_h)
-      wi_h['__feid__'] = FlowExpressionId.new(wi_h['fei'].symbolize_keys).to_feid({ no_subid: true })
-      wi_h['current_state'] = StateMachine.initial_state
-      wi_h.keep_if { |k, v| self.column_names.include?(k) }
+      attrs = Hash.new
+      attrs['__workitem__'] = wi
+      attrs['__feid__'] = FlowExpressionId.new(wi['fei'].symbolize_keys).to_feid({ no_subid: true })
+      attrs['current_state'] = StateMachine.initial_state
 
-      obj = new(wi_h)
-      obj.save({validate: false})
+      # wi.keep_if { |k, v| self.column_names.include?(k) } # TODO Is that the proper logic?
+
+      obj = new(attrs)
+      obj.save({ validate: false })
       obj
     end
 
     delegate :trigger!, :available_events, to: :state_machine
 
-    def include_configured_mixin
+    def participant_name # TODO Backend / Frontend name
 
-      mixin = RuoteTrail.configuration.add_active_record_base_behavior
-      self.class.send(:include, mixin) if mixin
+      init_fields unless @fields
+      @fields['participant_name']
     end
-
-    def fields(f)
-
-      init_workitem unless @workitem
-      @workitem['fields'][f]
-    end
-
-    def launched_at
-
-      init_workitem unless @workitem
-      @workitem['wf_launched_at']
-    end
-
-    def class_name
-
-      self.class.to_s
-    end
-
-    def participant_name
-
-      init_workitem unless @workitem
-      @workitem['participant_name']
-    end
-    alias_method :name, :participant_name
+    alias_method :name, :participant_name # TODO <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
     def save(*)
 
@@ -82,11 +68,11 @@ module RuoteTrail::ActiveRecord
 
     def update_attributes(*)
 
-      trigger!(:start) if current_state == :open.to_s
+      trigger!(:start) if current_state == 'open'
       super
     end
 
-    def fei=(fei)
+    def fei=(fei) # TODO ###############################################################################################
 
       @fei = fei
       write_attribute(:__feid__, @fei.to_feid)
@@ -95,9 +81,10 @@ module RuoteTrail::ActiveRecord
     def image() false end
 
     # If proceeding, merge back attributes within saved workitem and reply to Workflow Engine
+    #
     def proceed #TODO should be atomic
 
-      receiver = RuoteTrail::ActiveRecord::Receiver.new(RuoteTrail::WorkflowEngine.engine)
+      receiver = Receiver.new(RuoteTrail::WorkflowEngine.engine)
       receiver.proceed(merged_wi)
 
       # TODO this sucks ass!
@@ -106,16 +93,17 @@ module RuoteTrail::ActiveRecord
       sleep(1)
     end
 
+    protected
+
     def state_machine
 
       @state_machine ||= StateMachine.new(self)
     end
 
-    protected
+    def init_fields_and_params
 
-    def init_workitem
-
-      @workitem = JSON.parse(__workitem__)
+      @fields = __workitem__['fields'].except('params')
+      @params = __workitem__['fields']['params'] || {}
     end
 
     def init_fei
@@ -123,29 +111,25 @@ module RuoteTrail::ActiveRecord
       @fei = FlowExpressionId.new(__feid__)
     end
 
-    def timestamp
-
-      Time.current.utc.strftime('%Y-%m-%d %H:%M:%S %6N %Z')
-    end
-
     # Provide the original wi with fields merged with model's attributes
     #
-    # The wi submitted by the workflow engine is kept untouched in the __workitem__ field.
-    # We merge every attributes except a few back within the workitem.
+    # The wi submitted by the workflow engine is kept untouched in the __workitem__ attribute.
+    # We merge every attributes except a few within the workitem.
     def merged_wi
 
-      wi = JSON.parse(attributes['__workitem__'])
+      wi = attributes['__workitem__']
 
-      # TODO It doesn't make sense to keep the __feid__ attribute within the workitem once we get out of ActiveRecord.
-      # The Expression is supposed to have all this info (expids).
-      #
-      # new_attrs = attributes.keys - ATTRIBUTES_TO_REMOVE
+      # new_attrs = attributes.keys - ATTRIBUTES_TO_EXCLUDE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
       new_attrs = attributes.reject { |k, v| %w(id __workitem__ created_at updated_at).include? k }
 
       wi['fields'].merge!(new_attrs)
-      wi['fields']['proceeded_at'] = timestamp
-
       wi
+    end
+
+    def include_configured_mixin
+
+      mixin = RuoteTrail.configuration.add_active_record_base_behavior
+      self.class.send(:include, mixin) if mixin
     end
   end
 

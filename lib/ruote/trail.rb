@@ -14,6 +14,9 @@ require 'active_model/mass_assignment_security/sanitizer'
 
 module RuoteTrail
 
+  WEB_PARTICIPANT_REGEX = /^web_/
+  NO_SUBID = 'empty_subid' # Replacement for the subid part of a FEID.
+
   module ExpressionMixin
 
     def is_past?()    @era == :past    end
