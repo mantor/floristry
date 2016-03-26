@@ -55,7 +55,7 @@ module RuoteTrail::ActiveRecord
 
     def participant_name # TODO Backend / Frontend name
 
-      init_fields unless @fields
+      init_fields_and_params unless @fields
       @fields['participant_name']
     end
     alias_method :name, :participant_name # TODO <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
