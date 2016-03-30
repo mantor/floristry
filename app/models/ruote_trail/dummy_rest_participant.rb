@@ -2,7 +2,7 @@
 #
 module RuoteTrail
 
-  # ActiveRecord backend participant
+  # WebParticipant (ActiveRecord) backend participant
   #
   class DummyRestParticipant
     include Ruote::LocalParticipant
@@ -30,15 +30,19 @@ module RuoteTrail
 
     def push(backend_part_name, workitem)
 
-      klass = backend_part_name.sub(WEB_PARTICIPANT_REGEX, '').camelize.constantize
-      klass.create(workitem.to_h)
+      web_part_class(backend_part_name).create(workitem.to_h)
     end
 
     def delete(backend_part_name, fei)
 
-      klass = backend_part_name.sub(WEB_PARTICIPANT_REGEX, '').camelize.constantize
       fei.h['subid'] = NO_SUBID
-      klass.find(fei.sid).destroy
+      web_part_class(backend_part_name).find(fei.sid).destroy
+    end
+
+    def web_part_class(backend_part_name)
+
+      name = backend_part_name.sub(WEB_PARTICIPANT_REGEX, '').camelize
+      RuoteTrail::WebParticipant.const_get(name)
     end
   end
 end

@@ -1,0 +1,41 @@
+<table class="table table-hover">
+  <thead>
+  <tr>
+    <th>Id</th>
+    <th>Name</th>
+    <th>Position</th>
+    <th>State</th>
+    <th>Launched</th>
+    <th>Last active</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% for wf in @wfs %>
+    <tr>
+      <td>
+        <%= link_to wf.wfid, { :controller => 'workflows', :action => :edit, :id => wf.wfid } %>
+      </td>
+      <td>
+        <%= wf.name %>
+      </td>
+      <td>
+        <%= "#{wf.wi.fei.to_feid} #{wf.wi.name}" %>
+      </td>
+      <td><%= wf.current_state %></td>
+      <td><%= format_time(wf.launched_at) %></td>
+      <td><%= format_time(wf.last_active_at) %></td>
+    </tr>
+  <% end %>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td class="tfoot-small" colspan="100%">
+        <%= @wfs.size %> records |   <!-- TODO move this in helper, it's ugly -->
+        <% wf_statuses = @wfs.map(&:current_state).inject(Hash.new(0)) { |total, e| total[e] += 1 ;total} %>
+        <%= wf_statuses['launched'] %> <span>launched</span> -
+        <%= wf_statuses[:completed] %> <span>completed</span> -
+        <%= wf_statuses['error'] %> <span class="text-warning">error</span>
+      </td>
+    </tr>
+  </tfoot>
+</table>

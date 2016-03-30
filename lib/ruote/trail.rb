@@ -14,7 +14,9 @@ require 'active_model/mass_assignment_security/sanitizer'
 
 module RuoteTrail
 
-  WEB_PARTICIPANT_REGEX = /^web_/
+  # The followin will be moved out of Rails in the Workflow Engine
+  WEB_PARTICIPANT_PREFIX = 'web_'
+  WEB_PARTICIPANT_REGEX = /^#{WEB_PARTICIPANT_PREFIX}/
   NO_SUBID = 'empty_subid' # Replacement for the subid part of a FEID.
 
   module ExpressionMixin
@@ -29,7 +31,16 @@ module RuoteTrail
 
     def layout() false end
 
-    def to_partial_path() self.class.name.underscore end
+    # When mounting an Isolated Engine, the mount path is used as a prefix e.g.
+    # route_trail/route_trail/_define.html.erb instead of ruote_trail/_define.erb
+    #
+    def to_partial_path()
+
+      @_to_partial_path ||= begin
+        p = self.class.name.split('::').drop(1)
+        "#{p.map(&:underscore).join('/')}".freeze
+      end
+    end
   end
 
   # BranchExpression isn't complete as it requires forwardable for def_delegate

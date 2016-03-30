@@ -1,6 +1,7 @@
 module RuoteTrail::ActiveRecord
 
-  # Emulates an Expression by implementing interface and using mixins instead of inheritance.
+  # This is the Backend Participant of WebParticipants - the only backend participant implemented by Rails
+  # It emulates an Expression by implementing interface and using mixins instead of inheritance.
   #
   class Base < ::ActiveRecord::Base
 
@@ -18,7 +19,7 @@ module RuoteTrail::ActiveRecord
     after_find :init_fei, :init_fields_and_params
     after_create :init_fields_and_params
 
-    attr_accessor :era # TODO really?
+    attr_accessor :era # TODO really? - If that's needed, Expression should have this (the mixin)
     attr_reader :fei, :fields, :params
 
     # ActiveRecords participants can be search by their Rails ID or Workflow id (feid)
@@ -53,12 +54,11 @@ module RuoteTrail::ActiveRecord
 
     delegate :trigger!, :available_events, to: :state_machine
 
-    def participant_name # TODO Backend / Frontend name
+    def name
 
-      init_fields_and_params unless @fields
-      @fields['participant_name']
+      @name ||= ActiveSupport::Inflector.demodulize(self.class.name)
     end
-    alias_method :name, :participant_name # TODO <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    alias_method :frontend_participant_name, :name
 
     def save(*)
 
@@ -72,7 +72,18 @@ module RuoteTrail::ActiveRecord
       super
     end
 
-    def fei=(fei) # TODO ###############################################################################################
+    # We don't want each partials to be in it's own directory - everything ends up in ruote_trail/web_paticipants
+    #
+    def to_partial_path
+
+      @_to_partial_path ||= begin
+        element = ActiveSupport::Inflector.underscore(name)
+        collection = ActiveSupport::Inflector.tableize(module_name)
+        "#{collection}/#{element}".freeze
+      end
+    end
+
+    def fei=(fei) # TODO is this really required? why? sounds fishy.
 
       @fei = fei
       write_attribute(:__feid__, @fei.to_feid)
@@ -92,6 +103,11 @@ module RuoteTrail::ActiveRecord
       # Food for thought - If nothing better: Could we emulate atomicity by simply increasing the expid?
       sleep(1)
     end
+
+    # Resolution of module is problematic in the isolated engine - TODO
+    # Used by to_partial_path() and strong_params in workflow's controller
+    #
+    def module_name() 'web_participant' end
 
     protected
 
@@ -119,7 +135,7 @@ module RuoteTrail::ActiveRecord
 
       wi = attributes['__workitem__']
 
-      # new_attrs = attributes.keys - ATTRIBUTES_TO_EXCLUDE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+      # new_attrs = attributes.keys - ATTRIBUTES_TO_EXCLUDE # TODO __feid__ is excluded <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
       new_attrs = attributes.reject { |k, v| %w(id __workitem__ created_at updated_at).include? k }
 
       wi['fields'].merge!(new_attrs)
@@ -130,6 +146,20 @@ module RuoteTrail::ActiveRecord
 
       mixin = RuoteTrail.configuration.add_active_record_base_behavior
       self.class.send(:include, mixin) if mixin
+    end
+  end
+
+  class Receiver < Ruote::Receiver
+
+    # TODO use DelayedJob to do it safely and async
+    # def initialize(engine)
+    #
+    #   super(engine)
+    #   Thread.new { listen }
+    # end
+
+    def proceed(workitem)
+      reply(workitem)
     end
   end
 

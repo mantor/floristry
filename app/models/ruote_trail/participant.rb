@@ -1,6 +1,7 @@
 module RuoteTrail
   class Participant < LeafExpression
 
+    # include ExpressionMixin # Can't because active_record use it.
     include ParticipantExpressionMixin
 
     def current_state

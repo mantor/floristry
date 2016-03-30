@@ -1,8 +1,11 @@
 module RuoteTrail::ActiveRecord
 
+  # This is the frontend participant for web_participants.
+  # The corresponding backend participant are models which inherit from RuoteTrail::ActiveRecord::Base
+  #
   class Participant < RuoteTrail::Participant
 
-    PREFIX = '^web_'
+    PREFIX = 'web_'
 
     def update_attributes(new_attributes, options={})
 
@@ -19,10 +22,9 @@ module RuoteTrail::ActiveRecord
       return @instance unless @instance.nil?
 
       begin
-        @instance = task.camelize.constantize.find(@id)
-
-      rescue
-        @instance = task.camelize.constantize.new()  # TODO when does this happens?
+        @instance = klass.find(@id)
+      rescue ActiveRecord::RecordNotFound
+        @instance = klass.new
       end
 
       @instance.fei = @fei  # TODO is this needed? could it be immutable?
@@ -30,22 +32,12 @@ module RuoteTrail::ActiveRecord
       @instance
     end
 
-    def task
+    protected
 
-      @name.sub(/#{PREFIX}/, '')
-    end
-  end
+    def klass
 
-  class Receiver < Ruote::Receiver
-
-    # def initialize(engine) # TODO should be a Thread waiting for REST/MQ proceed request.
-    #
-    #   super(engine)
-    #   Thread.new { listen }
-    # end
-
-    def proceed(workitem)
-      reply(workitem)
+      k = @name.sub(PREFIX, '').camelize
+      "RuoteTrail::WebParticipant::#{k}".constantize
     end
   end
 end

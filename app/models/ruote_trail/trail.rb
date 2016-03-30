@@ -3,7 +3,6 @@ module RuoteTrail
 
     serialize :tree, JSON
 
-    # default_scope { where(archive: false) }
     scope :active, -> { where(archive: false) }
     scope :archived, -> { where(archive: true) }
 
@@ -47,9 +46,8 @@ module RuoteTrail
 
       t = find_by_wfid(wfid)
       t.current_state = 'completed'
-      t.completed_at = now
+      t.completed_at = timestamp
       t.archive = true
-      # TODO delete jobs?
       t.save
     end
 

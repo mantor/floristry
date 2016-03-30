@@ -47,3 +47,30 @@ module RuoteTrail
     end
   end
 end
+
+# TODO should we use a statemachine?
+# class WorkflowStateMachine
+#   include Statesman::Machine
+#   include Statesman::Events
+#
+#   state :started, initial: true
+#   state :completed
+#   state :completed_with_errors
+#   state :error
+#
+#   event :complete do
+#     transition from: :started,  to: :completed
+#   end
+#
+#   event :complete_with_errors do
+#     transition from: :started,  to: :completed_with_errors
+#   end
+#
+#   event :error do
+#     transition from: :started,  to: :error
+#   end
+#
+#   def current_state= state
+#     @current_state = state
+#   end
+# end

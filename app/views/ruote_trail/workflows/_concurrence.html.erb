@@ -4,6 +4,6 @@
                :layout => child.layout,
                :object => child,
                :locals => {:leaf => child} %>
-    <%= render :partial => 'ruote_trail/concurrence_spacer' unless index == concurrence.size - 1 %>
+    <%= render :partial => 'concurrence_spacer' unless index == concurrence.size - 1 %>
   <%- end %>
 </div>

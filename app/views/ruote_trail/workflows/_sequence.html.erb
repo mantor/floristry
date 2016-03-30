@@ -4,6 +4,6 @@
                :layout => child.layout,
                :object => child,
                :locals => {:leaf => child} %>
-    <%= render :partial => 'ruote_trail/sequence_spacer' unless index == sequence.size - 1 %>
+    <%= render :partial => 'sequence_spacer' unless index == sequence.size - 1 %>
   <%- end %>
 </div>
