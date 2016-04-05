@@ -1,7 +1,7 @@
 require 'test_helper'
 
-class RuoteTrailTest < ActiveSupport::TestCase
+class ActiveTrailTest < ActiveSupport::TestCase
   test "truth" do
-    assert_kind_of Module, RuoteTrail
+    assert_kind_of Module, ActiveTrail
   end
 end

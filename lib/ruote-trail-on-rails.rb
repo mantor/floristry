@@ -1,1 +1,0 @@
-require 'ruote/trail'

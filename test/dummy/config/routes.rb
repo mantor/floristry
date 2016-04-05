@@ -1,4 +1,4 @@
 Rails.application.routes.draw do
 
-  mount RuoteTrail::Engine => "/ruote-trail-on-rails"
+  mount ActiveTrail::Engine => "/trail"
 end

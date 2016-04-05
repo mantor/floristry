@@ -1,4 +1,4 @@
-# RuoteTrail
+# ActiveTrail
 
 The goal of this gem is to help you represent [Ruote's workflows](http://ruote.rubyforge.org/) using standard Rails
 facilities, e.g. partials, helpers, render, models, etc.
@@ -9,7 +9,7 @@ set. Obviously, you can override their default behaviors and representations by 
 
 To override a view, simply create a new one in:
 
-    /app/views/ruote_trail/_participant.html.erb.
+    /app/views/active_trail/_participant.html.erb.
 
 ## Hierarchy
 
@@ -31,7 +31,7 @@ TODO
 
 Add this line to your application's Gemfile:
 
-    gem 'ruote-trail-on-rails'
+    gem 'active-trail'
 
 And then execute:
 
@@ -39,15 +39,15 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install ruote-trail-on-rails
+    $ gem install active-trail
     
 Then register the service in the ruote engine:
 
 ```ruby
 RuoteKit.engine.add_service('trail',
-                            'ruote/trail/observer',
-                            'RuoteTrail::Observer',
-                            'archive' => 'Ruote::Trail::Archive::ActiveRecord')
+                            'active_trail/observer',
+                            'ActiveTrail::Observer',
+                            'archive' => 'ActiveTrail::Archive::ActiveRecord')
 ```
 
 ## Usage
@@ -71,11 +71,11 @@ is_future?
 New behaviors ca be added to low-level Expression such as Expression (root), BranchExpression or LeafExpression
 to affect all Expressions at once, only Leaves or only Branches.
 
-Create a file called /config/initializers/ruote-trail-on-rails.rb containing modules with the desired behaviors. Then
+Create a file called /config/initializers/active-trail.rb containing modules with the desired behaviors. Then
 use the following config to define which module will be included in the which low-level Expression.
 
 ```ruby
-module RuoteTrailBranchBehavior
+module ActiveTrailBranchBehavior
   def xyz
     # ...
   end
@@ -83,16 +83,16 @@ module RuoteTrailBranchBehavior
   # ...
 end
 
-RuoteTrail.configure do |config|
-  config.add_branch_expression_behavior = RuoteTrailBranchBehavior
-  #config.add_leaf_expression_behavior = RuoteTrailLeafBehavior
-  #config.add_expression_behavior = RuoteTrailBehavior
+ActiveTrail.configure do |config|
+  config.add_branch_expression_behavior = ActiveTrailBranchBehavior
+  #config.add_leaf_expression_behavior = ActiveTrailLeafBehavior
+  #config.add_expression_behavior = ActiveTrailBehavior
 end
 ```
 
 ## TODO
 
-1. Extract RuoteTrail::Observer in a separate gem (ruote-trail).
+1.
 
 ## Contributing
 
@@ -108,7 +108,7 @@ GPLv2
 
 ## Source
 
-https://github.com/northox/ruote-trail-on-rails
+https://github.com/northox/active-trail
 
 ## Author
 
