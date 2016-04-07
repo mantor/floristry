@@ -23,11 +23,11 @@ module ActiveTrail
           redirect_to action: :edit, id: @wf.wfid# TODO, :notice  => "Successfully updated and proceeded #{wi.instance.class.name.humanize}."
         else
 
-          render action: :edit# TODO, :notice  => "Successfully updated #{wi.instance.class.name.humanize}."
+          redirect_to action: :edit# TODO, :notice  => "Successfully updated #{wi.instance.class.name.humanize}."
         end
       else
 
-        render action: :edit# TODO, :notice  => "Failed ..."
+        redirect_to action: :edit# TODO, :notice  => "Failed ..."
       end
     end
 
