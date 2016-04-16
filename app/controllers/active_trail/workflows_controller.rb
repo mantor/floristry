@@ -9,7 +9,7 @@ module ActiveTrail
 
     def edit
 
-      @wf = Workflow.find(params[:id])
+      @wf ||= Workflow.find(params[:id])
     end
 
     def update
@@ -27,7 +27,7 @@ module ActiveTrail
         end
       else
 
-        redirect_to action: :edit# TODO, :notice  => "Failed ..."
+        render :edit# TODO, :notice  => "Failed ..."
       end
     end
 
