@@ -17,7 +17,7 @@ module ActiveTrail::ActiveRecord
       instance.errors
     end
 
-    def instance
+    def instance # TODO find a better name
 
       return @instance unless @instance.nil?
 
@@ -37,7 +37,7 @@ module ActiveTrail::ActiveRecord
     def klass
 
       k = @name.sub(PREFIX, '').camelize
-      "ActiveTrail::WebParticipant::#{k}".constantize
+      ActiveTrail::WebParticipant.const_get k
     end
   end
 end
