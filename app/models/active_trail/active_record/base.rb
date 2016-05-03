@@ -1,6 +1,7 @@
 module ActiveTrail::ActiveRecord
 
-  # This is the Backend Participant of WebParticipants - the only backend participant implemented by Rails
+  # This is the Backend listener Participant of WebParticipants - the only backend participant implemented by Rails
+  # It is called by the transient REST Participant.
   # It emulates an Expression by implementing interface and using mixins instead of inheritance.
   #
   class Base < ::ActiveRecord::Base
@@ -33,7 +34,7 @@ module ActiveTrail::ActiveRecord
       obj || raise(ActiveRecord::RecordNotFound)   # TODO this doesn't work, why ?
     end
 
-    # The workflow engine pass the workitem through this method
+    # The workflow engine pass the workitem through this method through the WebParticipant ...
     #
     # Save the workitem as an special attribute to be merged at proceed. Bypassing validation is necessary
     # since some Participant's model may have attributes that aren't currently present/valid.

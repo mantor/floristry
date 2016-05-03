@@ -1,7 +1,7 @@
 # This belongs with the Workflow Engine and will be migrated once decoupled with Rails.
 #
 
-# WebParticipant (ActiveRecord) backend participant
+# Backend dummy-transient participant to WebParticipant (ActiveRecord)
 #
 class DummyRestParticipant
   include Ruote::LocalParticipant
