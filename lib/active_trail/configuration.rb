@@ -17,6 +17,7 @@ module ActiveTrail
                   :add_branch_expression_behavior,
                   :add_expression_behavior,
                   :add_workflow_behavior,
-                  :add_active_record_base_behavior
+                  :add_active_record_base_behavior,
+                  :add_trail_behavior
   end
 end

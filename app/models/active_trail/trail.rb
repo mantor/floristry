@@ -6,12 +6,6 @@ module ActiveTrail
     scope :active, -> { where(archive: false) }
     scope :archived, -> { where(archive: true) }
 
-    # Specify the table name, because the ActiveTrail module namespaces this class, and
-    # ActiveRecord table resolution/guess was expecting the table to be named:
-    # active_trail_workflow_archive
-    # TODO it's OK to have it under active_trail
-    self.table_name = 'trail'
-
     # On launch, save tree structure.
     #
     # At that moment, the entire process and every expression involved
@@ -87,3 +81,6 @@ module ActiveTrail
     end
   end
 end
+
+mixin = ActiveTrail.configuration.add_trail_behavior
+ActiveTrail::Trail.send(:include, mixin) if mixin
