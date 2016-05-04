@@ -49,9 +49,6 @@ module ActiveTrail
 
       @children = branch(ROOT_EXPID, trail.tree)
       @fei.expid = default_focus unless @fei.focussed?
-
-      mixin = ActiveTrail.configuration.add_workflow_behavior
-      self.class.send(:include, mixin) if mixin
     end
 
     def last_active_at # TODO change name?
@@ -273,3 +270,6 @@ module ActiveTrail
     end
   end
 end
+
+mixin = ActiveTrail.configuration.add_workflow_behavior
+ActiveTrail::Workflow.send(:include, mixin) if mixin

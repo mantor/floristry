@@ -215,6 +215,5 @@ module ActiveTrail::ActiveRecord
   end
 end
 
-# Must be done outside of initialize, since we are dealing with class methods.
 mixin = ActiveTrail.configuration.add_active_record_base_behavior
-ActiveTrail::ActiveRecord::Base.send(:extend, "#{mixin}::ClassMethods".constantize) if mixin
+ActiveTrail::ActiveRecord::Base.send(:include, mixin) if mixin
