@@ -15,8 +15,7 @@ module ActiveTrail::ActiveRecord
     ATTRIBUTES_TO_EXCLUDE = %w(id __feid__ __workitem__ created_at updated_at )
 
     serialize :__workitem__, JSON
-
-    after_initialize :include_configured_mixin
+    
     after_find :init_fei, :init_fields_and_params
     after_create :init_fields_and_params
 
@@ -143,11 +142,6 @@ module ActiveTrail::ActiveRecord
       wi
     end
 
-    def include_configured_mixin
-
-      mixin = ActiveTrail.configuration.add_active_record_base_behavior
-      self.class.send(:include, mixin) if mixin
-    end
   end
 
   class Receiver < Ruote::Receiver
