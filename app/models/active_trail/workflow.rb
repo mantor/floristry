@@ -3,7 +3,7 @@ module ActiveTrail
 
     include ActiveTrail::CommonMixin
     alias_method :id, :wfid
-    attr_reader :launched_at, :current_state, :version
+    attr_reader :launched_at, :updated_at, :current_state, :version
 
     def self.all
 
@@ -44,16 +44,24 @@ module ActiveTrail
     #
     def initialize(id, trail)
 
-      n, f, p, @version, @launched_at, @current_state = parse_trail(trail)  # TODO terminated_at ?
+      n, f, p, @version, @launched_at, @updated_at, @current_state = parse_trail(trail)  # TODO terminated_at ?
       super(id, n, p, f, :past) # A Workflow is always in the past
 
       @children = branch(ROOT_EXPID, trail.tree)
       @fei.expid = default_focus unless @fei.focussed?
     end
 
-    def last_active_at # TODO change name?
+    def updated_at
 
-      Time.now # TODO Trail.updated_at
+      # We might deal with a workflow that doesn't implement this method, i.e. a remote participant
+      # In that case, we just return the last time this Workflow replied to the Engine.
+      if wi.respond_to? :updated_at
+
+        wi.updated_at
+      else
+
+        @updated_at
+      end
     end
 
     # TODO - Do something cleaner || find a better name -------------------------------
@@ -83,9 +91,10 @@ module ActiveTrail
       f = t.tree[1]['fields']
       version = t.version
       launched_at = t.launched_at
+      updated_at = t.updated_at
       current_state = t.current_state
 
-      [ name, f, p, version, launched_at, current_state ]
+      [ name, f, p, version, launched_at, updated_at, current_state ]
     end
 
     def find_era(expid)
