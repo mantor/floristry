@@ -18,6 +18,7 @@ module Ruote::Exp
       params[:name] = self.h.original_tree[0].sub(ActiveTrail::WEB_PARTICIPANT_REGEX, '').camelize
       params[:id] = self.applied_workitem.h['fei']['wfid']
       params[:assets] = self.applied_workitem.h['fields']['assets']
+      params[:target] = attribute(:target) || 'admin' #TODO move to a config?
 
       callback(attribute(:notifications), attribute(:deadline), params)
     end
