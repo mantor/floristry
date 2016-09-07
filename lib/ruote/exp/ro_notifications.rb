@@ -17,7 +17,7 @@ module Ruote::Exp
       params = Hash.new
       params[:name] = self.h.original_tree[0].sub(ActiveTrail::WEB_PARTICIPANT_REGEX, '').camelize
       params[:id] = self.applied_workitem.h['fei']['wfid']
-      params[:assets] = self.applied_workitem.h['fields']['scope_ids']
+      params[:assets] = self.applied_workitem.h['fields']['assets']
 
       callback(attribute(:notifications), attribute(:deadline), params)
     end
