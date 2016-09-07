@@ -91,6 +91,11 @@ module ActiveTrail::ActiveRecord
 
     def image() false end
 
+    def target
+
+      @params['target'] || 'admin' #TODO move to a config?
+    end
+
     # If proceeding, merge back attributes within saved workitem and reply to Workflow Engine
     #
     def proceed #TODO should be atomic
