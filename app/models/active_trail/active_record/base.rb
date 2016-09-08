@@ -93,7 +93,7 @@ module ActiveTrail::ActiveRecord
 
     def target
 
-      @params['target'] || 'admin' #TODO move to a config?
+      @params['target'] || AssetUser::DEFAULT_ROLE
     end
 
     # If proceeding, merge back attributes within saved workitem and reply to Workflow Engine
