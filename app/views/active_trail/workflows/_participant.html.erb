@@ -1,6 +1,12 @@
-<p>
-  State: <%= participant.current_state %>
-</p>
-<pre>
-<%= participant.to_yaml %>
-</pre>
+<div class="rat-bubble">
+  <div class="rat-part-header">
+    <%= participant.current_state %>
+    <b><%= participant.name %></b>
+    for <%= participant.scope(@wf.scope).to_s %>
+  </div>
+  <div class="rat-part">
+    <pre>
+      <%= participant.to_yaml %>
+    </pre>
+  </div>
+</div>
