@@ -231,11 +231,11 @@ module ActiveTrail
 
       # TODO this should come from the DB, and the admin should have an interface
       frontend_handlers = [
-          # {
-          #     :regex => '^ssh_',
-          #     :class => ActiveTrail::SshParticipant,
-          #     :options => {}
-          # },
+          {
+              :regex => ActiveTrail::SSH_PARTICIPANT_PREFIX,
+              :class => ActiveTrail::Participant,
+              :options => {}
+          },
           {
               regex: ActiveTrail::ActiveRecord::Participant::PREFIX,
               class: ActiveTrail::ActiveRecord::Participant,

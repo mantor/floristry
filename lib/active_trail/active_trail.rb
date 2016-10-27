@@ -14,9 +14,10 @@ require 'active_model/mass_assignment_security/sanitizer'
 
 module ActiveTrail
 
-  # The followin will be moved out of Rails in the Workflow Engine
   WEB_PARTICIPANT_PREFIX = 'web_'
+  SSH_PARTICIPANT_PREFIX = 'ssh_'
   WEB_PARTICIPANT_REGEX = /^#{WEB_PARTICIPANT_PREFIX}/
+  SSH_PARTICIPANT_REGEX = /^#{SSH_PARTICIPANT_PREFIX}/
   NO_SUBID = 'empty_subid' # Replacement for the subid part of a FEID.
 
   module ExpressionMixin
