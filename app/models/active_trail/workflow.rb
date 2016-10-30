@@ -233,7 +233,7 @@ module ActiveTrail
       frontend_handlers = [
           {
               :regex => ActiveTrail::SSH_PARTICIPANT_PREFIX,
-              :class => ActiveTrail::Participant,
+              :class => ActiveTrail::SSH::Participant,
               :options => {}
           },
           {
