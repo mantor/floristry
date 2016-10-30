@@ -8,40 +8,45 @@ class SshParticipant < Ruote::Participant
 
   def consume(wi)
 
-    regex = /^((\w+)@)?([^:]+)(:(\w+)\.(\w+))?$/ # e.g. 'user@host.mantor.org:os_secfix.json'
-    fail ArgumentError.new("syntax is incorrect") unless (match = regex.match wi.params['task'])
+    if wi.params['target'].nil?
 
-    user = match[2].nil? ? 'opensec' : match[2]
-    host = match[3]
-    modul = match[5]
-    format = match[6]
+      hosts = wi.fields['scoped']
+    else
+
+      hosts = wi.fields['scoped'].select{|k,v| v['tags'].include?(wi.params['target']) }
+    end
+
+    # TODO should be manipulable &&|| extracted to a config
+    user = 'mantor'
     key = wi.params['key'].nil? ? %w(~/.ssh/id_rsa) : wi.params['key']
     port = wi.params['port'].nil? ? 22 : wi.params['port']
 
     options = { :keys => key, :keys_only => true, :logger => @log, :port => port }
-    out = ''
-    err = ''
-    Net::SSH.start(host, user, options) do |ssh|
-      ssh.open_channel do |channel|
-        ch
-        annel.exec("fetch #{modul}.#{format}") do |ch, success|
-          #abort "could not execute command" unless success # TODO trigger cancel or retry
+    out = ""
+    err = ""
+    hosts.each do |h|
 
-          ch.on_data do |ch, data|
-            out = data
-          end
+      Net::SSH.start(h[1]['name'], user, options) do |ssh|
+        ssh.open_channel do |channel|
+          channel.exec("fetch") do |ch, success|
+            #abort "could not execute command" unless success # TODO trigger cancel or retry
 
-          ch.on_extended_data do |ch, type, data|
-            err = data
-          end
+            ch.on_data do |ch, data|
+              out << data
+            end
 
-          ch.on_close do |ch|
-            puts "channel is closing!"
+            ch.on_extended_data do |ch, type, data|
+              err << data
+            end
+
+            ch.on_close do |ch|
+              puts "channel is closing!"
+            end
           end
         end
-      end
 
-      ssh.loop
+        ssh.loop
+      end
     end
 
     wi.fields['stdout'] = out
