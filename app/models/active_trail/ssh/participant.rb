@@ -19,5 +19,12 @@ module ActiveTrail::SSH
 
       s
     end
+
+    def to_partial_path
+
+      @_to_partial_path ||= begin
+        "ssh/#{name.split(PREFIX).last}".freeze
+      end
+    end
   end
 end
