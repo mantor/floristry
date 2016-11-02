@@ -16,19 +16,20 @@ class SshParticipant < Ruote::Participant
       hosts = wi.fields['scoped'].select{|k,v| v['tags'].include?(wi.params['target']) }
     end
 
-    # TODO should be manipulable &&|| extracted to a config
-    user = 'mantor'
+    # TODO default user and key and port should be manipulable via web &&|| extracted to a config
+    user = wi.params['user'].nil? ? 'mantor' : wi.params['user']
     key = wi.params['key'].nil? ? %w(~/.ssh/id_rsa) : wi.params['key']
     port = wi.params['port'].nil? ? 22 : wi.params['port']
+    command = wi.params['command'].nil? ? 'fetch' : wi.params['command']
 
-    options = { :keys => key, :keys_only => true, :logger => @log, :port => port }
+    options = { keys: key, keys_only: true, logger: @log, port: port }
     out = ""
     err = ""
     hosts.each do |h|
 
       Net::SSH.start(h[1]['name'], user, options) do |ssh|
         ssh.open_channel do |channel|
-          channel.exec("fetch") do |ch, success|
+          channel.exec(command) do |ch, success|
             #abort "could not execute command" unless success # TODO trigger cancel or retry
 
             ch.on_data do |ch, data|
