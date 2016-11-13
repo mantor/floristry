@@ -49,7 +49,7 @@ module ActiveTrail
 
       t = find_by_wfid(wfid)
       t.current_state = 'error'
-      t.tree = insert_in_tree(t.tree, msg['fei']['expid'], msg['workitem']['fields'])
+      t.tree = insert_in_tree(t.tree, msg['fei']['expid'], (msg['workitem'].nil?) ? {} : msg['workitem']['fields'])
       # TODO delete jobs?
       t.save
     end
