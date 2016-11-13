@@ -22,32 +22,37 @@ class SshParticipant < Ruote::Participant
     port = wi.params['port'].nil? ? 22 : wi.params['port']
     command = wi.params['command'].nil? ? 'fetch' : wi.params['command']
 
-    options = { keys: key, keys_only: true, logger: @log, port: port }
+    options = { keys: key, keys_only: true, non_interactive: true, logger: @log, port: port }
     out = ""
     err = ""
     hosts.each do |h|
 
-      Net::SSH.start(h[1]['name'], user, options) do |ssh|
-        ssh.open_channel do |channel|
-          channel.exec(command) do |ch, success|
-            #abort "could not execute command" unless success # TODO trigger cancel or retry
+      begin
+        Net::SSH.start(h[1]['name'], user, options) do |ssh|
+          ssh.open_channel do |channel|
+            channel.exec(command) do |ch, success|
+              abort "could not execute command" unless success # TODO trigger cancel or retry
 
-            ch.on_data do |ch, data|
-              out << data
-            end
+              ch.on_data do |ch, data|
+                out << data
+              end
 
-            ch.on_extended_data do |ch, type, data|
-              err << data
-            end
+              ch.on_extended_data do |ch, type, data|
+                err << data
+              end
 
-            ch.on_close do |ch|
-              puts "channel is closing!"
+              ch.on_close do |ch|
+                puts "channel is closing!"
+              end
             end
           end
-        end
 
-        ssh.loop
+          ssh.loop
+        end
+      rescue Exception => exception
+        err << exception.message
       end
+
     end
 
     wi.fields['stdout'] = out
