@@ -12,12 +12,14 @@ require 'active_model'
 require 'active_model/mass_assignment_security'
 require 'active_model/mass_assignment_security/sanitizer'
 
+require 'ruote/storage/fs_storage'
+require 'ruote/part/smtp_participant'
+require 'ruote/exp/ro_notifications'
+require 'ruote/part/ssh_participant'
+require 'ruote/part/dummy_rest_participant'
+
 module ActiveTrail
 
-  WEB_PARTICIPANT_PREFIX = 'web_'
-  SSH_PARTICIPANT_PREFIX = 'ssh_'
-  WEB_PARTICIPANT_REGEX = /^#{WEB_PARTICIPANT_PREFIX}/
-  SSH_PARTICIPANT_REGEX = /^#{SSH_PARTICIPANT_PREFIX}/
   NO_SUBID = 'empty_subid' # Replacement for the subid part of a FEID.
 
   module ExpressionMixin
@@ -32,9 +34,6 @@ module ActiveTrail
 
     def layout() false end
 
-    # When mounting an Isolated Engine, the mount path is used as a prefix e.g.
-    # route_trail/route_trail/_define.html.erb instead of active_trail/_define.erb
-    #
     def to_partial_path()
 
       @_to_partial_path ||= begin
@@ -56,6 +55,8 @@ module ActiveTrail
 
   module LeafExpressionMixin
 
+    include ExpressionMixin
+
     def is_leaf?() true end
     def is_branch?() false end
     def is_participant?() false end
@@ -67,5 +68,21 @@ module ActiveTrail
     include LeafExpressionMixin
 
     def is_participant?() true end
+    def due_at() nil end
+    def instance() self end
+
+    def current_state
+
+      case era
+        when :future
+          'upcoming'
+        when :present
+          'open'
+        when :past
+          'closed'
+        else
+          ''
+      end
+    end
   end
 end

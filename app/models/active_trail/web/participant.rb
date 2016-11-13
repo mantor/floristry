@@ -1,4 +1,4 @@
-module ActiveTrail::ActiveRecord
+module ActiveTrail::Web
 
   # This is the frontend participant for web_participants.
   # The corresponding backend participant are models which inherit from ActiveTrail::ActiveRecord::Base
@@ -6,6 +6,7 @@ module ActiveTrail::ActiveRecord
   class Participant < ActiveTrail::Participant
 
     PREFIX = 'web_'
+    REGEX = /^#{PREFIX}/
 
     def update_attributes(new_attributes, options={})
 
@@ -37,7 +38,7 @@ module ActiveTrail::ActiveRecord
     def klass
 
       k = @name.sub(PREFIX, '').camelize
-      ActiveTrail::WebParticipant.const_get k
+      ActiveTrail::Web.const_get k
     end
   end
 end

@@ -232,13 +232,13 @@ module ActiveTrail
       # TODO this should come from the DB, and the admin should have an interface
       frontend_handlers = [
           {
-              :regex => ActiveTrail::SSH_PARTICIPANT_PREFIX,
-              :class => ActiveTrail::SSH::Participant,
+              :regex => ActiveTrail::Ssh::Participant::PREFIX,
+              :class => ActiveTrail::Ssh::Participant,
               :options => {}
           },
           {
-              regex: ActiveTrail::ActiveRecord::Participant::PREFIX,
-              class: ActiveTrail::ActiveRecord::Participant,
+              regex: ActiveTrail::Web::Participant::PREFIX,
+              class: ActiveTrail::Web::Participant,
               options: {}
           },
           {   # Default: This one should not be editable by the user
@@ -253,10 +253,9 @@ module ActiveTrail
 
     def is_expression?(name)
 
-      ActiveTrail.const_get(name) < ActiveTrail::Expression
-      true
+      ActiveTrail.const_get(name) <= ActiveTrail::Expression ? true : false
 
-    rescue NameError # TODO - low priority - could this be cleaner? avoid exception?
+    rescue NameError
       false
 
     end

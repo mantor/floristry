@@ -1,6 +1,6 @@
 module ActiveTrail::ActiveRecord
 
-  # This is the Backend listener Participant of WebParticipants - the only backend participant implemented by Rails
+  # This is the Backend listener Participant of Web participants - the only backend participant implemented by Rails
   # It is called by the transient REST Participant.
   # It emulates an Expression by implementing interface and using mixins instead of inheritance.
   #
@@ -12,7 +12,7 @@ module ActiveTrail::ActiveRecord
     include ActiveTrail::ExpressionMixin
     include ActiveTrail::ParticipantExpressionMixin
 
-    ATTRIBUTES_TO_EXCLUDE = %w(id __feid__ __workitem__ created_at updated_at )
+    ATTRIBUTES_TO_EXCLUDE = %w(id __feid__ __workitem__ )
 
     serialize :__workitem__, JSON
     
@@ -33,7 +33,7 @@ module ActiveTrail::ActiveRecord
       obj || raise(ActiveRecord::RecordNotFound)   # TODO this doesn't work, why ?
     end
 
-    # The workflow engine pass the workitem through this method through the WebParticipant ...
+    # The workflow engine pass the workitem through this method through the Web participant ...
     #
     # Save the workitem as an special attribute to be merged at proceed. Bypassing validation is necessary
     # since some Participant's model may have attributes that aren't currently present/valid.
@@ -72,17 +72,6 @@ module ActiveTrail::ActiveRecord
       super
     end
 
-    # We don't want each partials to be in it's own directory - everything ends up in active_trail/web_paticipants
-    #
-    def to_partial_path
-
-      @_to_partial_path ||= begin
-        element = ActiveSupport::Inflector.underscore(name)
-        collection = ActiveSupport::Inflector.tableize(module_name)
-        "#{collection}/#{element}".freeze
-      end
-    end
-
     def fei=(fei) # TODO is this really required? why? sounds fishy.
 
       @fei = fei
@@ -109,10 +98,9 @@ module ActiveTrail::ActiveRecord
       sleep(1)
     end
 
-    # Resolution of module is problematic in the isolated engine - TODO
-    # Used by to_partial_path() and strong_params in workflow's controller
+    # Resolution of module is problematic in the isolated engine - used by strong_params in workflow's controller
     #
-    def module_name() 'web_participant' end
+    def module_name() 'web' end
 
     protected
 

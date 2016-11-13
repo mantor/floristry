@@ -1,7 +1,7 @@
 # This belongs with the Workflow Engine and will be migrated once decoupled with Rails.
 #
 
-# Backend dummy-transient participant to WebParticipant (ActiveRecord)
+# Backend dummy-transient participant to Web participant (ActiveRecord)
 #
 class DummyRestParticipant
   include Ruote::LocalParticipant
@@ -40,7 +40,7 @@ class DummyRestParticipant
 
   def web_part_class(backend_part_name)
 
-    name = backend_part_name.sub(ActiveTrail::WEB_PARTICIPANT_REGEX, '').camelize
-    ActiveTrail::WebParticipant.const_get(name)
+    name = backend_part_name.sub(ActiveTrail::Web::Participant::REGEX, '').camelize
+    ActiveTrail::Web.const_get(name)
   end
 end
