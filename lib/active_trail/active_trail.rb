@@ -70,19 +70,5 @@ module ActiveTrail
     def is_participant?() true end
     def due_at() nil end
     def instance() self end
-
-    def current_state
-
-      case era
-        when :future
-          'upcoming'
-        when :present
-          'open'
-        when :past
-          'closed'
-        else
-          ''
-      end
-    end
   end
 end
