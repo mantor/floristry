@@ -18,6 +18,7 @@ module ActiveTrail
                   :add_expression_behavior,
                   :add_workflow_behavior,
                   :add_active_record_base_behavior,
-                  :add_trail_behavior
+                  :add_trail_behavior,
+                  :add_participant_behavior
   end
 end
