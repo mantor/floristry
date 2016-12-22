@@ -192,7 +192,7 @@ module ActiveTrail::ActiveRecord
     # in order to return the latest transition 'to_state'.
     def current_state(force_reload: false)
 
-      @object.current_state
+      @object.read_attribute(:current_state)
     end
 
     after_transition do |object, transition|
