@@ -168,7 +168,9 @@ module ActiveTrail::ActiveRecord
     end
 
     event :start do
+      transition from: :upcoming,     to: :in_progress
       transition from: :open,         to: :in_progress
+      transition from: :in_progress,  to: :in_progress
     end
 
     event :proceed do
