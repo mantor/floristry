@@ -241,6 +241,11 @@ module ActiveTrail
               class: ActiveTrail::Web::Participant,
               options: {}
           },
+          {
+              regex: ActiveTrail::IssueHandler::Participant::PREFIX,
+              class: ActiveTrail::IssueHandler::Participant,
+              options: {}
+          },
           {   # Default: This one should not be editable by the user
               regex: '.*',
               class: Participant,
