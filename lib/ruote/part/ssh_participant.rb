@@ -18,7 +18,7 @@ class SshParticipant < Ruote::Participant
 
     # TODO default user and key and port should be manipulable via web &&|| extracted to a config
     user = wi.params['user'].nil? ? 'mantor' : wi.params['user']
-    key = wi.params['key'].nil? ? %w(~/.ssh/id_rsa) : wi.params['key']
+    key = wi.params['key'].nil? ? %w(~/.ssh/id_rsa) : wi.params['key'] # TODO none by default - let the lib choose
     port = wi.params['port'].nil? ? 22 : wi.params['port']
     command = wi.params['command'].nil? ? 'fetch' : wi.params['command']
 
