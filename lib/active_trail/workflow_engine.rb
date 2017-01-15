@@ -24,6 +24,11 @@ module ActiveTrail
       engine.register(regex, handler)
     end
 
+    def self.register_participant_list(plist)
+
+      engine.participant_list= plist
+    end
+
     class LaunchError < Exception
       def initialize()
         super('cannot launch process')
