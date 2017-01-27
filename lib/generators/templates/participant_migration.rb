@@ -1,8 +1,9 @@
 class <%= migration_class_name %> < ActiveRecord::Migration
   def change
-    create_table :<%= table_name %> do |t|
+    create_table :active_trail_<%= table_name %> do |t|
       t.string :__feid__
       t.text :__workitem__
+      t.string :current_state
 <% attributes.each do |attribute| -%>
 <% if attribute.password_digest? -%>
 t.string :password_digest<%= attribute.inject_options %>
