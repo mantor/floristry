@@ -9,13 +9,12 @@ module ActiveTrail
 
     def self.launch(pdef, fields={}, vars={}, root_stash=nil)
 
-      # Silence Ruote Exception, in Anticipation that the WorkflowEngine will be a remote service.
       begin
 
         engine.launch(pdef, fields, vars, root_stash)
-      rescue
+      rescue Ruote::Reader::Error => e
 
-        raise LaunchError
+        raise LaunchError.new(e.message)
       end
     end
 
@@ -30,8 +29,9 @@ module ActiveTrail
     end
 
     class LaunchError < Exception
-      def initialize()
-        super('cannot launch process')
+      def initialize(error)
+
+        super("#{error}")
       end
     end
   end
