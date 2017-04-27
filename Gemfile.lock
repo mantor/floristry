@@ -1,8 +1,23 @@
 PATH
+  remote: ../flor
+  specs:
+    flor (0.14.0)
+      fugit (>= 0.9.5)
+      munemo (>= 1.0.1)
+      raabro (>= 1.1.3)
+
+PATH
+  remote: ../httpclient
+  specs:
+    httpclient (2.8.3)
+
+PATH
   remote: .
   specs:
     active-trail (0.1.3)
       active_attr
+      flor
+      httpclient
       protected_attributes (>= 1.0.7)
       rails (>= 4.1.0)
       ruote (>= 2.3.0)
@@ -29,7 +44,7 @@ GEM
       erubis (~> 2.7.0)
       rails-dom-testing (~> 1.0, >= 1.0.5)
       rails-html-sanitizer (~> 1.0, >= 1.0.2)
-    active_attr (0.9.0)
+    active_attr (0.10.0)
       activemodel (>= 3.0.2, < 5.1)
       activesupport (>= 3.0.2, < 5.1)
     activejob (4.2.6)
@@ -48,15 +63,17 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
-    arel (6.0.3)
+    arel (6.0.4)
     blankslate (2.1.2.4)
     builder (3.2.2)
-    concurrent-ruby (1.0.1)
+    concurrent-ruby (1.0.5)
     erubis (2.7.0)
-    file-tail (1.1.0)
+    file-tail (1.2.0)
       tins (~> 1.0)
-    globalid (0.3.6)
-      activesupport (>= 4.1.0)
+    fugit (0.9.5)
+      raabro (>= 1.1.3)
+    globalid (0.4.0)
+      activesupport (>= 4.2.0)
     i18n (0.7.0)
     jquery-rails (4.1.1)
       rails-dom-testing (>= 1, < 3)
@@ -67,17 +84,19 @@ GEM
       nokogiri (>= 1.5.9)
     mail (2.6.4)
       mime-types (>= 1.16, < 4)
-    mime-types (3.0)
+    mime-types (3.1)
       mime-types-data (~> 3.2015)
-    mime-types-data (3.2016.0221)
+    mime-types-data (3.2016.0521)
     mini_portile2 (2.0.0)
     minitest (5.8.4)
+    munemo (1.0.1)
     nokogiri (1.6.7.2)
       mini_portile2 (~> 2.0.0.rc2)
     parslet (1.4.0)
       blankslate (~> 2.0)
     protected_attributes (1.1.3)
       activemodel (>= 4.0.1, < 5.0)
+    raabro (1.1.3)
     rack (1.6.4)
     rack-test (0.6.3)
       rack (>= 1.0)
@@ -137,16 +156,16 @@ GEM
       ruby2ruby (>= 1.2.5)
       ruby_parser (>= 2.0.5)
       sexp_processor (>= 3.0.5)
-    sprockets (3.5.2)
+    sprockets (3.7.1)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
-    sprockets-rails (3.0.4)
+    sprockets-rails (3.2.0)
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
     thor (0.19.1)
     thread_safe (0.3.5)
-    tins (1.9.0)
+    tins (1.13.2)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
 
@@ -155,7 +174,9 @@ PLATFORMS
 
 DEPENDENCIES
   active-trail!
+  flor!
+  httpclient!
   jquery-rails
 
 BUNDLED WITH
-   1.10.6
+   1.15.0.pre.1

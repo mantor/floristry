@@ -21,21 +21,21 @@ module ActiveTrail
         self.find_by_scope arg
       else
         fei = FlowExpressionId.new(arg)
-        trail = Trail.find_by_wfid(fei.wfid)
+        trail = Trail.find_by_exid(fei.exid)
         raise ActiveRecord::RecordNotFound unless trail
 
         new(fei, trail)
       end
     end
 
-    def self.complete(wfid)
+    def self.complete(exid)
 
-      self.find(wfid).trigger!(:complete)
+      self.find(exid).trigger!(:complete)
     end
 
-    def self.error(wfid)
+    def self.error(exid)
 
-      self.find(wfid).trigger!(:error)
+      self.find(exid).trigger!(:error)
     end
 
     # A Workflow is a special type of Expression. It has the responsibility to
@@ -77,8 +77,8 @@ module ActiveTrail
     def self.find_by_scope(scope)
 
       @wfs = []
-      Trail.send(scope).select(:id, :wfid).order(id: :desc).each do |t|
-        @wfs << Workflow.find(t.wfid)
+      Trail.send(scope).select(:id, :exid).order(id: :desc).each do |t|
+        @wfs << Workflow.find(t.exid)
       end
 
       @wfs
@@ -167,7 +167,7 @@ module ActiveTrail
       unless @current_expids
 
         @current_expids = Array.new
-        p = WorkflowEngine.process(wfid)
+        p = WorkflowEngine.process(exid)
         p.position.each { |pos| @current_expids << to_expid(pos[0]) } if p
       end
 

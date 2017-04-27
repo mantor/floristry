@@ -1,3 +1,6 @@
+require 'flor'
+require 'jsonclient'
+
 require 'ruote/observer'
 require 'ruote/workitem'
 

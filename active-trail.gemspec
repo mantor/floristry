@@ -20,4 +20,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'ruote', '>= 2.3.0'
   s.add_runtime_dependency 'protected_attributes', '>= 1.0.7' # TODO switch to strong_parameters
   s.add_runtime_dependency 'active_attr'
+
+  s.add_runtime_dependency 'flor'
+  s.add_runtime_dependency 'httpclient'
 end
