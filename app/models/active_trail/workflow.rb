@@ -202,7 +202,7 @@ module ActiveTrail
     # and returns an object with its child Expressions (either Leaves or Branches).
     #
     # :expid is the relative position in the Workflow
-    # :exp is used to navigate within Ruote's workflow internal structure
+    # :exp is used to navigate within the workflow internal structure
     #
     def branch(expid, parent_node)
 
@@ -229,7 +229,7 @@ module ActiveTrail
 
     # Returns proper Expression type based on its name.
     #
-    # Anything not a Ruote Expression is considered a Participant Expression, e.g.,
+    # Anything not an Expression is considered a Participant Expression, e.g.,
     # if == If, sequence == Sequence, admin == Participant, xyz == Participant
     #
     def factory(exid, era, exp)

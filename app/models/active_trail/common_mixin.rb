@@ -1,6 +1,6 @@
 module ActiveTrail::CommonMixin
 
-  CHILDREN = 1     # Branch expressions stores children expressions in the 3rd element
+  CHILDREN = 1     # Where branch expressions stores children expressions
   ROOT_EXPID = '0' # Root expression id - yes, it's a string (e.g. 0_1_0)
   SEP = '!'        # FEID's field separator
   EXPID_SEP = '_'  # Expression id's child separator

@@ -93,7 +93,7 @@ module ActiveTrail::ActiveRecord
       receiver.proceed(merged_wi)
 
       # TODO this sucks ass!
-      # The trail seems to be written each time ruote 'steps' (each 0.8s).
+      # The trail seems to be written each time the workflow engine 'steps' (each 0.8s).
       # Food for thought - If nothing better: Could we emulate atomicity by simply increasing the expid?
       sleep(1)
     end
@@ -135,20 +135,6 @@ module ActiveTrail::ActiveRecord
       wi
     end
 
-  end
-
-  class Receiver < Ruote::Receiver
-
-    # TODO use DelayedJob to do it safely and async
-    # def initialize(engine)
-    #
-    #   super(engine)
-    #   Thread.new { listen }
-    # end
-
-    def proceed(workitem)
-      reply(workitem)
-    end
   end
 
   class StateMachine

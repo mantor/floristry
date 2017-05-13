@@ -1,10 +1,8 @@
 require 'flor'
 require 'jsonclient'
 
-require 'ruote/observer'
 require 'ruote/workitem'
 
-# require 'active_trail/observer'
 require 'active_trail/configuration'
 require 'active_trail/engine'
 require 'active_trail/workflow_engine'
@@ -14,12 +12,6 @@ require 'active_attr'
 require 'active_model'
 require 'active_model/mass_assignment_security'
 require 'active_model/mass_assignment_security/sanitizer'
-
-require 'ruote/storage/fs_storage'
-require 'ruote/part/smtp_participant'
-require 'ruote/exp/ro_notifications'
-require 'ruote/part/ssh_participant'
-require 'ruote/part/dummy_rest_participant'
 
 module ActiveTrail
 

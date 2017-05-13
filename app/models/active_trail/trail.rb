@@ -77,7 +77,7 @@ module ActiveTrail
 
     protected
 
-    # Insert hash in a Ruote tree based on an expression id.
+    # Insert hash in a workflow tree based on an expression id.
     #
     def self.insert_in_tree(tree, exp, fields)
       t = [tree]

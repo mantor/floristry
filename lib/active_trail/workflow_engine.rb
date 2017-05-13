@@ -1,7 +1,7 @@
 module ActiveTrail
   class WorkflowEngine
 
-    def self.engine() RuoteKit.engine end
+    # def self.engine() RuoteKit.engine end # TODO
 
     def self.process(exid)
 
@@ -62,12 +62,12 @@ module ActiveTrail
 
     def self.register_participant(regex, handler)
 
-      engine.register(regex, handler)
+      # engine.register(regex, handler) # TODO
     end
 
     def self.register_participant_list(plist)
 
-      engine.participant_list= plist
+      # engine.participant_list= plist # TODO
     end
 
     class LaunchError < Exception
