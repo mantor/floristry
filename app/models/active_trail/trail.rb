@@ -29,14 +29,11 @@ module ActiveTrail
 
       t = new
       t.wfid = exe['exid']
-      t.name = 'Test'
-      t.version = '0.1'
-      t.current_state = exe['status']
-      t.launched_at = exe['data']['start']
-      # msg['tree'][1]['fields'] = msg['workitem']['fields']
-      tree = exe['data']['nodes']
-      # tree[2] = {params: exe['data']['nodes']['0']['vars']}
-      t.tree = tree
+      t.name = 'Test' # TODO
+      t.version = '0.1' # TODO
+      t.current_state = 'launched'
+      t.launched_at = exe['consumed'] #TODO check timezone / timestamp format
+      t.tree = exe['tree']
       t.save
     end
 
@@ -51,9 +48,9 @@ module ActiveTrail
       t.save
     end
 
-    def self.terminated(wfid, msg)
+    def self.terminated(msg)
 
-      t = find_by_wfid(wfid)
+      t = find_by_wfid(msg['exid'])
       t.current_state = 'completed'
       t.completed_at = timestamp
       t.archive = true

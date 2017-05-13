@@ -36,15 +36,6 @@ module ActiveTrail
       res = engine('message', :post, { point: 'launch', domain: 'org.mantor', tree: pdef } )
       exid = res.content['exid']
 
-      # @todo Below is temporary, in anctipation of a launch msg back from flack at some "point"
-      # Keep calm and wait for Flor to launch the execution
-      sleep(1)
-
-      # It launched. Just create a trail.
-      # flack does not return the message with the creation response. Go and grab it
-      process(exid)
-      ActiveTrail::Trail.launched(exe)
-
       exid
     end
 
