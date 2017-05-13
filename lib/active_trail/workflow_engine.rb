@@ -1,43 +1,40 @@
 module ActiveTrail
   class WorkflowEngine
 
-    # def self.engine() RuoteKit.engine end # TODO
+    PROTO = 'http'
+    HOST = 'localhost'
+    PORT = 7007
+
+    def self.engine(res, verb = :get, opts = {})
+
+      begin
+
+        uri = "#{PROTO}://#{HOST}:#{PORT}/#{res}"
+        JSONClient.new.send(verb, uri, opts)
+
+      rescue Errno::ECONNREFUSED => e
+        raise LaunchError.new(e.message)
+
+      end
+    end
 
     def self.process(exid)
 
-      uri = 'http://localhost:7007/executions'
-      json_client = JSONClient.new
-      res = json_client.get(uri)
-
+      res = engine('executions')
       execs = res.content['_embedded']
 
-      execs.find { |exe|
-        exe['exid'] == exid
-      }
+      execs.find { |exe| exe['exid'] == exid }
     end
 
     def self.processes(opts = {})
-      engine.processes(opts)
+
+      # engine.processes(opts) # TODO
     end
 
     def self.launch(pdef, fields={}, vars={}, root_stash=nil)
 
-      begin
-
-        # engine.launch(pdef, fields, vars, root_stash)
-
-        json_client = JSONClient.new
-        res = json_client.post('http://localhost:7007/message', {
-          point: 'launch',
-          domain: 'org.mantor',
-          tree: pdef }
-        )
-        exid = res.content['exid']
-
-      rescue Errno::ECONNREFUSED => e
-
-        raise LaunchError.new(e.message)
-      end
+      res = engine('message', :post, { point: 'launch', domain: 'org.mantor', tree: pdef } )
+      exid = res.content['exid']
 
       # @todo Below is temporary, in anctipation of a launch msg back from flack at some "point"
       # Keep calm and wait for Flor to launch the execution
@@ -45,19 +42,15 @@ module ActiveTrail
 
       # It launched. Just create a trail.
       # flack does not return the message with the creation response. Go and grab it
-      uri = 'http://localhost:7007/executions'
-      json_client = JSONClient.new
-      res = json_client.get(uri)
-
-      execs = res.content['_embedded']
-
-      exe = execs.find { |exe|
-        exe['exid'] == exid
-      }
+      process(exid)
       ActiveTrail::Trail.launched(exe)
 
-
       exid
+    end
+
+    def proceed(wi)
+
+      # res = engine('message', :post, { ... } ) # TODO
     end
 
     def self.register_participant(regex, handler)

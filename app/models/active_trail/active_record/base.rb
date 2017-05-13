@@ -89,8 +89,7 @@ module ActiveTrail::ActiveRecord
     #
     def proceed #TODO should be atomic
 
-      receiver = Receiver.new(ActiveTrail::WorkflowEngine.engine)
-      receiver.proceed(merged_wi)
+      ActiveTrail::WorkflowEngine.engine.proceed(merged_wi)
 
       # TODO this sucks ass!
       # The trail seems to be written each time the workflow engine 'steps' (each 0.8s).
