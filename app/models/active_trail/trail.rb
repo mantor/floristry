@@ -11,17 +11,32 @@ module ActiveTrail
     # At that moment, the entire process and every expression involved
     # are saved along with their params but there's no workitem.
     #
-    def self.launched(wfid, msg)
+    # def self.launched(wfid, msg)
+    #
+    #   t = new
+    #   t.wfid = wfid
+    #   t.name = msg['workitem']['wf_name']
+    #   t.version = msg['workitem']['wf_revision']
+    #   t.current_state = 'launched'
+    #   t.launched_at = msg['workitem']['wf_launched_at']
+    #   msg['tree'][1]['fields'] = msg['workitem']['fields']
+    #   msg['tree'][1]['params'] = msg['variables'].select { |k, v| !v.is_a?(Array) } # TODO This is BS but working (tm)
+    #   t.tree = msg['tree']
+    #   t.save
+    # end
+
+    def self.launched(exe)
 
       t = new
-      t.wfid = wfid
-      t.name = msg['workitem']['wf_name']
-      t.version = msg['workitem']['wf_revision']
-      t.current_state = 'launched'
-      t.launched_at = msg['workitem']['wf_launched_at']
-      msg['tree'][1]['fields'] = msg['workitem']['fields']
-      msg['tree'][1]['params'] = msg['variables'].select { |k, v| !v.is_a?(Array) } # TODO This is BS but working (tm)
-      t.tree = msg['tree']
+      t.wfid = exe['exid']
+      t.name = 'Test'
+      t.version = '0.1'
+      t.current_state = exe['status']
+      t.launched_at = exe['data']['start']
+      # msg['tree'][1]['fields'] = msg['workitem']['fields']
+      tree = exe['data']['nodes']
+      # tree[2] = {params: exe['data']['nodes']['0']['vars']}
+      t.tree = tree
       t.save
     end
 

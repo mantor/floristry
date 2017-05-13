@@ -1,6 +1,6 @@
 module ActiveTrail::CommonMixin
 
-  CHILDREN = 2     # Branch expressions stores children expressions in the 3rd element
+  CHILDREN = 1     # Branch expressions stores children expressions in the 3rd element
   ROOT_EXPID = '0' # Root expression id - yes, it's a string (e.g. 0_1_0)
   SEP = '!'        # FEID's field separator
   EXPID_SEP = '_'  # Expression id's child separator
@@ -47,37 +47,38 @@ module ActiveTrail::CommonMixin
       def initialize(id)
 
         @focus = true
-
-        if id.is_a?(String) && id =~ FEID_REGEX
-
-          s = id.split(SEP)
-          @engineid = s[-4] || 'engine'
-          @expid = s[-3] || default_expid
-          @subid = s[-2] || NO_SUBID
-          @wfid = s[-1]
-          @id = to_feid
-
-        elsif id.is_a?(Hash) && id.has_key?(:wfid)
-
-          @engineid = id[:engine_id] || 'engine'
-          @expid = id[:expid] || default_expid
-          @subid = id[:subid] || NO_SUBID
-          @wfid = id[:wfid]
-          @id = to_feid
-        else
-
-          raise ActiveRecord::RecordNotFound
-        end
+        @id = id
+        # if id.is_a?(String) && id =~ FEID_REGEX
+        #
+        #   s = id.split(SEP)
+        #   @engineid = s[-4] || 'engine'
+        #   @expid = s[-3] || default_expid
+        #   @subid = s[-2] || NO_SUBID
+        #   @wfid = s[-1]
+        #   @id = to_feid
+        #
+        # elsif id.is_a?(Hash) && id.has_key?(:wfid)
+        #
+        #   @engineid = id[:engine_id] || 'engine'
+        #   @expid = id[:expid] || default_expid
+        #   @subid = id[:subid] || NO_SUBID
+        #   @wfid = id[:wfid]
+        #   @id = to_feid
+        # else
+        #
+        #   raise ActiveRecord::RecordNotFound
+        # end
       end
 
       def focussed?() @focus end # Identifies whether a specific expid was requested
 
       def to_feid(opts = {})
 
-        expid = opts.include?(:expid) ? opts[:expid] : @expid
-        subid = opts.include?(:no_subid) ? NO_SUBID  : @subid
-
-        [ expid, subid, @wfid ].join(SEP)
+        @id
+        # expid = opts.include?(:expid) ? opts[:expid] : @expid
+        # subid = opts.include?(:no_subid) ? NO_SUBID  : @subid
+        #
+        # [ expid, subid, @wfid ].join(SEP)
       end
 
       protected

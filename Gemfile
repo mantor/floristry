@@ -5,7 +5,6 @@ source "http://rubygems.org"
 # development dependencies will be added by default to the :development group.
 gemspec
 
-gem 'flor', path: '../flor'
 gem 'httpclient', path: '../httpclient'
 
 # jquery-rails is used by the dummy application
