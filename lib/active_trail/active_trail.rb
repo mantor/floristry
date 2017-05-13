@@ -1,8 +1,6 @@
 require 'flor'
 require 'jsonclient'
 
-require 'ruote/workitem'
-
 require 'active_trail/configuration'
 require 'active_trail/engine'
 require 'active_trail/workflow_engine'
