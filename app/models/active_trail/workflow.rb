@@ -1,9 +1,12 @@
 module ActiveTrail
+  # @FIXME DIRTY HACK: load it. If not, `Set` resolves to stdlib `Set`
+  require "#{File.dirname(__FILE__) }/set"
+
   class Workflow < ActiveTrail::BranchExpression
 
     include ActiveTrail::CommonMixin
     alias_method :id, :wfid
-    attr_reader :launched_at, :updated_at, :current_state, :version
+    attr_reader :fei, :launched_at, :updated_at, :completed_at, :current_state, :version
 
     def self.all
 
@@ -21,7 +24,7 @@ module ActiveTrail
         self.find_by_scope arg
       else
         fei = FlowExpressionId.new(arg)
-        trail = Trail.find_by_exid(fei.exid)
+        trail = Trail.find_by_wfid(arg)
         raise ActiveRecord::RecordNotFound unless trail
 
         new(fei, trail)
@@ -44,10 +47,11 @@ module ActiveTrail
     #
     def initialize(id, trail)
 
-      n, f, p, @version, @launched_at, @updated_at, @current_state = parse_trail(trail)  # TODO terminated_at ?
+      n, f, p, @version, @launched_at, @updated_at, @completed_at, @current_state = parse_trail(trail)  # TODO terminated_at ?
       super(id, n, p, f, :past) # A Workflow is always in the past
 
-      @children = branch(ROOT_EXPID, trail.tree)
+      @children = branch(ROOT_EXPID, trail.tree['0']['tree'])
+
       @fei.expid = default_focus unless @fei.focussed?
     end
 
@@ -77,8 +81,8 @@ module ActiveTrail
     def self.find_by_scope(scope)
 
       @wfs = []
-      Trail.send(scope).select(:id, :exid).order(id: :desc).each do |t|
-        @wfs << Workflow.find(t.exid)
+      Trail.send(scope).select(:id, :wfid).order(id: :desc).each do |t|
+        @wfs << Workflow.find(t.wfid)
       end
 
       @wfs
@@ -87,14 +91,15 @@ module ActiveTrail
     def parse_trail(t)
 
       name = t.name
-      p = t.tree[1]['params']
-      f = t.tree[1]['fields']
+      p = t.tree['0']['vars']
+      f = t.tree['0']['vars']
       version = t.version
       launched_at = t.launched_at
       updated_at = t.updated_at
+      completed_at = t.completed_at
       current_state = t.current_state
 
-      [ name, f, p, version, launched_at, updated_at, current_state ]
+      [ name, f, p, version, launched_at, updated_at, completed_at, current_state ]
     end
 
     def find_era(expid)
@@ -164,14 +169,31 @@ module ActiveTrail
     #
     def current_pos
 
-      unless @current_expids
+      unless @current_nids
 
-        @current_expids = Array.new
-        p = WorkflowEngine.process(exid)
-        p.position.each { |pos| @current_expids << to_expid(pos[0]) } if p
+        @current_nids = Array.new
+
+        p = WorkflowEngine.process(@fei.id)
+
+        if p
+
+          @define = p['data']['nodes']
+          find_cnodes '0'
+        end
       end
 
-      @current_expids
+      @current_nids
+    end
+
+    def find_cnodes nid
+
+      if @define[nid]['cnodes'].empty?
+        @current_nids << @define[nid]['nid']
+      else
+        @define[nid]['cnodes'].each do |cnode|
+          find_cnodes(cnode)
+        end
+      end
     end
 
     # Creates a Branch Expression and its child Expressions.
@@ -182,18 +204,18 @@ module ActiveTrail
     # :expid is the relative position in the Workflow
     # :exp is used to navigate within Ruote's workflow internal structure
     #
-    def branch(expid, parent_exp)
+    def branch(expid, parent_node)
 
-      feid = @fei.to_feid(expid: expid)
+      # feid = @fei.to_feid(expid: expid)
 
-      obj = factory(feid, find_era(expid), parent_exp)
+      obj = factory(expid, find_era(expid), parent_node)
 
-      parent_exp[CHILDREN].each_with_index do |child_exp, i|
+      parent_node[CHILDREN].each_with_index do |child_node, i|
 
-        child_expid = "#{expid}#{EXPID_SEP}#{i}"
-        branch_or_leaf = child_exp[CHILDREN].empty? ? :leaf : :branch
+        child_nid = "#{expid}#{EXPID_SEP}#{i}"
+        branch_or_leaf = is_branch?(child_node[0].camelize) ? :branch : :leaf
 
-        obj << self.send(branch_or_leaf, child_expid, child_exp)
+        obj << self.send(branch_or_leaf, child_nid, child_node)
       end
 
       obj
@@ -201,8 +223,8 @@ module ActiveTrail
 
     def leaf(expid, exp)
 
-      feid = @fei.to_feid(expid: expid)
-      factory(feid, find_era(expid), exp)
+      # feid = @fei.to_feid(expid: expid)
+      factory(expid, find_era(expid), exp)
     end
 
     # Returns proper Expression type based on its name.
@@ -210,18 +232,19 @@ module ActiveTrail
     # Anything not a Ruote Expression is considered a Participant Expression, e.g.,
     # if == If, sequence == Sequence, admin == Participant, xyz == Participant
     #
-    def factory(feid, era, exp)
+    def factory(exid, era, exp)
 
       name, fields, params = extract(era, exp)
+      name = 'define' if exid == '0'
       klass_name = name.camelize
 
       if is_expression? (klass_name)
 
-        ActiveTrail.const_get(klass_name).new(feid, name, params, fields, era)
+        ActiveTrail.const_get(klass_name).new(exid, name, params, fields, era)
       else
 
         fh = self.frontend_handler(name)
-        fh[:class].new(feid, name, params, fields, era)
+        fh[:class].new(exid, name, params, fields, era)
       end
     end
 
@@ -265,14 +288,25 @@ module ActiveTrail
 
     end
 
+
+    def is_branch?(name)
+
+      ActiveTrail.const_get(name) <= ActiveTrail::BranchExpression ? true : false
+
+    rescue NameError
+      false
+
+    end
+
     def extract(era, exp)
 
       case era
         when :present, :past
-          exp[1]['fields'] ||= {}
-          exp[1]['fields']['params'] ||= {}
-          fields = exp[1]['fields'].except('params')
-          params = exp[1]['fields']['params']
+          # exp[1]['fields'] ||= {}
+          # exp[2]['params'] ||= {}
+          # fields = exp[1]['fields'].except('params')
+          params = exp[1]
+          fields = {}
 
         when :future
           fields = {}
