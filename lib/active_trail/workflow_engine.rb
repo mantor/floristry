@@ -33,7 +33,7 @@ module ActiveTrail
 
     def self.launch(pdef, fields={}, vars={}, root_stash=nil)
 
-      res = engine('message', :post, { point: 'launch', domain: 'org.mantor', tree: pdef } )
+      res = engine('message', :post, { point: 'launch', tree: pdef } )
       exid = res.content['exid']
 
       exid
