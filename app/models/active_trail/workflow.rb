@@ -52,20 +52,23 @@ module ActiveTrail
 
       @children = branch(ROOT_EXPID, trail.tree)
 
-      @fei.expid = default_focus unless @fei.focussed?
+      @fei.expid = default_focus #unless @fei.focussed?
     end
 
     def updated_at
 
+      # @todo
       # We might deal with a workflow that doesn't implement this method, i.e. a remote participant
       # In that case, we just return the last time this Workflow replied to the Engine.
-      if wi.respond_to? :updated_at
+      # if wi.respond_to? :updated_at
+      #
+      #   wi.updated_at
+      # else
 
-        wi.updated_at
-      else
+        # @updated_at
+      # end
 
-        @updated_at
-      end
+      @updated_at
     end
 
     # TODO - Do something cleaner || find a better name -------------------------------

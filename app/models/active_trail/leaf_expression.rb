@@ -2,6 +2,7 @@ module ActiveTrail
 
   class LeafExpression < Expression
 
+    include LeafExpressionMixin
   end
 end
 

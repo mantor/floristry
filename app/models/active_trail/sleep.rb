@@ -4,8 +4,11 @@ module ActiveTrail
 
     def initialize(id, name, params, fields, era)
 
-      params = params.flatten.delete_if{|x| x == '_att'}
+      # todo: not really going to repeat this everywhere, am I?
+      super(id, name, params, fields, era)
+      params.flatten.delete_if{|x| x == '_att'}
       instance_variable_set(:@duration, params[1])
+
     end
   end
 end

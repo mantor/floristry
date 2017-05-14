@@ -2,6 +2,7 @@ module ActiveTrail
   class Stall < LeafExpression
     def initialize(id, name, params, fields, era)
 
+      super(id, name, params, fields, era)
       @params = params.flatten.delete_if{|x| x == '_att'}
     end
 

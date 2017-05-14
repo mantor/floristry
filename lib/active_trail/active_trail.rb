@@ -58,8 +58,6 @@ module ActiveTrail
 
   module ParticipantExpressionMixin
 
-    include LeafExpressionMixin
-
     def is_participant?() true end
     def due_at() nil end
     def instance() self end
