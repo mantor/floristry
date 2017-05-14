@@ -40,9 +40,9 @@ module ActiveTrail
     # On receive, insert the replied workitem at the proper location within
     # the audit tree.
     #
-    def self.replied(wfid, msg)
+    def self.replied(msg)
 
-      t = find_by_wfid(wfid)
+      t = find_by_wfid(msg['exid'])
       msg['workitem']['fields']['replied_at'] = timestamp
       t.tree = insert_in_tree(t.tree, msg['fei']['expid'], msg['workitem']['fields'])
       t.save
@@ -57,9 +57,9 @@ module ActiveTrail
       t.save
     end
 
-    def self.error(wfid, msg)
+    def self.error(msg)
 
-      t = find_by_wfid(wfid)
+      t = find_by_wfid(msg['exid'])
       t.current_state = 'error'
       t.tree = insert_in_tree(t.tree, msg['fei']['expid'], (msg['workitem'].nil?) ? {} : msg['workitem']['fields'])
       # TODO delete jobs?

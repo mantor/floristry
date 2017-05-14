@@ -15,7 +15,7 @@ module ActiveTrail
 
     def error
 
-      Trail.error(params['id'], params['message'])
+      Trail.error(params['message'])
 
       #todo Should we send back a status and let flack handle errors, etc.
       render nothing: true
@@ -23,7 +23,7 @@ module ActiveTrail
 
     def returned
 
-      Trail.replied(params['id'], params['message'])
+      Trail.replied(params['message'])
 
       #todo Should we send back a status and let flack handle errors, etc.
       render nothing: true
@@ -31,7 +31,7 @@ module ActiveTrail
 
     def terminated
 
-      Trail.terminated(params['id'], params['message'])
+      Trail.terminated(params['message'])
 
       #todo Should we send back a status and let flack handle errors, etc.
       render nothing: true
