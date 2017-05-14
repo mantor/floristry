@@ -50,7 +50,7 @@ module ActiveTrail
       n, f, p, @version, @launched_at, @updated_at, @completed_at, @current_state = parse_trail(trail)  # TODO terminated_at ?
       super(id, n, p, f, :past) # A Workflow is always in the past
 
-      @children = branch(ROOT_EXPID, trail.tree['0']['tree'])
+      @children = branch(ROOT_EXPID, trail.tree)
 
       @fei.expid = default_focus unless @fei.focussed?
     end
@@ -91,8 +91,10 @@ module ActiveTrail
     def parse_trail(t)
 
       name = t.name
-      p = t.tree['0']['vars']
-      f = t.tree['0']['vars']
+      # p = t.tree['0']['vars']
+      # f = t.tree['0']['vars']
+      p = [] # todo
+      f = [] # todo
       version = t.version
       launched_at = t.launched_at
       updated_at = t.updated_at

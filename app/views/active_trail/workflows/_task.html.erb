@@ -1,0 +1,14 @@
+<div class="rat-bubble">
+  <div class="rat-part-header">
+    <%= %>
+      task.current_state
+    <b><%= task.name %></b>
+    <!--TODO -->
+    for task.scope.to_s
+  </div>
+  <div class="rat-part">
+    <pre>
+      <%= task.to_yaml %>
+    </pre>
+  </div>
+</div>
