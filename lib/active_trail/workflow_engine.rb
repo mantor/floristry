@@ -39,7 +39,7 @@ module ActiveTrail
       exid
     end
 
-    def proceed(wi)
+    def return(wi)
 
       # res = engine('message', :post, { ... } ) # TODO
     end

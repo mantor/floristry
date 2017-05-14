@@ -23,7 +23,7 @@ module ActiveTrail
 
     def returned
 
-      Trail.replied(params['message'])
+      Trail.returned(params['message'])
 
       #todo Should we send back a status and let flack handle errors, etc.
       render nothing: true

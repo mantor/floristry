@@ -35,7 +35,7 @@ module ActiveTrail::ActiveRecord
 
     # The workflow engine pass the workitem through this method through the Web participant ...
     #
-    # Save the workitem as an special attribute to be merged at proceed. Bypassing validation is necessary
+    # Save the workitem as an special attribute to be merged at return. Bypassing validation is necessary
     # since some Participant's model may have attributes that aren't currently present/valid.
     #
     def self.create(wi)
@@ -85,11 +85,12 @@ module ActiveTrail::ActiveRecord
       @params['target'] || AssetUser::DEFAULT_ROLE
     end
 
-    # If proceeding, merge back attributes within saved workitem and reply to Workflow Engine
+    # If returning, merge back attributes within saved workitem and reply to Workflow Engine
     #
-    def proceed #TODO should be atomic
+    def return #TODO should be atomic
 
-      ActiveTrail::WorkflowEngine.engine.proceed(merged_wi)
+      receiver = Receiver.new(ActiveTrail::WorkflowEngine.engine)
+      receiver.return(merged_wi)
 
       # TODO this sucks ass!
       # The trail seems to be written each time the workflow engine 'steps' (each 0.8s).
@@ -158,13 +159,13 @@ module ActiveTrail::ActiveRecord
       transition from: :in_progress,  to: :in_progress
     end
 
-    event :proceed do
+    event :return do
       transition from: :in_progress,  to: :closed
       transition from: :late,         to: :closed
       transition from: :closed,       to: :closed
     end
 
-    event :proceed_with_issues do
+    event :return_with_issues do
       transition from: :in_progress,  to: :completed_with_issues
       transition from: :late,         to: :completed_with_issues
     end

@@ -40,11 +40,11 @@ module ActiveTrail
     # On receive, insert the replied workitem at the proper location within
     # the audit tree.
     #
-    def self.replied(msg)
+    def self.returned(msg)
 
       t = find_by_wfid(msg['exid'])
-      msg['workitem']['fields']['replied_at'] = timestamp
-      t.tree = insert_in_tree(t.tree, msg['fei']['expid'], msg['workitem']['fields'])
+      # todo msg['workitem']['fields']['replied_at'] = timestamp
+      t.tree = insert_in_tree(t.tree, msg['nid'], msg['payload'])
       t.save
     end
 
@@ -76,18 +76,18 @@ module ActiveTrail
 
     # Insert hash in a workflow tree based on an expression id.
     #
-    def self.insert_in_tree(tree, exp, fields)
+    def self.insert_in_tree(tree, nid, payload)
       t = [tree]
-      exp = exp.split('_')
+      nid = nid.split('_')
 
       i = 0
-      while i < exp.size - 1
-        t = t[exp[i].to_i][2] # subtree
+      while i < nid.size - 1
+        t = t[nid[i].to_i][1] # subtree
         i += 1
       end
-      t = t[exp[i].to_i] # last has no subtree
+      t = t[nid[i].to_i] # last has no subtree
 
-      t[1]['fields'] = fields
+      t[1][0].push payload
 
       tree
     end

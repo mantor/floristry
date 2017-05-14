@@ -19,8 +19,8 @@ module ActiveTrail
 
         if params[:commit] == 'Close'
 
-          @wf.wi.proceed
-          redirect_to action: :edit, id: @wf.wfid# TODO, :notice  => "Successfully updated and proceeded #{wi.instance.class.name.humanize}."
+          @wf.wi.return
+          redirect_to action: :edit, id: @wf.wfid# TODO, :notice  => "Successfully updated and returned #{wi.instance.class.name.humanize}."
         else
 
           redirect_to action: :edit# TODO, :notice  => "Successfully updated #{wi.instance.class.name.humanize}."
