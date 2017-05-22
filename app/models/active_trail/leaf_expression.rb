@@ -14,6 +14,8 @@ module ActiveTrail
       lookup_params(params)
     end
 
+    private
+
     def lookup_params p
 
       p.each {|v|

@@ -25,4 +25,12 @@ class LeafExpressionTest < ActiveSupport::TestCase
     set = ActiveTrail::Set.new('test-u0-test', 'test', params, [], 'present')
     assert_equal(["procedure_id", "10"], set.params)
   end
+
+  test "it parses a Task params" do
+
+    params = [["_att",[["cmd",[],3],["_sqs","ls",3]],3,{ret: nil,  task_tstamp:"1111-11-11 11:11:11 -0400"}],["_att",[["target",[],3],["_sqs","temp",3]],3]];
+
+    task = ActiveTrail::Task.new('test-u0-test', 'test', params, [], 'present')
+    assert_equal(["cmd", "ls", "target", "temp"], task.params)
+  end
 end
