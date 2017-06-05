@@ -6,25 +6,6 @@ module ActiveTrail
     scope :active, -> { where(archive: false) }
     scope :archived, -> { where(archive: true) }
 
-    # On launch, save tree structure.
-    #
-    # At that moment, the entire process and every expression involved
-    # are saved along with their params but there's no workitem.
-    #
-    # def self.launched(wfid, msg)
-    #
-    #   t = new
-    #   t.wfid = wfid
-    #   t.name = msg['workitem']['wf_name']
-    #   t.version = msg['workitem']['wf_revision']
-    #   t.current_state = 'launched'
-    #   t.launched_at = msg['workitem']['wf_launched_at']
-    #   msg['tree'][1]['fields'] = msg['workitem']['fields']
-    #   msg['tree'][1]['params'] = msg['variables'].select { |k, v| !v.is_a?(Array) } # TODO This is BS but working (tm)
-    #   t.tree = msg['tree']
-    #   t.save
-    # end
-
     def self.launched(exe)
 
       t = new
