@@ -4,9 +4,9 @@ module ActiveTrail
     include ActiveTrail::CommonMixin
     include ExpressionMixin
 
-    attr_reader :id, :name, :params, :fields, :era
+    attr_reader :id, :name, :payload, :era
 
-    def initialize(id, name, params, fields, era)
+    def initialize(id, name, payload, vars, era)
 
       if id.is_a? FlowExpressionId
 
@@ -19,8 +19,7 @@ module ActiveTrail
       end
 
       @name = name
-      @params = params
-      @fields = fields
+      @payload = payload
       @era = era
 
       mixin = ActiveTrail.configuration.add_expression_behavior

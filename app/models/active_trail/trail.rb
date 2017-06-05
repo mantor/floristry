@@ -33,7 +33,10 @@ module ActiveTrail
       t.version = '0.1' # TODO
       t.current_state = 'launched'
       t.launched_at = exe['consumed'] #TODO check timezone / timestamp format
-      t.tree = exe['tree']
+      tree = exe['tree']
+      tree[3] = exe['payload']
+      tree[4] = exe['vars']
+      t.tree = tree
       t.save
     end
 
@@ -87,7 +90,7 @@ module ActiveTrail
       end
       t = t[nid[i].to_i] # last has no subtree
 
-      t[1][0].push payload
+      t.push payload
 
       tree
     end

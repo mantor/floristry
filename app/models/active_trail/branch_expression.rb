@@ -8,9 +8,9 @@ module ActiveTrail
 
     attr_reader :children
 
-    def initialize (id, name, params, fields, era)
+    def initialize (id, name, payload, vars, era)
 
-      super(id, name, params, fields, era)
+      super(id, name, payload, vars, era)
 
       @children = Array.new
 

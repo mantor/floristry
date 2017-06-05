@@ -7,13 +7,22 @@ module ActiveTrail
     attr_accessor :params
     attr_accessor :payload
 
-    def initialize(id, name, params, fields, era)
+    def initialize(id, name, params, payload, era)
 
       super
       @params = []
+      @payload = payload
       #todo find a better name. Its not params that we receive. Check Flor glossary.
       lookup_params(params)
-      lookup_payload(params)
+    end
+
+    def params_to_h
+
+      p = @params.reject { |p| p.empty? }
+      keys = p.values_at(* p.each_index.select {|i| i.even? })
+      values = p.values_at(* p.each_index.select {|i| i.odd? })
+
+      keys.zip(values).to_h
     end
 
     private
@@ -21,23 +30,16 @@ module ActiveTrail
     def lookup_params p
 
       p.each {|v|
-        if v[1].is_a?(Array)
+        if v && v[1].is_a?(Array)
           if v[1].size > 0
             lookup_params v[1]
           else
             @params << v[0]
           end
         else
-          @params << v[1].to_s
+          @params << v[1].to_s unless v.nil?
         end
       }
-    end
-
-    def lookup_payload p
-
-      if p[0].at(3).is_a? Hash
-        @payload = p[0][3]
-      end
     end
   end
 end

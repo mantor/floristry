@@ -47,8 +47,8 @@ module ActiveTrail
     #
     def initialize(id, trail)
 
-      n, f, p, @version, @launched_at, @updated_at, @completed_at, @current_state = parse_trail(trail)  # TODO terminated_at ?
-      super(id, n, p, f, :past) # A Workflow is always in the past
+      n, p, v, @version, @launched_at, @updated_at, @completed_at, @current_state = parse_trail(trail)  # TODO terminated_at ?
+      super(id, n, p, v, :past) # A Workflow is always in the past
 
       @children = branch(ROOT_EXPID, trail.tree)
 
@@ -94,17 +94,15 @@ module ActiveTrail
     def parse_trail(t)
 
       name = t.name
-      # p = t.tree['0']['vars']
-      # f = t.tree['0']['vars']
-      p = [] # todo
-      f = [] # todo
+      p = t.tree[3] # todo -> why not just store this directly in the trail, as we do for launched_at, etc ?
+      v = t.tree[4]
       version = t.version
       launched_at = t.launched_at
       updated_at = t.updated_at
       completed_at = t.completed_at
       current_state = t.current_state
 
-      [ name, f, p, version, launched_at, updated_at, completed_at, current_state ]
+      [ name, p, v, version, launched_at, updated_at, completed_at, current_state ]
     end
 
     def find_era(expid)
@@ -218,9 +216,10 @@ module ActiveTrail
       parent_node[CHILDREN].each_with_index do |child_node, i|
 
         child_nid = "#{expid}#{EXPID_SEP}#{i}"
-        branch_or_leaf = is_branch?(child_node[0].camelize) ? :branch : :leaf
-
-        obj << self.send(branch_or_leaf, child_nid, child_node)
+        if child_node.is_a? Array # todo -> why does payload ends up ad [3] in a sequence, adding `nil` at [2] ?
+          branch_or_leaf = is_branch?(child_node[0].camelize) ? :branch : :leaf
+          obj << self.send(branch_or_leaf, child_nid, child_node)
+        end
       end
 
       obj
@@ -239,17 +238,17 @@ module ActiveTrail
     #
     def factory(exid, era, exp)
 
-      name, fields, params = extract(era, exp)
-      name = 'define' if exid == '0'
+      name, payload, params = extract(era, exp)
+      # name = 'define' if exid == '0'
       klass_name = name.camelize
 
       if is_expression? (klass_name)
 
-        ActiveTrail.const_get(klass_name).new(exid, name, params, fields, era)
+        ActiveTrail.const_get(klass_name).new(exid, name, params, payload, era)
       else
 
         fh = self.frontend_handler(name)
-        fh[:class].new(exid, name, params, fields, era)
+        fh[:class].new(exid, name, params, payload, era)
       end
     end
 
@@ -311,14 +310,14 @@ module ActiveTrail
           # exp[2]['params'] ||= {}
           # fields = exp[1]['fields'].except('params')
           params = exp[1]
-          fields = {}
+          payload = exp[1][3] ||= exp[3]
 
         when :future
-          fields = {}
           params = exp[1] # Params are directly at [1]
+          payload = {}
       end
 
-      [ exp[0], fields, params ]
+      [ exp[0], payload, params ]
     end
   end
 end

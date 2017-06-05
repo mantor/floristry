@@ -20,7 +20,7 @@ module ActiveTrail::ActiveRecord
     after_create :init_fields_and_params
 
     attr_accessor :era # TODO really? - If that's needed, Expression should have this (the mixin)
-    attr_reader :fei, :fields, :params
+    attr_reader :fei, :payload, :params
 
     # ActiveRecords participants can be search by their Rails ID or Workflow id (feid)
     #
