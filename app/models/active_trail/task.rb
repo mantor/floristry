@@ -1,5 +1,5 @@
 module ActiveTrail
-  class Task < LeafExpression
+  class Task < ActiveTrail::Participant
 
   end
 end
