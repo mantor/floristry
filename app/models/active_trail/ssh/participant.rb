@@ -4,7 +4,7 @@ module ActiveTrail::Ssh
   #
   class Participant < ActiveTrail::Participant
 
-    PREFIX = 'ssh_'
+    PREFIX = 'ssh'
     REGEX = /^#{PREFIX}/
   end
 end
