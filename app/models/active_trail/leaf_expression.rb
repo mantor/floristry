@@ -16,6 +16,11 @@ module ActiveTrail
       lookup_params(params)
     end
 
+    def param key
+
+      params_to_h[key]
+    end
+
     def params_to_h
 
       p = @params.reject { |p| p.empty? }
