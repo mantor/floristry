@@ -31,3 +31,5 @@ bower.json
 /.*.lock
 /.lock-*
 /git_stats/
+
+Gemfile.lock
