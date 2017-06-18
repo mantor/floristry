@@ -1,7 +1,8 @@
 require 'rails/generators/base'
 require 'rails/generators/active_record/model/model_generator'
 
-class ParticipantGenerator < ActiveRecord::Generators::ModelGenerator
+module ActiveTrail
+  class ParticipantGenerator < ActiveRecord::Generators::ModelGenerator
   source_root File.expand_path("../templates", __FILE__)
   source_paths << File.expand_path(ActiveRecord::Generators::ModelGenerator.default_source_root)
 
@@ -25,4 +26,5 @@ class ParticipantGenerator < ActiveRecord::Generators::ModelGenerator
     template '_participant.html.erb', File.join('app/views/active_trail/web', regular_class_path, "_#{file_name}.html.erb")
   end
 
+  end
 end
