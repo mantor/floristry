@@ -22,4 +22,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'active_attr'
   s.add_runtime_dependency 'flor'
   s.add_runtime_dependency 'httpclient'
+
+  s.add_development_dependency 'rspec-rails', '~> 3'
 end

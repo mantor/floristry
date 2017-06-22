@@ -1,4 +1,4 @@
-require 'test_helper'
+require 'spec_helper'
 
 class LeafExpressionTest < ActiveSupport::TestCase
 
@@ -38,7 +38,7 @@ class LeafExpressionTest < ActiveSupport::TestCase
 
     params = [["_att",[["cmd",[],3],["_sqs","ls",3]],3,{ret: nil, task_tstamp:"1111-11-11 11:11:11 -0400"}],["_att",[["target",[],3],["_sqs","temp",3]],3]];
 
-    task = ActiveTrail::Task.new('test-u0-test', 'test', params, [], 'present')
+    task = ActiveTrail::Task.new('test-u0-test', 'test', params, {ret: nil, task_tstamp:"1111-11-11 11:11:11 -0400"}, 'present')
     assert_equal({ret: nil, task_tstamp:"1111-11-11 11:11:11 -0400"}, task.payload)
   end
 end
