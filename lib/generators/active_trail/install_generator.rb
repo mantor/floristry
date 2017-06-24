@@ -21,7 +21,7 @@ module ActiveTrail
 
     def copy_initializer_template
 
-      template 'initializer.rb', 'config/initializers/active_trail.rb'
+      copy_file 'initializer.rb', 'config/initializers/active_trail.rb'
     end
 
     def mount_engine_route
