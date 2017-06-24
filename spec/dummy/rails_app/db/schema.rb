@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170621012925) do
+ActiveRecord::Schema.define(version: 20170622014916) do
 
   create_table "active_trail_trails", force: :cascade do |t|
     t.string   "wfid"
@@ -24,6 +24,13 @@ ActiveRecord::Schema.define(version: 20170621012925) do
     t.datetime "updated_at"
     t.boolean  "archive",       default: false
     t.string   "current_state"
+  end
+
+  create_table "flows", force: :cascade do |t|
+    t.string   "name"
+    t.text     "definition"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
 end
