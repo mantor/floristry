@@ -32,4 +32,7 @@ bower.json
 /.lock-*
 /git_stats/
 
+/flack
+/flor
+
 Gemfile.lock
