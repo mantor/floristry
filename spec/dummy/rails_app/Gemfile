@@ -17,4 +17,4 @@ group :development do
 end
 
 # Require active-trail gem
-gem 'active-trail', path: '../../'
+gem 'active-trail', path: '../../../'
