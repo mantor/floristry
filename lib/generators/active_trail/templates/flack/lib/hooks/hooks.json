@@ -1,0 +1,5 @@
+[
+  { point: execute, consumed: true, nid: '0', require: 'mantor/hooks.rb', class: 'LaunchedHook' },
+  { point: return, consumed: true, require: 'mantor/hooks.rb', class: 'ReturnedHook' },
+  { point: terminated, consumed: true, require: 'mantor/hooks.rb', class: 'TerminatedHook' }
+]

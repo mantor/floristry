@@ -1,0 +1,6 @@
+
+# bob tasker
+
+require: 'tasker.rb'
+class: BobTasker
+
