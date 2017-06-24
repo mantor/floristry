@@ -1,0 +1,2 @@
+module FlowsHelper
+end
