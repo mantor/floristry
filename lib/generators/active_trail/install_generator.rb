@@ -31,8 +31,10 @@ module ActiveTrail
 
     def install_flor_and_flack
 
-      r = yes?("\n- Would you like me to install Flack and Flor inside: #{File.expand_path("..", Dir.pwd)}\n (If you are installing the dummy test app, type yes) [Y/n]")
-      if r
+      say("\n- Would you like me to install Flack and Flor inside: #{File.expand_path("..", Dir.pwd)}")
+      r = ask("(If you are installing the dummy test app, type yes)", :limited_to => ["yes", "y", "no", "n"])
+
+      if r.match(/y|yes/i)
 
         inside('../') do
 
