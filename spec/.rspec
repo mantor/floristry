@@ -1,0 +1,2 @@
+--color
+--exclude-pattern "dummy/{flack,flor}/**/**/*_spec.rb"
