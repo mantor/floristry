@@ -40,7 +40,7 @@ module ActiveTrail::CommonMixin
     #
     class FlowExpressionId
 
-      include ActiveTrail::CommonMixin
+      # include ActiveTrail::CommonMixin
 # @todo here!!!!!!!!!!!!
       attr_accessor :id, :engineid, :wfid, :subid, :expid
 

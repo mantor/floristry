@@ -1,5 +1,5 @@
 class FlowsController < ApplicationController
-  before_action :set_flow, only: [:show, :edit, :update, :destroy]
+  before_action :set_flow, only: [:show, :edit, :update, :launch, :destroy]
 
   # GET /flows
   def index
@@ -17,6 +17,13 @@ class FlowsController < ApplicationController
 
   # GET /flows/1/edit
   def edit
+  end
+
+  # POST /flow/1/launch
+  def launch
+    ActiveTrail::WorkflowEngine.launch("\n#{@flow.definition}")
+
+    redirect_to @flow, notice: 'Flow was launched.'
   end
 
   # POST /flows
