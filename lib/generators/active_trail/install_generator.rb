@@ -26,21 +26,23 @@ module ActiveTrail
 
     def mount_engine_route
 
-      # todo Add
-      # put   '/hookhandler/:id/launched',  controller: 'active_trail/hookhandler', action: :launched, :constraints => { :id => /[0-9A-Za-z\-\.]+/ }
-      # put   '/hookhandler/:id/returned',  controller: 'active_trail/hookhandler', action: :returned, :constraints => { :id => /[0-9A-Za-z\-\.]+/ }
-      # put   '/hookhandler/:id/error',  controller: 'active_trail/hookhandler', action: :error, :constraints => { :id => /[0-9A-Za-z\-\.]+/ }
-      # put   '/hookhandler/:id/terminated',  controller: 'active_trail/hookhandler', action: :terminated, :constraints => { :id => /[0-9A-Za-z\-\.]+/ }
+      inject_into_file 'config/routes.rb', after: "Rails.application.routes.draw do\n" do <<-'ROUTES'
+  # These where added by the `rails g active_trail:install` command")
+  mount ActiveTrail::Engine => '/trail'
+  put   '/hookhandler/:id/launched',  controller: 'active_trail/hookhandler', action: :launched, :constraints => { :id => /[0-9A-Za-z\\-\\.]+/ }
+  put   '/hookhandler/:id/returned',  controller: 'active_trail/hookhandler', action: :returned, :constraints => { :id => /[0-9A-Za-z\\-\\.]+/ }
+  put   '/hookhandler/:id/error',  controller: 'active_trail/hookhandler', action: :error, :constraints => { :id => /[0-9A-Za-z\\-\\.]+/ }
+  put   '/hookhandler/:id/terminated',  controller: 'active_trail/hookhandler', action: :terminated, :constraints => { :id => /[0-9A-Za-z\\-\\.]+/ }
+  resources :workflows, controller: 'active_trail/workflows',  except: :update, :constraints => { :id => /[0-9A-Za-z\\-\\.]+/ }
+  patch   '/workflows/:id/edit',  controller: 'active_trail/workflows', action: :update, :constraints => { :id => /[0-9A-Za-z\\-\\.]+/ }
+  put     '/workflows/:id/',  controller: 'active_trail/workflows', action: :update, :constraints => { :id => /[0-9A-Za-z\\-\\.]+/ }
+  put     '/workflows/:id/edit',  controller: 'active_trail/workflows', action: :update, as: :update_workflow, :constraints => { :id => /[0-9A-Za-z\\-\\.]+/ }
+      ROUTES
+      end
 
-      # resources :workflows, controller: 'active_trail/workflows',  except: :update, :constraints => { :id => /[0-9A-Za-z\-\.]+/ }
-      # patch   '/workflows/:id/edit',  controller: 'active_trail/workflows', action: :update, :constraints => { :id => /[0-9A-Za-z\-\.]+/ }
-      # put     '/workflows/:id/',  controller: 'active_trail/workflows', action: :update, :constraints => { :id => /[0-9A-Za-z\-\.]+/ }
-      # put     '/workflows/:id/edit',  controller: 'active_trail/workflows', action: :update, as: :update_workflow, :constraints => { :id => /[0-9A-Za-z\-\.]+/ }
-
-
-      route("mount ActiveTrail::Engine => '/trail'")
     end
 
+    # todo This should be in a "install:test" or something alike
     def install_flor_and_flack
 
       say("\n- Would you like me to install Flack and Flor inside: #{File.expand_path("..", Dir.pwd)}")
