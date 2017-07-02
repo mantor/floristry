@@ -8,7 +8,7 @@ gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'jquery-rails'
 
-# This is only required in the dummy app, to start flack with via rack server:start
+# This is only required in the dummy app, to start flack with `rack server:start`
 gem 'flack'
 
 group :development, :test do
