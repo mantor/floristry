@@ -6,24 +6,24 @@
     <th>Position</th>
     <th>State</th>
     <th>Launched</th>
-    <th>Last active</th>
+    <th>Updated at</th>
   </tr>
   </thead>
   <tbody>
   <% for wf in @wfs %>
     <tr>
       <td>
-        <%= link_to wf.wfid, { :controller => 'workflows', :action => :edit, :id => wf.wfid } %>
+        <%= link_to wf.id, { :controller => 'workflows', :action => :edit, :id => wf.id } %>
       </td>
       <td>
         <%= wf.name %>
       </td>
       <td>
-        <%= "#{wf.wi.fei.to_feid} #{wf.wi.name}" %>
+         Todo - current position
       </td>
       <td><%= wf.current_state %></td>
       <td><%= format_time(wf.launched_at) %></td>
-      <td><%= format_time(wf.last_active_at) %></td>
+      <td><%= format_time(wf.updated_at) %></td>
     </tr>
   <% end %>
   </tbody>

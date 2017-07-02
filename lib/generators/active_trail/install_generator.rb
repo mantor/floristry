@@ -52,8 +52,15 @@ module ActiveTrail
 
         inside('../') do
 
-          run('git clone https://github.com/floraison/flor && cd flor && git checkout v0.14.0')
+          run('git clone https://github.com/floraison/flor')
+          inside('flor') do
+            run('git checkout v0.14.0') # Aligns with flack runtime dependency
+            run('bundle install')
+          end
           run('git clone https://github.com/floraison/flack')
+          inside('flack') do
+            run('bundle install')
+          end
         end
 
         say("Copying default Flack hooks and taskers inside ../flack/envs/dev/lib/")

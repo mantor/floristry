@@ -21,9 +21,8 @@ class FlowsController < ApplicationController
 
   # POST /flow/1/launch
   def launch
-    ActiveTrail::WorkflowEngine.launch("\n#{@flow.definition}")
-
-    redirect_to @flow, notice: 'Flow was launched.'
+    exid = ActiveTrail::WorkflowEngine.launch("\n#{@flow.definition}")
+    redirect_to @flow, notice: "Flow was launched. Execution id is:#{exid}"
   end
 
   # POST /flows

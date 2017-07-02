@@ -6,7 +6,7 @@ module ActiveTrail
 
     include ActiveTrail::CommonMixin
     alias_method :id, :wfid
-    attr_reader :fei, :launched_at, :updated_at, :completed_at, :current_state, :version
+    attr_reader :id, :launched_at, :updated_at, :completed_at, :current_state, :version
 
     def self.all
 
