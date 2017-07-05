@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.description = %q{Represent complete Flor workflows using standard rails facilities, e.g. render, partials, etc.}
 
   s.files = Dir["{app,config,lib}/**/*"] + %w(LICENSE Rakefile README.md)
-  s.test_files = Dir["test/**/*"]
+  s.test_files = Dir["spec/**/*"]
 
   s.add_runtime_dependency 'rails', '>= 4.2.8'
   s.add_runtime_dependency 'thor', '0.19.1'
@@ -24,4 +24,5 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'httpclient'
 
   s.add_development_dependency 'rspec-rails', '~> 3'
+  s.add_development_dependency 'rspec-activemodel-mocks'
 end
