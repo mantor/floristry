@@ -1,0 +1,3 @@
+launched:
+  wfid: test-u0-11111111.1337.testmetobesi
+  tree: '["sequence",[["alice",[["_att",[["_",[],3]],3]],3],["bob",[["_att",[["_",[],4]],4]],4]],2,{},{}]'
