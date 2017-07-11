@@ -16,7 +16,7 @@ module ActiveTrail
 
     def migrate
 
-      rake("db:migrate")
+      rake("db:migrate SCOPE=active_trail")
     end
 
     def copy_initializer_template
@@ -28,7 +28,6 @@ module ActiveTrail
 
       inject_into_file 'config/routes.rb', after: "Rails.application.routes.draw do\n" do <<-'ROUTES'
   # These where added by the `rails g active_trail:install` command")
-  mount ActiveTrail::Engine => '/trail'
   put   '/hookhandler/:id/launched',  controller: 'active_trail/hookhandler', action: :launched, :constraints => { :id => /[0-9A-Za-z\\-\\.]+/ }
   put   '/hookhandler/:id/returned',  controller: 'active_trail/hookhandler', action: :returned, :constraints => { :id => /[0-9A-Za-z\\-\\.]+/ }
   put   '/hookhandler/:id/error',  controller: 'active_trail/hookhandler', action: :error, :constraints => { :id => /[0-9A-Za-z\\-\\.]+/ }
@@ -37,6 +36,7 @@ module ActiveTrail
   patch   '/workflows/:id/edit',  controller: 'active_trail/workflows', action: :update, :constraints => { :id => /[0-9A-Za-z\\-\\.]+/ }
   put     '/workflows/:id/',  controller: 'active_trail/workflows', action: :update, :constraints => { :id => /[0-9A-Za-z\\-\\.]+/ }
   put     '/workflows/:id/edit',  controller: 'active_trail/workflows', action: :update, as: :update_workflow, :constraints => { :id => /[0-9A-Za-z\\-\\.]+/ }
+  # mount ActiveTrail::Engine => '/trail' # todo is this really needed? Should be an option
       ROUTES
       end
 
