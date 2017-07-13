@@ -32,13 +32,8 @@ module ActiveTrail
 
     def self.launch(pdef, fields={})
 
-      # Temporarily specifying domain. Flack depends on the latest Flor 0.1x (currently 0.14)
-      # 0.14 doesn't include the patch that makes it default to 'domain0' if no domain is specified.
-      res = engine('message', :post, { domain: 'domain0', point: 'launch', tree: pdef, fields: fields } )
-
-      exid = res.content['exid']
-
-      exid
+      res = engine('message', :post, { point: 'launch', tree: pdef, fields: fields } )
+      res.content['exid']
     end
 
     def return(wi)
