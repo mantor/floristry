@@ -47,12 +47,11 @@ module ActiveTrail
     #
     def initialize(id, trail)
 
-      n, p, v, @version, @launched_at, @updated_at, @completed_at, @current_state = parse_trail(trail)  # TODO terminated_at ?
+      @trail = trail
+      n, p, v, @version, @launched_at, @updated_at, @completed_at, @current_state = parse_trail  # TODO terminated_at ?
       super(id, n, p, v, :past) # A Workflow is always in the past
 
-      @children = branch(ROOT_EXPID, trail.tree)
-
-      @fei.expid = default_focus #unless @fei.focussed?
+      # @fei.expid = default_focus #unless @fei.focussed?
     end
 
     def updated_at
@@ -72,7 +71,15 @@ module ActiveTrail
     end
 
     # TODO - Do something cleaner || find a better name -------------------------------
-    def collection() @children end
+    def collection()
+
+      if @children.empty?
+
+        @children = branch(ROOT_EXPID, @trail.tree)
+      end
+
+      @children
+    end
 
     def wi
 
@@ -91,16 +98,16 @@ module ActiveTrail
       @wfs
     end
 
-    def parse_trail(t)
+    def parse_trail
 
-      name = t.name
-      p = t.tree[3] # todo -> why not just store this directly in the trail, as we do for launched_at, etc ?
-      v = t.tree[4]
-      version = t.version
-      launched_at = t.launched_at
-      updated_at = t.updated_at
-      completed_at = t.completed_at
-      current_state = t.current_state
+      name = @trail.name
+      p = @trail.tree[3] # todo -> why not just store this directly in the trail, as we do for launched_at, etc ?
+      v = @trail.tree[4]
+      version = @trail.version
+      launched_at = @trail.launched_at
+      updated_at = @trail.updated_at
+      completed_at = @trail.completed_at
+      current_state = @trail.current_state
 
       [ name, p, v, version, launched_at, updated_at, completed_at, current_state ]
     end
