@@ -1,4 +1,4 @@
-def workflow_stub
+def stub_workflow
 
   # Creates a new instance of an ActiveTrail::Workflow, which is transient, based on a stubbed ActiveTrail::Trail
   ActiveTrail::Workflow.new('test-u0-11111111.1337.testmetobesi',

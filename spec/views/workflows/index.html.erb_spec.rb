@@ -16,7 +16,7 @@ describe "active_trail/workflows/index.html.erb" do
     before(:each) do
 
       assign(:wfs, [
-        workflow_stub
+        stub_workflow
       ])
     end
 
@@ -45,8 +45,8 @@ describe "active_trail/workflows/index.html.erb" do
   context "with 2 workflows" do
     before(:each) do
       assign(:wfs, [
-        workflow_stub,
-        workflow_stub
+        stub_workflow,
+        stub_workflow
       ])
     end
 
