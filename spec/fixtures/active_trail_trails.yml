@@ -1,3 +1,31 @@
-launched:
-  wfid: test-u0-11111111.1337.testmetobesi
+sequence:
+  wfid: test-u0-11111111.1337.testsequosi
   tree: '["sequence",[["alice",[["_att",[["_",[],3]],3]],3],["bob",[["_att",[["_",[],4]],4]],4]],2,{},{}]'
+
+concurrence:
+  wfid: test-u0-11111111.1337.testconcure
+  tree: '["concurrence",[["alice",[["_att",[["_",[],3]],3]],3,{"ret":"alice"}],["bob",[["_att",[["_",[],4]],4]],4,{"ret":"bob"}]],2,{},{}]'
+
+sequence_cron:
+  wfid: test-u0-11111111.1337.cronnewyear
+  tree: '["sequence",[["schedule",[["_att",[["cron",[],3],["_sqs","0 0 1 jan *",3]],3],["alice",[["_att",[["_",[],4]],4]],4,{"ret":"alice"}]],3]],2,{},{}]'
+
+sequence_if:
+  wfid: test-u0-11111111.1337.iftruebob
+  tree: '["sequence",[["if",[["_boo",true,4],["bob",[["_att",[["_",[],5]],5]],5,{"ret":"bob"}]],3]],2,{},{}]'
+
+sequence_set:
+  wfid: test-u0-11111111.1337.seqthatsets
+  tree: '["sequence",[["alice",[["_att",[["_",[],3]],3]],3,{"ret":"alice"}],["set",[["_att",[["f.a",[],4]],4],["_num",2,5]],4]],2,{},{}]'
+
+sequence_sleep:
+  wfid: test-u0-11111111.1337.seqsleepopo
+  tree: '["sequence",[["alice",[["_att",[["_",[],3]],3]],3,{"ret":"alice"}],["sleep",[["_att",[["_sqs","1h",4]],4]],4]],2,{},{}]'
+
+sequence_stall:
+  wfid: test-u0-11111111.1337.stallseq
+  tree: '["sequence",[["alice",[["_att",[["_",[],3]],3]],3,{"ret":"alice"}],["stall",[["_att",[["_",[],4]],4]],4],["bob",[["_att",[["_",[],5]],5]],5]],2,{},{}]'
+
+sequence_wait:
+  wfid: test-u0-11111111.1337.waitwait
+  tree: '["sequence",[["alice",[["_att",[["_",[],3]],3]],3,{"ret":"alice"}],["wait",[["_att",[["_sqs","1d",4]],4]],4],["bob",[["_att",[["_",[],5]],5]],5]],2,{},{}]'
