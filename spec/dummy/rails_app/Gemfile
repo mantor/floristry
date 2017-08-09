@@ -21,3 +21,7 @@ end
 
 # Require active-trail gem
 gem 'active-trail', path: '../../../'
+
+gem 'statesman'
+gem 'statesman-events'
+gem 'simple_form', '~> 3.1'
