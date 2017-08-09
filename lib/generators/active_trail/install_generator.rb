@@ -25,18 +25,19 @@ module ActiveTrail
     end
 
     def mount_engine_route
-
       inject_into_file 'config/routes.rb', after: "Rails.application.routes.draw do\n" do <<-'ROUTES'
   # These where added by the `rails g active_trail:install` command")
   put   '/hookhandler/:id/launched',  controller: 'active_trail/hookhandler', action: :launched, :constraints => { :id => /[0-9A-Za-z\\-\\.]+/ }
   put   '/hookhandler/:id/returned',  controller: 'active_trail/hookhandler', action: :returned, :constraints => { :id => /[0-9A-Za-z\\-\\.]+/ }
   put   '/hookhandler/:id/error',  controller: 'active_trail/hookhandler', action: :error, :constraints => { :id => /[0-9A-Za-z\\-\\.]+/ }
   put   '/hookhandler/:id/terminated',  controller: 'active_trail/hookhandler', action: :terminated, :constraints => { :id => /[0-9A-Za-z\\-\\.]+/ }
-  resources :workflows, controller: 'active_trail/workflows',  except: :update, :constraints => { :id => /[0-9A-Za-z\\-\\.]+/ }
-  patch   '/workflows/:id/edit',  controller: 'active_trail/workflows', action: :update, :constraints => { :id => /[0-9A-Za-z\\-\\.]+/ }
-  put     '/workflows/:id/',  controller: 'active_trail/workflows', action: :update, :constraints => { :id => /[0-9A-Za-z\\-\\.]+/ }
-  put     '/workflows/:id/edit',  controller: 'active_trail/workflows', action: :update, as: :update_workflow, :constraints => { :id => /[0-9A-Za-z\\-\\.]+/ }
+  resources :workflows, controller: 'active_trail/workflows',  except: :update, :constraints => { :id => /([\\w\\.\\-]+)!?([0-9_]+)?+/ }
+  patch   '/workflows/:id/edit',  controller: 'active_trail/workflows', action: :update, :constraints => { :id => /([\\w\\.\\-]+)!?([0-9_]+)?+/ }
+  put     '/workflows/:id/',  controller: 'active_trail/workflows', action: :update, :constraints => { :id => /([\\w\\.\\-]+)!?([0-9_]+)?+/ }
+  put     '/workflows/:id/edit',  controller: 'active_trail/workflows', action: :update, as: :update_workflow, :constraints => { :id => /([\\w\\.\\-]+)!?([0-9_]+)?+/ }
   # mount ActiveTrail::Engine => '/trail' # todo is this really needed? Should be an option
+
+  post    '/webparticipant/create', controller: 'active_trail/webparticipant', action: :create
       ROUTES
       end
 

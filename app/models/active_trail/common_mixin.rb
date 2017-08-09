@@ -3,13 +3,12 @@ module ActiveTrail::CommonMixin
   CHILDREN = 1     # Where branch expressions stores children expressions
   ROOT_EXPID = '0' # Root expression id - yes, it's a string (e.g. 0_1_0)
   SEP = '!'        # FEID's field separator
-  EXPID_SEP = '_'  # Expression id's child separator
-  NO_SUBID = 'empty_subid' # Replacement for the subid part of a FEID.
-  FEID_REGEX = /\A([_\d]+!)?(\w+!)?\d{8}-\d{4}-((?!-).)+-((?!-).)+\z/ # 0_0_0!523f41ebdbc878b5b2226898e49efc30!20150216-0011-gofumihi-moribeshi
+  NID_SEP = '_'    # Nid separator
+  FEID_REGEX = /\A([\w\.\-]+)!?([0-9_]+)?\z/ # domain0-u0-20170806.2124.pufatsonaju!0_1
 
-  attr_reader :engineid, :wfid, :subid, :expid
+  attr_reader :engineid, :exid, :subid, :nid
 
-  delegate :engineid, :wfid, :subid, :expid, to: :@fei
+  delegate :engineid, :exid, :nid, to: :@fei
 
   def self.included(base)
 
@@ -41,22 +40,28 @@ module ActiveTrail::CommonMixin
     class FlowExpressionId
 
       # include ActiveTrail::CommonMixin
-# @todo here!!!!!!!!!!!!
-      attr_accessor :id, :engineid, :wfid, :subid, :expid
+      attr_accessor :id, :exid, :nid
 
       def initialize(id)
 
+        # todo we should have exid -> Flor execution id -> For the whole flow : replaces wfid
+        # todo                expid -> combination of exid and nid : replaces feid
+        # todo                domain ?
         @focus = true
         @id = id
-        # if id.is_a?(String) && id =~ FEID_REGEX
-        #
-        #   s = id.split(SEP)
-        #   @engineid = s[-4] || 'engine'
-        #   @expid = s[-3] || default_expid
-        #   @subid = s[-2] || NO_SUBID
-        #   @wfid = s[-1]
-        #   @id = to_feid
-        #
+        if id.is_a?(String) && id.match(FEID_REGEX)
+
+          s = id.split(SEP)
+
+          if s.size > 1
+            @exid = s[-2]
+            @nid = s[-1] || NO_SUBID
+          else
+            @exid = s[-1]
+          end
+
+          # @id = to_feid
+
         # elsif id.is_a?(Hash) && id.has_key?(:wfid)
         #
         #   @engineid = id[:engine_id] || 'engine'
@@ -64,10 +69,10 @@ module ActiveTrail::CommonMixin
         #   @subid = id[:subid] || NO_SUBID
         #   @wfid = id[:wfid]
         #   @id = to_feid
-        # else
-        #
-        #   raise ActiveRecord::RecordNotFound
-        # end
+        else
+
+          raise ActiveRecord::RecordNotFound
+        end
       end
 
       def focussed?() @focus end # Identifies whether a specific expid was requested

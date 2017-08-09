@@ -5,7 +5,7 @@ module ActiveTrail::Web
   #
   class Participant < ActiveTrail::Participant
 
-    PREFIX = 'web_'
+    PREFIX = 'web'
     REGEX = /^#{PREFIX}/
 
     def update_attributes(new_attributes, options={})

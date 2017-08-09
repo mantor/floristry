@@ -41,8 +41,8 @@ module ActiveTrail::ActiveRecord
     def self.create(wi)
 
       attrs = Hash.new
-      attrs['__workitem__'] = wi
-      attrs['__feid__'] = FlowExpressionId.new(wi['fei'].symbolize_keys).to_feid({ no_subid: true })
+      attrs['__workitem__'] = wi #@todo rename __workitem__ to payload
+      attrs['__feid__'] = FlowExpressionId.new("#{wi['exid']}!#{wi['nid']}").exid
       attrs['current_state'] = StateMachine.initial_state
 
       # wi.keep_if { |k, v| self.column_names.include?(k) } # TODO Is that the proper logic?
@@ -68,7 +68,8 @@ module ActiveTrail::ActiveRecord
 
     def update_attributes(*)
 
-      trigger!(:start) if current_state == 'open'
+      # todo this failed with stateMachine error
+      # trigger!(:start) if current_state == 'open'
       super
     end
 
@@ -111,8 +112,8 @@ module ActiveTrail::ActiveRecord
 
     def init_fields_and_params
 
-      @fields = __workitem__['fields'].except('params')
-      @params = __workitem__['fields']['params'] || {}
+      @fields = __workitem__['payload']
+      @params = __workitem__['attd'] || {}
     end
 
     def init_fei

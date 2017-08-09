@@ -5,7 +5,7 @@ module ActiveTrail
   class Workflow < ActiveTrail::BranchExpression
 
     include ActiveTrail::CommonMixin
-    alias_method :id, :wfid
+    alias_method :id, :exid
     attr_reader :id, :launched_at, :updated_at, :completed_at, :current_state, :version
 
     def self.all
@@ -24,7 +24,7 @@ module ActiveTrail
         self.find_by_scope arg
       else
         fei = FlowExpressionId.new(arg)
-        trail = Trail.find_by_wfid(arg)
+        trail = Trail.find_by_wfid(fei.exid)
         raise ActiveRecord::RecordNotFound unless trail
 
         new(fei, trail)
@@ -83,7 +83,7 @@ module ActiveTrail
 
     def wi
 
-      @wi ||= find_exp_by_expid(expid).instance
+      @wi ||= find_exp_by_expid(nid).instance
     end
 
     protected
@@ -161,8 +161,8 @@ module ActiveTrail
 
     def find_exp_by_expid(expid)
 
-      exp = @children
-      expid = expid.split(EXPID_SEP).map(&:to_i)
+      exp = collection
+      expid = FlowExpressionId.new(current_pos[0]).nid.split(NID_SEP).map(&:to_i)
 
       i = 1 # Skip Workflow (Define) expression i.e. 0
       while i < expid.size
@@ -198,7 +198,7 @@ module ActiveTrail
     def find_cnodes nid
 
       if @define[nid]['cnodes'].empty?
-        @current_nids << @define[nid]['nid']
+         @current_nids << "#{id}!#{@define[nid]['nid']}"
       else
         @define[nid]['cnodes'].each do |cnode|
           find_cnodes(cnode)
@@ -222,10 +222,10 @@ module ActiveTrail
 
       parent_node[CHILDREN].each_with_index do |child_node, i|
 
-        child_nid = "#{expid}#{EXPID_SEP}#{i}"
+        child_nid = "#{expid}#{NID_SEP}#{i}"
         if child_node.is_a? Array # todo -> why does payload ends up ad [3] in a sequence, adding `nil` at [2] ?
           branch_or_leaf = is_branch?(child_node[0].camelize) ? :branch : :leaf
-          obj << self.send(branch_or_leaf, child_nid, child_node)
+          obj << self.send(branch_or_leaf, "#{id}!#{child_nid}", child_node)
         end
       end
 
@@ -251,11 +251,17 @@ module ActiveTrail
 
       if is_expression? (klass_name)
 
-        ActiveTrail.const_get(klass_name).new(exid, name, params, payload, era)
+        ActiveTrail.const_get(klass_name).new(@fei, name, params, payload, era)
       else
 
         fh = self.frontend_handler(name)
-        fh[:class].new(exid, name, params, payload, era)
+        params = ParametersInterpreter.new(params).to_hash
+
+        unless params['model'].nil?
+          name = params['model'].classify
+        end
+
+        fh[:class].new(@fei, name, params, payload, era)
       end
     end
 
