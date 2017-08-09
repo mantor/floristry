@@ -11,7 +11,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170622014916) do
+ActiveRecord::Schema.define(version: 20170720174041) do
+
+  create_table "active_trail_form_tasks", force: :cascade do |t|
+    t.string   "__feid__"
+    t.text     "__workitem__"
+    t.string   "current_state"
+    t.text     "free_text"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "active_trail_trails", force: :cascade do |t|
     t.string   "wfid"

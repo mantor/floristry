@@ -5,3 +5,6 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+Flow.create([
+  {name: "Sequence", definition: "alice _\r\nweb model: 'form_task'\r\nsleep '5h'\r\nbob _"}
+])
