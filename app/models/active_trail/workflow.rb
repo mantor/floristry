@@ -197,7 +197,7 @@ module ActiveTrail
 
     def find_cnodes nid
 
-      if @define[nid]['cnodes'].empty?
+      if @define[nid]['cnodes'].empty? && nid != '0'
          @current_nids << "#{id}!#{@define[nid]['nid']}"
       else
         @define[nid]['cnodes'].each do |cnode|

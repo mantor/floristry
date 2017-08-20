@@ -10,7 +10,9 @@ describe "active_trail/workflows/edit.html.erb" do
 
   context "completed workflow" do
     it "display participants as 'closed'" do
-      assign(:wf, stub_workflow)
+      wf = stub_workflow
+      wf.current_nids = []
+      assign(:wf, wf)
       render
 
       expect(rendered).to match /closed.*alice/m
@@ -21,7 +23,7 @@ describe "active_trail/workflows/edit.html.erb" do
   context "in progress workflow" do
     it "display one participant as 'closed' and the other as 'open'" do
       wf = stub_workflow
-      wf.current_nids = ["0_1"]
+      wf.current_nids = ["#{wf.id}!0_1"]
       assign(:wf, wf)
       render
 
