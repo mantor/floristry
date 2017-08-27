@@ -120,6 +120,16 @@ describe ActiveTrail::WorkflowsController do
           expect(response).to render_template(partial: '_wait')
         end
       end
+
+      context "web participant" do
+        describe 'renders the appropriate web participant partial' do
+          it 'renders the form tark participant form partial' do
+            sequence = active_trail_trails(:sequence_web_part)
+            get :edit, id: sequence.wfid
+            expect(response).to render_template(partial: '_form_task')
+          end
+        end
+      end
     end
   end
 end
