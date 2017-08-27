@@ -13,6 +13,8 @@ gem "sqlite3"
 
 group :test do
   gem 'simple_form', '~> 3.1'
+  gem 'statesman', '~> 2.0.1'
+  gem 'statesman-events', '~> 0.0.1'
 end
 
 # Declare any dependencies that are still in development here instead of in
