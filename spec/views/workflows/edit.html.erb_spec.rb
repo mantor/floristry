@@ -4,10 +4,6 @@ describe "active_trail/workflows/edit.html.erb" do
   set_fixture_class active_trail_trails: ActiveTrail::Trail
   fixtures :active_trail_trails
 
-  before(:all) do
-    # allow_any_instance_of(ActiveTrail::Workflow).to receive(:@current_nids).and_return(["0_1"])
-  end
-
   context "completed workflow" do
     it "display participants as 'closed'" do
       wf = stub_workflow
