@@ -73,7 +73,8 @@ module ActiveTrail
     # TODO - Do something cleaner || find a better name -------------------------------
     def collection()
 
-      if @children.empty?
+      # todo This is fishy
+      if @children.is_a?(Array)
 
         @children = branch(ROOT_EXPID, @trail.tree)
       end
@@ -162,7 +163,7 @@ module ActiveTrail
     def find_exp_by_expid(expid)
 
       exp = collection
-      expid = FlowExpressionId.new(current_pos[0]).nid.split(NID_SEP).map(&:to_i)
+      expid = current_pos[0].split(NID_SEP).map(&:to_i)
 
       i = 1 # Skip Workflow (Define) expression i.e. 0
       while i < expid.size
