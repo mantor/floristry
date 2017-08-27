@@ -22,6 +22,8 @@ module ActiveTrail::ActiveRecord
     attr_accessor :era # TODO really? - If that's needed, Expression should have this (the mixin)
     attr_reader :fei, :payload, :params
 
+    delegate :trigger!, :available_events, :current_state, to: :state_machine
+
     # ActiveRecords participants can be search by their Rails ID or Workflow id (feid)
     #
     # This is required since the information in hand from a Workflow perspective is always the
@@ -48,11 +50,10 @@ module ActiveTrail::ActiveRecord
       # wi.keep_if { |k, v| self.column_names.include?(k) } # TODO Is that the proper logic?
 
       obj = new(attrs)
-      obj.save({ validate: false })
+      obj.trigger!(:open) if obj.respond_to?(:current_state) && obj.current_state == StateMachine.initial_state
+      obj.save({validate: false})
       obj
     end
-
-    delegate :trigger!, :available_events, to: :state_machine
 
     def name
 
@@ -62,7 +63,6 @@ module ActiveTrail::ActiveRecord
 
     def save(*)
 
-      trigger!(:open) if self.respond_to?(:current_state) && current_state == StateMachine.initial_state
       super
     end
 
