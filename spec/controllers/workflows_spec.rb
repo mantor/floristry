@@ -2,13 +2,6 @@ require 'rails_helper'
 
 describe ActiveTrail::WorkflowsController do
   describe 'GET /workflows' do
-    context 'when no flows have been launched' do
-      it 'lists nothing' do
-        get :index
-        expect(assigns(:wfs)).to eq([])
-      end
-    end
-
     context 'when flows have been launched' do
       set_fixture_class active_trail_trails: ActiveTrail::Trail
       fixtures :active_trail_trails
