@@ -40,7 +40,7 @@ module ActiveTrail::CommonMixin
     class FlowExpressionId
 
       # include ActiveTrail::CommonMixin
-      attr_accessor :id, :exid, :nid
+      attr_accessor :id, :exid, :nid, :feid
 
       def initialize(id)
 
@@ -54,6 +54,7 @@ module ActiveTrail::CommonMixin
           s = id.split(SEP)
 
           if s.size > 1
+            @feid = id
             @exid = s[-2]
             @nid = s[-1] || NO_SUBID
           else

@@ -184,7 +184,7 @@ module ActiveTrail
 
         @current_nids = Array.new
 
-        p = WorkflowEngine.process(@fei.id)
+        p = WorkflowEngine.process(@fei.exid)
 
         if p
 
@@ -199,7 +199,7 @@ module ActiveTrail
     def find_cnodes nid
 
       if @define[nid]['cnodes'].empty? && nid != '0'
-         @current_nids << "#{id}!#{@define[nid]['nid']}"
+         @current_nids << "#{exid}!#{@define[nid]['nid']}"
       else
         @define[nid]['cnodes'].each do |cnode|
           find_cnodes(cnode)
@@ -219,14 +219,14 @@ module ActiveTrail
 
       # feid = @fei.to_feid(expid: expid)
 
-      obj = factory(expid, find_era(expid), parent_node)
+      obj = factory(id, find_era(expid), parent_node)
 
       parent_node[CHILDREN].each_with_index do |child_node, i|
 
         child_nid = "#{expid}#{NID_SEP}#{i}"
         if child_node.is_a? Array # todo -> why does payload ends up ad [3] in a sequence, adding `nil` at [2] ?
           branch_or_leaf = is_branch?(child_node[0].camelize) ? :branch : :leaf
-          obj << self.send(branch_or_leaf, "#{id}!#{child_nid}", child_node)
+          obj << self.send(branch_or_leaf, "#{exid}!#{child_nid}", child_node)
         end
       end
 
@@ -252,7 +252,7 @@ module ActiveTrail
 
       if is_expression? (klass_name)
 
-        ActiveTrail.const_get(klass_name).new(@fei, name, params, payload, era)
+        ActiveTrail.const_get(klass_name).new(exid, name, params, payload, era)
       else
 
         fh = self.frontend_handler(name)
@@ -262,7 +262,7 @@ module ActiveTrail
           name = params['model'].classify
         end
 
-        fh[:class].new(@fei, name, params, payload, era)
+        fh[:class].new(exid, name, params, payload, era)
       end
     end
 

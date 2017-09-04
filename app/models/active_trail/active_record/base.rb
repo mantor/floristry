@@ -17,7 +17,7 @@ module ActiveTrail::ActiveRecord
     serialize :__workitem__, JSON
     
     after_find :init_fei, :init_fields_and_params
-    after_create :init_fields_and_params
+    after_create :init_fei, :init_fields_and_params
 
     attr_accessor :era # TODO really? - If that's needed, Expression should have this (the mixin)
     attr_reader :fei, :payload, :params
@@ -42,9 +42,12 @@ module ActiveTrail::ActiveRecord
     #
     def self.create(wi)
 
+      wi =  ActiveSupport::HashWithIndifferentAccess.new(wi)
+      self.validate_wi(wi)
+
       attrs = Hash.new
       attrs['__workitem__'] = wi #@todo rename __workitem__ to payload
-      attrs['__feid__'] = FlowExpressionId.new("#{wi['exid']}!#{wi['nid']}").exid
+      attrs['__feid__'] = FlowExpressionId.new("#{wi['exid']}!#{wi['nid']}").feid
       attrs['current_state'] = StateMachine.initial_state
 
       # wi.keep_if { |k, v| self.column_names.include?(k) } # TODO Is that the proper logic?
@@ -68,8 +71,7 @@ module ActiveTrail::ActiveRecord
 
     def update_attributes(*)
 
-      # todo this failed with stateMachine error
-      # trigger!(:start) if current_state == 'open'
+      trigger!(:start) if current_state == 'open'
       super
     end
 
@@ -90,11 +92,11 @@ module ActiveTrail::ActiveRecord
     #
     def return #TODO should be atomic
 
-      receiver = Receiver.new(ActiveTrail::WorkflowEngine.engine)
-      receiver.return(merged_wi)
+      ActiveTrail::WorkflowEngine.return(@fei.exid, @fei.nid, merged_wi)
+      trigger!(:return)
 
       # TODO this sucks ass!
-      # The trail seems to be written each time the workflow engine 'steps' (each 0.8s).
+      # Flor will probably not process it straight away.
       # Food for thought - If nothing better: Could we emulate atomicity by simply increasing the expid?
       sleep(1)
     end
@@ -132,8 +134,17 @@ module ActiveTrail::ActiveRecord
       # new_attrs = attributes.keys - ATTRIBUTES_TO_EXCLUDE # TODO __feid__ is excluded <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
       new_attrs = attributes.reject { |k, v| %w(id __workitem__ created_at updated_at).include? k }
 
-      wi['fields'].merge!(new_attrs)
+      wi['payload'].merge!(new_attrs)
       wi
+    end
+
+    def self.validate_wi wi
+
+      raise ArgumentError.new("'wi' can't be nil") if wi.empty?
+      raise ArgumentError.new("'wi' does not contain an 'exid'") unless wi.key?('exid')
+      raise ArgumentError.new("'wi' does not contain an 'nid'") unless wi.key?('nid')
+      raise ArgumentError.new("'wi' is missing the payload") unless wi.key?('payload')
+      raise ArgumentError.new("'wi' is missing 'attd'") unless wi.key?('attd')
     end
 
   end

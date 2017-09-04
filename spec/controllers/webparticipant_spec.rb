@@ -8,9 +8,10 @@ describe ActiveTrail::WebparticipantController do
   it "creates the participant on msg from hook" do
     sequence = active_trail_trails(:sequence_web_part)
 
-    post :create, :message => get_msg(sequence)
+    msg = get_create_msg(sequence)
+    post :create, :message => msg
 
-    form_task = ActiveTrail::Web::FormTask.find(sequence.wfid)
+    form_task = ActiveTrail::Web::FormTask.find("#{msg[:exid]}!#{msg[:nid]}")
     expect(form_task.current_state).to eq('open')
   end
 
@@ -21,7 +22,7 @@ describe ActiveTrail::WebparticipantController do
   # This is what flack sends through the WebTasker.
   # We only really use a subset of it, but I included unedited so we can see if it ever change
   # after the spec is written.
-  def get_msg(sequence)
+  def get_create_msg(sequence)
     {
       point: "task",
       exid: sequence.wfid,

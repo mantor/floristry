@@ -10,8 +10,9 @@ module ActiveTrail
       begin
 
         uri = "#{PROTO}://#{HOST}:#{PORT}/#{res}"
-        JSONClient.new.send(verb, uri, opts)
+        res = JSONClient.new.send(verb, uri, opts)
 
+        # todo do domething with the res if HTTP code is 400!
       rescue Errno::ECONNREFUSED => e
         raise LaunchError.new(e.message)
       end
@@ -36,9 +37,9 @@ module ActiveTrail
       res.content['exid']
     end
 
-    def return(wi)
+    def self.return(exid, nid, payload)
 
-      # res = engine('message', :post, { ... } ) # TODO
+      engine('message', :post, { point: 'reply', exid: exid, nid: nid, payload: payload } )
     end
 
     def self.register_participant(regex, handler)
