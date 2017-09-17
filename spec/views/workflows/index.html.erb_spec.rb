@@ -3,7 +3,7 @@ require "rails_helper"
 describe "active_trail/workflows/index.html.erb" do
 
   context "with no workflows" do
-    it "displays an 0 records" do
+    it "displays that there's no (0) records" do
       assign(:wfs, [])
       render
 
