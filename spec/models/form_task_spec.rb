@@ -68,6 +68,13 @@ RSpec.describe ActiveTrail::Web::FormTask, :type => :model do
         vars: nil
       }
 
+      it "sets the current state to 'open'" do
+
+        form_task = ActiveTrail::Web::FormTask.create(wi)
+
+        expect(form_task.current_state).to eq('open')
+      end
+
       it "initializes a @fei" do
 
         form_task = ActiveTrail::Web::FormTask.create(wi)
@@ -80,14 +87,80 @@ RSpec.describe ActiveTrail::Web::FormTask, :type => :model do
 
   describe "update" do
 
+    wi = {
+      exid: 'test0-u0-20170831.0132.dijoshiyudu',
+      nid: "0_1",
+      payload: { ret: nil, post_tstamp: "2017-08-23 11:11:00 -0400" },
+      tasker: "web",
+      attl: ["web"],
+      attd: {  model: "form_task" },
+      vars: nil
+    }
+
+    it "sets the current state to 'in progress'" do
+
+      form_task = ActiveTrail::Web::FormTask.create(wi)
+
+      form_task.update_attributes({free_text: 'Updated text'})
+
+      expect(form_task.current_state).to eq('in_progress')
+    end
+
     it "updates the active record model attributes" do
-      skip "todo"
+      form_task = ActiveTrail::Web::FormTask.create(wi)
+      form_task.update_attributes({free_text: 'Updated text'})
+      id = form_task.id
+
+      form_task = ActiveTrail::Web::FormTask.find(id)
+
+      expect(form_task.free_text).to eq('Updated text')
     end
   end
 
   describe "return" do
+
+    wi = {
+      exid: 'test0-u0-20170831.0132.dijoshiyudu',
+      nid: "0_1",
+      payload: { ret: nil, post_tstamp: "2017-08-23 11:11:00 -0400" },
+      tasker: "web",
+      attl: ["web"],
+      attd: {  model: "form_task" },
+      vars: nil
+    }
+
+    it "sets the current state to 'closed'" do
+
+      form_task = ActiveTrail::Web::FormTask.create(wi)
+      form_task.update_attributes({free_text: 'Updated text'})
+      form_task.return
+
+      expect(form_task.current_state).to eq('closed')
+    end
+
     it "merges the model's attributes with the payload" do
-      skip "todo"
+
+      form_task = ActiveTrail::Web::FormTask.create(wi)
+      form_task.update_attributes({free_text: 'Updated text'})
+
+      expected_merged_wi = {
+        "exid" => "test0-u0-20170831.0132.dijoshiyudu",
+        "nid" => "0_1",
+        "payload" => {
+          "ret" => nil,
+          "post_tstamp" => "2017-08-23 11:11:00 -0400",
+          "free_text" => "Updated text"
+        },
+        "tasker" => "web",
+        "attl" => ["web"],
+        "attd" => {"model"=>"form_task"},
+        "vars" => nil
+      }
+
+      expect(ActiveTrail::WorkflowEngine)
+        .to receive(:return).with(wi[:exid], wi[:nid], expected_merged_wi)
+
+      form_task.return
     end
   end
 end
