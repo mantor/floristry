@@ -131,8 +131,7 @@ module ActiveTrail::ActiveRecord
 
       wi = attributes['__workitem__']
 
-      # new_attrs = attributes.keys - ATTRIBUTES_TO_EXCLUDE # TODO __feid__ is excluded <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-      new_attrs = attributes.reject { |k, v| %w(id __workitem__ created_at updated_at).include? k }
+      new_attrs = attributes.reject { |k, v| %w(id __workitem__ __feid__ current_state created_at updated_at).include? k }
 
       wi['payload'].merge!(new_attrs)
       wi
