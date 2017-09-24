@@ -10,9 +10,9 @@ module ActiveTrail
       begin
 
         uri = "#{PROTO}://#{HOST}:#{PORT}/#{res}"
-        res = JSONClient.new.send(verb, uri, opts)
+        JSONClient.new.send(verb, uri, opts)
 
-        # todo do domething with the res if HTTP code is 400!
+        # todo do something if HTTP response code is not 2-3xx!
       rescue Errno::ECONNREFUSED => e
         raise LaunchError.new(e.message)
       end
@@ -20,10 +20,7 @@ module ActiveTrail
 
     def self.process(exid)
 
-      res = engine('executions')
-      execs = res.content['_embedded']
-
-      execs.find { |exe| exe['exid'] == exid }
+      engine("executions/#{exid}").content
     end
 
     def self.processes(opts = {})
