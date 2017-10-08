@@ -52,6 +52,8 @@ module ActiveTrail
     def is_leaf?() true end
     def is_branch?() false end
     def is_participant?() false end
+    def instance() self end
+    def current_state() 'in_progress' end
     def layout() 'layouts/active_trail/leaf-expression' end
   end
 
