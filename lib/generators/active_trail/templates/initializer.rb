@@ -24,7 +24,7 @@ ActiveTrail.configure do |config|
             options[:defaults] = defaults
 
             # Form action URL: It's a custom thing for participants
-            options[:url] = workflows_url + "/#{record.__feid__}/edit"
+            options[:url] = workflows_path + "/#{record.__feid__}/edit"
           end
 
           __simple_form_for record, options, &block
