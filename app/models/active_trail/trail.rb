@@ -10,7 +10,7 @@ module ActiveTrail
 
       t = new
       t.wfid = exe['exid']
-      t.name = 'Test' # TODO
+      t.name = exe['vars']['name'] || t.wfid
       t.version = '0.1' # TODO
       t.current_state = 'launched'
       t.launched_at = exe['consumed'] #TODO check timezone / timestamp format

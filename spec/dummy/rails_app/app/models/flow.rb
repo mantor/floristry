@@ -4,6 +4,6 @@ class Flow < ActiveRecord::Base
 
   def launch
 
-    ActiveTrail::WorkflowEngine.launch("\n#{definition}")
+    ActiveTrail::WorkflowEngine.launch("\n#{definition}", {name: name})
   end
 end
