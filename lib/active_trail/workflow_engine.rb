@@ -28,9 +28,9 @@ module ActiveTrail
       # engine.processes(opts) # TODO
     end
 
-    def self.launch(pdef, fields={})
+    def self.launch(pdef, vars={}, fields={})
 
-      res = engine('message', :post, { point: 'launch', tree: pdef, fields: fields } )
+      res = engine('message', :post, { point: 'launch', tree: pdef, vars: vars, fields: fields } )
       res.content['exid']
     end
 
