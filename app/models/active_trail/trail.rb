@@ -13,7 +13,7 @@ module ActiveTrail
       t.name = exe['vars']['name'] || t.wfid
       t.version = '0.1' # TODO
       t.current_state = 'launched'
-      t.launched_at = exe['consumed'] #TODO check timezone / timestamp format
+      t.launched_at = exe['consumed']
       tree = exe['tree']
       tree[3] = exe['payload']
       tree[4] = exe['vars']
