@@ -22,7 +22,8 @@ class FlowsController < ApplicationController
   # POST /flow/1/launch
   def launch
     exid = @flow.launch
-    redirect_to @flow, notice: "Flow was launched. Execution id is:#{exid}"
+    @flows = Flow.all
+    redirect_to flows_url, notice: "Flow was launched. Execution id is: #{exid}"
   end
 
   # POST /flows

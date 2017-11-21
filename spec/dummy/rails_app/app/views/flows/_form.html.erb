@@ -23,7 +23,3 @@
     <%= f.submit %>
   </div>
 <% end %>
-
-<% if @flow.persisted? %>
-  <%= button_to "Launch", method: :post, action: "launch", remote: true %>
-<% end %>
