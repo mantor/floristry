@@ -20,14 +20,17 @@ module ActiveTrail
         if params[:commit] == 'Close'
 
           @wf.wi.return
-          redirect_to action: :edit, id: @wf.exid# TODO, :notice  => "Successfully updated and returned #{wi.instance.class.name.humanize}."
+          flash[:notice] = "#{@wf.wi.instance.class.to_s.demodulize} was successfully closed."
+          redirect_to action: :edit, id: @wf.exid
         else
 
-          redirect_to action: :edit# TODO, :notice  => "Successfully updated #{wi.instance.class.name.humanize}."
+          flash[:notice] = "#{@wf.wi.instance.class.to_s.demodulize} was successfully updated."
+          redirect_to action: :edit
         end
       else
 
-        render :edit# TODO, :notice  => "Failed ..."
+        flash[:error] = "An error prohibited this #{@wf.wi.instance.class.to_s.demodulize} from being saved."
+        render :edit
       end
     end
 
