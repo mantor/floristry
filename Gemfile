@@ -7,14 +7,14 @@ gemspec
 
 gem 'httpclient'
 
-# jquery-rails is used by the dummy application
-gem "jquery-rails"
-gem "sqlite3"
-
 group :test do
+  # All this is used by the dummy app used for test/specs
   gem 'simple_form', '~> 3.1'
   gem 'statesman', '~> 2.0.1'
   gem 'statesman-events', '~> 0.0.1'
+  gem "jquery-rails"
+  gem "sqlite3"
+  gem "twitter-bootstrap-rails"
 end
 
 # Declare any dependencies that are still in development here instead of in
