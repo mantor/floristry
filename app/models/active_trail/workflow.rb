@@ -174,7 +174,7 @@ module ActiveTrail
       exp
     end
 
-    # Current workitem position(s) - an array of `current` expid(s)
+    # Current `msg` position(s) - an array of `current` expid(s)
     #
     # TODO could/should this be done using the active_trail?
     #

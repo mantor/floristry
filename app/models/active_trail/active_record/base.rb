@@ -12,15 +12,15 @@ module ActiveTrail::ActiveRecord
     include ActiveTrail::ExpressionMixin
     include ActiveTrail::ParticipantExpressionMixin
 
-    ATTRIBUTES_TO_EXCLUDE = %w(id __feid__ __workitem__ )
+    ATTRIBUTES_TO_EXCLUDE = %w(id __feid__ __msg__ )
 
-    serialize :__workitem__, JSON
-    
+    serialize :__msg__, JSON
+
     after_find :init_fei, :init_fields_and_params
     after_create :init_fei, :init_fields_and_params
 
     attr_accessor :era # TODO really? - If that's needed, Expression should have this (the mixin)
-    attr_reader :fei, :payload, :params
+    attr_reader :fei, :msg, :params
 
     delegate :trigger!, :available_events, :current_state, to: :state_machine
 
@@ -35,19 +35,19 @@ module ActiveTrail::ActiveRecord
       obj || raise(ActiveRecord::RecordNotFound)   # TODO this doesn't work, why ?
     end
 
-    # The workflow engine pass the workitem through this method through the Web participant ...
+    # The workflow engine pass a message through this method via the Web participant ...
     #
-    # Save the workitem as an special attribute to be merged at return. Bypassing validation is necessary
+    # Save the msg as a special attribute to be merged at return. Bypassing validation is necessary
     # since some Participant's model may have attributes that aren't currently present/valid.
     #
-    def self.create(wi)
+    def self.create(msg)
 
-      wi =  ActiveSupport::HashWithIndifferentAccess.new(wi)
-      self.validate_wi(wi)
+      msg =  ActiveSupport::HashWithIndifferentAccess.new(msg)
+      self.validate_msg(msg)
 
       attrs = Hash.new
-      attrs['__workitem__'] = wi #@todo rename __workitem__ to payload
-      attrs['__feid__'] = FlowExpressionId.new("#{wi['exid']}!#{wi['nid']}").feid
+      attrs['__msg__'] = msg
+      attrs['__feid__'] = FlowExpressionId.new("#{msg['exid']}!#{msg['nid']}").feid
       attrs['current_state'] = StateMachine.initial_state
 
       # wi.keep_if { |k, v| self.column_names.include?(k) } # TODO Is that the proper logic?
@@ -88,11 +88,11 @@ module ActiveTrail::ActiveRecord
       @params['target'] || AssetUser::DEFAULT_ROLE
     end
 
-    # If returning, merge back attributes within saved workitem and reply to Workflow Engine
+    # If returning, merge back attributes within saved msg and reply to Workflow Engine
     #
     def return #TODO should be atomic
 
-      ActiveTrail::WorkflowEngine.return(@fei.exid, @fei.nid, merged_wi)
+      ActiveTrail::WorkflowEngine.return(@fei.exid, @fei.nid, merged_msg)
       trigger!(:return)
 
       # TODO this sucks ass!
@@ -114,8 +114,8 @@ module ActiveTrail::ActiveRecord
 
     def init_fields_and_params
 
-      @fields = __workitem__['payload']
-      @params = __workitem__['attd'] || {}
+      @fields = __msg__['payload']
+      @params = __msg__['attd'] || {}
     end
 
     def init_fei
@@ -123,27 +123,27 @@ module ActiveTrail::ActiveRecord
       @fei = FlowExpressionId.new(__feid__)
     end
 
-    # Provide the original wi with fields merged with model's attributes
+    # Provide the original payload with fields merged with model's attributes
     #
-    # The wi submitted by the workflow engine is kept untouched in the __workitem__ attribute.
-    # We merge every attributes except a few within the workitem.
-    def merged_wi
+    # The msg submitted by the workflow engine is kept untouched in the __msg__ attribute.
+    # We merge every attributes except a few within the msg.
+    def merged_msg
 
-      wi = attributes['__workitem__']
+      wi = attributes['__msg__']
 
-      new_attrs = attributes.reject { |k, v| %w(id __workitem__ __feid__ current_state created_at updated_at).include? k }
+      new_attrs = attributes.reject { |k, v| %w(id __msg__ __feid__ current_state created_at updated_at).include? k }
 
       wi['payload'].merge!(new_attrs)
       wi
     end
 
-    def self.validate_wi wi
+    def self.validate_msg msg
 
-      raise ArgumentError.new("'wi' can't be nil") if wi.empty?
-      raise ArgumentError.new("'wi' does not contain an 'exid'") unless wi.key?('exid')
-      raise ArgumentError.new("'wi' does not contain an 'nid'") unless wi.key?('nid')
-      raise ArgumentError.new("'wi' is missing the payload") unless wi.key?('payload')
-      raise ArgumentError.new("'wi' is missing 'attd'") unless wi.key?('attd')
+      raise ArgumentError.new("'msg' can't be nil") if msg.empty?
+      raise ArgumentError.new("'msg' does not contain an 'exid'") unless msg.key?('exid')
+      raise ArgumentError.new("'msg' does not contain an 'nid'") unless msg.key?('nid')
+      raise ArgumentError.new("'msg' is missing the payload") unless msg.key?('payload')
+      raise ArgumentError.new("'msg' is missing 'attd'") unless msg.key?('attd')
     end
 
   end

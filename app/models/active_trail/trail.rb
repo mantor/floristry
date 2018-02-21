@@ -21,13 +21,13 @@ module ActiveTrail
       t.save
     end
 
-    # On receive, insert the replied workitem at the proper location within
+    # On receive, insert the replied msg at the proper location within
     # the audit tree.
     #
     def self.returned(msg)
 
       t = find_by_wfid(msg['exid'])
-      # todo msg['workitem']['fields']['replied_at'] = timestamp
+      # todo msg['??']['fields']['replied_at'] = timestamp
       t.tree = insert_in_tree(t.tree, msg['nid'], msg['payload'])
       t.save
     end
@@ -45,7 +45,7 @@ module ActiveTrail
 
       t = find_by_wfid(msg['exid'])
       t.current_state = 'error'
-      t.tree = insert_in_tree(t.tree, msg['fei']['expid'], (msg['workitem'].nil?) ? {} : msg['workitem']['fields'])
+      t.tree = insert_in_tree(t.tree, msg['fei']['expid'], (msg['payload'].nil?) ? {} : msg['payload']['fields'])
       # TODO delete jobs?
       t.save
     end

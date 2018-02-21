@@ -15,7 +15,7 @@ ActiveRecord::Schema.define(version: 20170720174041) do
 
   create_table "active_trail_form_tasks", force: :cascade do |t|
     t.string   "__feid__"
-    t.text     "__workitem__"
+    t.text     "__msg__"
     t.string   "current_state"
     t.text     "free_text"
     t.datetime "created_at"

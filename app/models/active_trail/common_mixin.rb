@@ -25,10 +25,10 @@ module ActiveTrail::CommonMixin
     # The FlowExpressionId (fei for short) is an process expression identifier.
     # Each expression when instantiated gets a unique fei.
     #
-    # Feis are also used in workitems, where the fei is the fei of the
-    # [participant] expression that emitted the workitem.
+    # Feis are also used in msgs, where the fei is the fei of the
+    # [participant] expression that emitted the msg.
     #
-    # Feis can thus indicate the position of a workitem in a process tree.
+    # Feis can thus indicate the position of a msg in a process tree.
     #
     # Feis contain four pieces of information :
     #
