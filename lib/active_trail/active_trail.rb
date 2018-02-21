@@ -16,6 +16,8 @@ module ActiveTrail
 
   module ExpressionMixin
 
+    attr_accessor :era
+
     def is_past?()    @era == :past    end
     def is_present?() @era == :present end
     def is_future?()  @era == :future  end

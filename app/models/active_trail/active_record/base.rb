@@ -19,7 +19,6 @@ module ActiveTrail::ActiveRecord
     after_find :init_fei, :init_fields_and_params
     after_create :init_fei, :init_fields_and_params
 
-    attr_accessor :era # TODO really? - If that's needed, Expression should have this (the mixin)
     attr_reader :fei, :msg, :params
 
     delegate :trigger!, :available_events, :current_state, to: :state_machine
