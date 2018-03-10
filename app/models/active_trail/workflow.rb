@@ -56,12 +56,18 @@ module ActiveTrail
 
     def updated_at
 
-      if wi.respond_to? :updated_at
+      if current_state == 'completed'
 
-        wi.updated_at
+        @completed_at
       else
 
-        @updated_at
+        if wi.respond_to? :updated_at
+
+          wi.updated_at
+        else
+
+          @updated_at
+        end
       end
     end
 
