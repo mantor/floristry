@@ -6,7 +6,7 @@ module ActiveTrail
 
     include ActiveTrail::CommonMixin
     alias_method :id, :exid
-    attr_reader :id, :launched_at, :updated_at, :completed_at, :current_state, :version
+    attr_reader :id, :launched_at, :completed_at, :current_state, :version
 
     def self.all
 
@@ -56,18 +56,13 @@ module ActiveTrail
 
     def updated_at
 
-      # @todo
-      # We might deal with a workflow that doesn't implement this method, i.e. a remote participant
-      # In that case, we just return the last time this Workflow replied to the Engine.
-      # if wi.respond_to? :updated_at
-      #
-      #   wi.updated_at
-      # else
+      if wi.respond_to? :updated_at
 
-        # @updated_at
-      # end
+        wi.updated_at
+      else
 
-      @updated_at
+        @updated_at
+      end
     end
 
     # TODO - Do something cleaner || find a better name -------------------------------
