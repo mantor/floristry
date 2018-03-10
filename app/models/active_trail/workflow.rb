@@ -164,11 +164,12 @@ module ActiveTrail
     def find_exp_by_expid(expid)
 
       exp = collection
-      expid = current_pos[0].split(NID_SEP).map(&:to_i)
+      expid ||= current_pos[0]
+      expids = expid.split(NID_SEP).map(&:to_i)
 
       i = 1 # Skip Workflow (Define) expression i.e. 0
-      while i < expid.size
-        exp = exp.children[expid[i]]
+      while i < expids.size
+        exp = exp.children[expids[i]]
         i += 1
       end
 
