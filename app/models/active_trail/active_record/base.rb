@@ -31,7 +31,7 @@ module ActiveTrail::ActiveRecord
     def self.find id
 
       obj = (id.is_a? Integer) ? find_by_id(id) : find_by___feid__(id)
-      obj || raise(ActiveRecord::RecordNotFound)   # TODO this doesn't work, why ?
+      obj || raise(ActiveRecord::RecordNotFound)
     end
 
     # The workflow engine pass a message through this method via the Web participant ...
