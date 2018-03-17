@@ -6,6 +6,11 @@ module ActiveTrail
     scope :active, -> { where(archive: false) }
     scope :archived, -> { where(archive: true) }
 
+    def vars
+
+      tree[4]
+    end
+
     def self.launched(exe)
 
       t = new

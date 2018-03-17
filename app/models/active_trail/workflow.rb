@@ -7,6 +7,7 @@ module ActiveTrail
     include ActiveTrail::CommonMixin
     alias_method :id, :exid
     attr_reader :id, :launched_at, :completed_at, :current_state, :version
+    delegate vars: :@trail
 
     def self.all
 
