@@ -26,7 +26,7 @@ module ActiveTrail
       else
         fei = FlowExpressionId.new(arg)
         trail = Trail.find_by_wfid(fei.exid)
-        raise ActiveRecord::RecordNotFound unless trail
+        raise ::ActiveRecord::RecordNotFound unless trail
 
         new(fei, trail)
       end
