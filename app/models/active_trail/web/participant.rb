@@ -18,7 +18,8 @@ module ActiveTrail::Web
       instance.errors
     end
 
-    def instance # TODO find a better name
+    # TODO this is a workaround to mix the actual participants
+    def instance
 
       return @instance unless @instance.nil?
 
@@ -28,8 +29,8 @@ module ActiveTrail::Web
         @instance = klass.new
       end
 
-      @instance.fei = @fei  # TODO is this needed? could it be immutable?
-      @instance.era = @era  # TODO
+      @instance.fei = @fei
+      @instance.era = @era
       @instance
     end
 

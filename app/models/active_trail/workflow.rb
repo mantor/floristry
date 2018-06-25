@@ -6,7 +6,7 @@ module ActiveTrail
 
     include ActiveTrail::CommonMixin
     alias_method :id, :exid
-    attr_reader :id, :launched_at, :completed_at, :current_state, :version
+    attr_reader :id, :launched_at, :terminated_at, :current_state, :version
     delegate vars: :@trail
 
     def self.all
@@ -32,9 +32,9 @@ module ActiveTrail
       end
     end
 
-    def self.complete(exid)
+    def self.terminate(exid)
 
-      self.find(exid).trigger!(:complete)
+      self.find(exid).trigger!(:terminate)
     end
 
     def self.error(exid)
@@ -49,7 +49,7 @@ module ActiveTrail
     def initialize(id, trail)
 
       @trail = trail
-      n, p, v, @version, @launched_at, @updated_at, @completed_at, @current_state = parse_trail  # TODO terminated_at ?
+      n, p, v, @version, @launched_at, @updated_at, @terminated_at, @current_state = parse_trail
       super(id, n, p, v, :past) # A Workflow is always in the past
 
       # @fei.expid = default_focus #unless @fei.focussed?
@@ -57,9 +57,9 @@ module ActiveTrail
 
     def updated_at
 
-      if current_state == 'completed'
+      if current_state == 'terminated'
 
-        @completed_at
+        @terminated_at
       else
 
         if wi.respond_to? :updated_at
@@ -109,10 +109,10 @@ module ActiveTrail
       version = @trail.version
       launched_at = @trail.launched_at
       updated_at = @trail.updated_at
-      completed_at = @trail.completed_at
+      terminated_at = @trail.terminated_at
       current_state = @trail.current_state
 
-      [ name, p, v, version, launched_at, updated_at, completed_at, current_state ]
+      [ name, p, v, version, launched_at, updated_at, terminated_at, current_state ]
     end
 
     def find_era(expid)
@@ -191,7 +191,7 @@ module ActiveTrail
 
         if p
 
-          @define = p['data']['nodes']
+          @root = p['data']['nodes']
           find_cnodes '0'
         end
       end
@@ -201,10 +201,10 @@ module ActiveTrail
 
     def find_cnodes nid
 
-      if @define[nid]['cnodes'].empty? && nid != '0'
-         @current_nids << "#{exid}!#{@define[nid]['nid']}"
+      if @root[nid]['cnodes'].empty? && nid != '0'
+         @current_nids << "#{exid}!#{@root[nid]['nid']}"
       else
-        @define[nid]['cnodes'].each do |cnode|
+        @root[nid]['cnodes'].each do |cnode|
           find_cnodes(cnode)
         end
       end

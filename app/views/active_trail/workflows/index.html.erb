@@ -33,7 +33,7 @@
         <%= @wfs.size %> records |   <!-- TODO move this in helper, it's ugly -->
         <% wf_statuses = @wfs.map(&:current_state).inject(Hash.new(0)) { |total, e| total[e] += 1 ;total} %>
         <%= wf_statuses['launched'] %> <span>launched</span> -
-        <%= wf_statuses[:completed] %> <span>completed</span> -
+        <%= wf_statuses['terminated'] %> <span>terminated</span> -
         <%= wf_statuses['error'] %> <span class="text-warning">error</span>
       </td>
     </tr>

@@ -39,7 +39,6 @@ module ActiveTrail::CommonMixin
     #
     class FlowExpressionId
 
-      # include ActiveTrail::CommonMixin
       attr_accessor :id, :exid, :nid, :feid
 
       def initialize(id)

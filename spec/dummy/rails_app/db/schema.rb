@@ -28,7 +28,7 @@ ActiveRecord::Schema.define(version: 20170720174041) do
     t.string   "version"
     t.text     "tree"
     t.datetime "launched_at"
-    t.datetime "completed_at"
+    t.datetime "terminated_at"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "archive",       default: false

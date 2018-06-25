@@ -32,7 +32,7 @@ module ActiveTrail
     def self.returned(msg)
 
       t = find_by_wfid(msg['exid'])
-      # todo msg['??']['fields']['replied_at'] = timestamp
+      # todo msg['??']['fields']['replied_at'] = timestamp OR modify flor to handle it?
       t.tree = insert_in_tree(t.tree, msg['nid'], msg['payload'])
       t.save
     end
@@ -40,8 +40,8 @@ module ActiveTrail
     def self.terminated(msg)
 
       t = find_by_wfid(msg['exid'])
-      t.current_state = 'completed'
-      t.completed_at = timestamp
+      t.current_state = 'terminated'
+      t.terminated_at = timestamp
       t.archive = true
       t.save
     end
@@ -51,8 +51,8 @@ module ActiveTrail
       t = find_by_wfid(msg['exid'])
       t.current_state = 'error'
       t.tree = insert_in_tree(t.tree, msg['fei']['expid'], (msg['payload'].nil?) ? {} : msg['payload']['fields'])
-      # TODO delete jobs?
       t.save
+      raise WorkflowError
     end
 
     def self.timestamp
@@ -85,3 +85,9 @@ end
 
 mixin = ActiveTrail.configuration.add_trail_behavior
 ActiveTrail::Trail.send(:include, mixin) if mixin
+
+class WorkflowError < StandardError
+  def initialize(msg='An error occurred in the workflow engine')
+    super
+  end
+end

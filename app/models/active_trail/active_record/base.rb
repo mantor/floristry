@@ -49,8 +49,6 @@ module ActiveTrail::ActiveRecord
       attrs['__feid__'] = FlowExpressionId.new("#{msg['exid']}!#{msg['nid']}").feid
       attrs['current_state'] = StateMachine.initial_state
 
-      # wi.keep_if { |k, v| self.column_names.include?(k) } # TODO Is that the proper logic?
-
       obj = new(attrs)
       obj.trigger!(:open) if obj.respond_to?(:current_state) && obj.current_state == StateMachine.initial_state
       obj.save({validate: false})
@@ -87,17 +85,18 @@ module ActiveTrail::ActiveRecord
       @params['target'] || AssetUser::DEFAULT_ROLE
     end
 
-    # If returning, merge back attributes within saved msg and reply to Workflow Engine
+    # Merge back attributes within saved msg and reply to Workflow Engine
     #
-    def return #TODO should be atomic
+    def return
 
-      ActiveTrail::WorkflowEngine.return(@fei.exid, @fei.nid, merged_msg)
-      trigger!(:return)
+      begin
 
-      # TODO this sucks ass!
-      # Flor will probably not process it straight away.
-      # Food for thought - If nothing better: Could we emulate atomicity by simply increasing the expid?
-      sleep(1)
+        ActiveTrail::WorkflowEngine.return(@fei.exid, @fei.nid, merged_msg)
+        trigger!(:return)
+      end
+
+      # To keep in sync with Flor's tick
+      sleep(0.3)
     end
 
     # Resolution of module is problematic in the isolated engine - used by strong_params in workflow's controller
@@ -156,7 +155,7 @@ module ActiveTrail::ActiveRecord
     state :in_progress
     state :late
     state :closed
-    state :completed_with_issues
+    state :terminated_with_issues
 
     event :open do
       transition from: :upcoming,     to: :open
@@ -176,8 +175,8 @@ module ActiveTrail::ActiveRecord
     end
 
     event :return_with_issues do
-      transition from: :in_progress,  to: :completed_with_issues
-      transition from: :late,         to: :completed_with_issues
+      transition from: :in_progress,  to: :terminated_with_issues
+      transition from: :late,         to: :terminated_with_issues
     end
 
     event :late do
