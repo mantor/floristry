@@ -75,7 +75,7 @@ module ActiveTrail
     # TODO - Do something cleaner || find a better name -------------------------------
     def collection()
 
-      # todo This is fishy
+      # todo change for is_branch?
       if @children.is_a?(Array)
 
         @children = branch(ROOT_EXPID, @trail.tree)
@@ -104,15 +104,15 @@ module ActiveTrail
     def parse_trail
 
       name = @trail.name
-      p = @trail.tree[3] # todo -> why not just store this directly in the trail, as we do for launched_at, etc ?
-      v = @trail.tree[4]
+      params = @trail.tree[3] # todo -> why not just store this directly in the trail, as we do for launched_at, etc ?
+      vars = @trail.tree[4]
       version = @trail.version
       launched_at = @trail.launched_at
       updated_at = @trail.updated_at
       terminated_at = @trail.terminated_at
       current_state = @trail.current_state
 
-      [ name, p, v, version, launched_at, updated_at, terminated_at, current_state ]
+      [ name, params, vars, version, launched_at, updated_at, terminated_at, current_state ]
     end
 
     def find_era(expid)
@@ -168,7 +168,7 @@ module ActiveTrail
       expid ||= current_pos[0]
       expids = expid.split(NID_SEP).map(&:to_i)
 
-      i = 1 # Skip Workflow (Define) expression i.e. 0
+      i = 1 # Skip Workflow (Root) expression i.e. 0
       while i < expids.size
         exp = exp.children[expids[i]]
         i += 1
@@ -178,8 +178,6 @@ module ActiveTrail
     end
 
     # Current `msg` position(s) - an array of `current` expid(s)
-    #
-    # TODO could/should this be done using the active_trail?
     #
     def current_pos
 
@@ -212,7 +210,7 @@ module ActiveTrail
 
     # Creates a Branch Expression and its child Expressions.
     #
-    # Recursively iterates through a Branch Expression (e.g. define, sequence, concurrence)
+    # Recursively iterates through a Branch Expression (e.g. sequence, concurrence)
     # and returns an object with its child Expressions (either Leaves or Branches).
     #
     # :expid is the relative position in the Workflow
@@ -250,7 +248,6 @@ module ActiveTrail
     def factory(exid, era, exp)
 
       name, payload, params = extract(era, exp)
-      # name = 'define' if exid == '0'
       klass_name = name.camelize
 
       if is_expression? (klass_name)
@@ -285,12 +282,6 @@ module ActiveTrail
               class: ActiveTrail::Web::Participant,
               options: {}
           },
-          # Todo this probably shouldn't be here
-          # {
-          #     regex: ActiveTrail::IssueHandler::Participant::PREFIX,
-          #     class: ActiveTrail::IssueHandler::Participant,
-          #     options: {}
-          # },
           {   # Default: This one should not be editable by the user
               regex: '.*',
               class: Participant,
