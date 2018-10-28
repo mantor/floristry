@@ -2,6 +2,8 @@ require 'rails/generators/base'
 
 module ActiveTrail
   class InstallGenerator < Rails::Generators::Base
+    class_option :flack_and_flor, :type => :boolean, :default => false, :desc => "Install Flack and Flor"
+
     source_root File.expand_path('../templates', __FILE__)
 
     def copy_initializer_template
@@ -36,13 +38,10 @@ module ActiveTrail
       generate "active_trail:migrate"
     end
 
-    # todo This should be in a "install:test" or something alike
-    def install_flor_and_flack
+    def install_flack_and_flor
 
-      say("\n- Would you like me to install Flack and Flor inside: #{File.expand_path("..", Dir.pwd)}")
-      r = ask("(If you are installing the dummy test app, type yes)", :limited_to => ["yes", "y", "no", "n"])
-
-      if r.match(/y|yes/i)
+      if options[:flack_and_flor]
+        say("\n- Installing Flack and Flor inside: #{File.expand_path("..", Dir.pwd)}")
 
         inside('../') do
 
@@ -62,6 +61,5 @@ module ActiveTrail
         directory("flack/lib/taskers/", "../flack/envs/dev/lib/taskers")
       end
     end
-
   end
 end
