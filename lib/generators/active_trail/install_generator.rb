@@ -3,21 +3,6 @@ require 'rails/generators/base'
 module ActiveTrail
   class InstallGenerator < Rails::Generators::Base
     source_root File.expand_path('../templates', __FILE__)
-    require 'rails/generators/migration'
-    include Rails::Generators::Migration
-    require 'rake'
-
-    def copy_migrations
-
-      Rails.application.load_tasks
-      Rake::Task['railties:install:migrations'].reenable
-      Rake::Task['active_trail:install:migrations'].invoke
-    end
-
-    def migrate
-
-      rake("db:migrate SCOPE=active_trail")
-    end
 
     def copy_initializer_template
 
@@ -40,7 +25,11 @@ module ActiveTrail
   post    '/webparticipant/create', controller: 'active_trail/webparticipant', action: :create
       ROUTES
       end
+    end
 
+    def run_migrate_generator
+
+      generate "active_trail:migrate"
     end
 
     # todo This should be in a "install:test" or something alike
@@ -68,17 +57,6 @@ module ActiveTrail
         directory("flack/lib/hooks/", "../flack/envs/dev/lib/hooks")
         directory("flack/lib/taskers/", "../flack/envs/dev/lib/taskers")
       end
-    end
-
-    def self.next_migration_number path
-
-      if @previous_stamp.nil?
-        @previous_stamp = Time.now.utc.strftime("%Y%m%d%H%M%S").to_i
-      else
-        @previous_stamp += 1
-      end
-
-      @previous_stamp.to_s
     end
 
   end
