@@ -53,6 +53,7 @@ module ActiveTrail
           run('git clone https://github.com/floraison/flack')
           inside('flack') do
             run('bundle install')
+            run('make migrate')
           end
         end
 
