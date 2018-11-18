@@ -1,6 +1,6 @@
 class <%= migration_class_name %> < ActiveRecord::Migration
   def change
-    create_table :active_trail_<%= table_name %> do |t|
+    create_table :floristry_<%= table_name %> do |t|
       t.string :__feid__
       t.text :__msg__
       t.string :current_state

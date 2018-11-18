@@ -1,4 +1,4 @@
-# ActiveTrail
+# Floristry
 
 The goal of this gem is to help you represent [Ruote's workflows](http://ruote.rubyforge.org/) using standard Rails
 facilities, e.g. partials, helpers, render, models, etc.
@@ -9,7 +9,7 @@ set. Obviously, you can override their default behaviors and representations by 
 
 To override a view, simply create a new one in:
 
-    /app/views/active_trail/_participant.html.erb.
+    /app/views/floristry/_participant.html.erb.
 
 ## Hierarchy
 
@@ -45,9 +45,9 @@ Then register the service in the ruote engine:
 
 ```ruby
 RuoteKit.engine.add_service('trail',
-                            'active_trail/observer',
-                            'ActiveTrail::Observer',
-                            'archive' => 'ActiveTrail::Archive::ActiveRecord')
+                            'floristry/observer',
+                            'Floristry::Observer',
+                            'archive' => 'Floristry::Archive::ActiveRecord')
 ```
 
 ## Usage
@@ -75,7 +75,7 @@ Create a file called /config/initializers/active-trail.rb containing modules wit
 use the following config to define which module will be included in the which low-level Expression.
 
 ```ruby
-module ActiveTrailBranchBehavior
+module FloristryBranchBehavior
   def xyz
     # ...
   end
@@ -83,10 +83,10 @@ module ActiveTrailBranchBehavior
   # ...
 end
 
-ActiveTrail.configure do |config|
-  config.add_branch_expression_behavior = ActiveTrailBranchBehavior
-  #config.add_leaf_expression_behavior = ActiveTrailLeafBehavior
-  #config.add_expression_behavior = ActiveTrailBehavior
+Floristry.configure do |config|
+  config.add_branch_expression_behavior = FloristryBranchBehavior
+  #config.add_leaf_expression_behavior = FloristryLeafBehavior
+  #config.add_expression_behavior = FloristryBehavior
 end
 ```
 

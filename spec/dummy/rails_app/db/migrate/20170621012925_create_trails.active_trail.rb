@@ -1,7 +1,7 @@
-# This migration comes from active_trail (originally 20170616005118)
+# This migration comes from floristry (originally 20170616005118)
 class CreateTrails < ActiveRecord::Migration
   def change
-    create_table "active_trail_trails", force: :cascade do |t|
+    create_table "floristry_trails", force: :cascade do |t|
       t.string   "wfid"
       t.string   "name"
       t.string   "version"

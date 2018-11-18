@@ -1,27 +1,27 @@
 require 'rails_helper'
 
-RSpec.describe ActiveTrail::Web::FormTask, :type => :model do
+RSpec.describe Floristry::Web::FormTask, :type => :model do
   describe "create" do
 
     context "given a malformed 'msg'" do
       it "fails if nil" do
-        expect { ActiveTrail::Web::FormTask.create(nil) }.
+        expect { Floristry::Web::FormTask.create(nil) }.
           to raise_error("'msg' can't be nil")
       end
 
       it "fails if it's missing the exid" do
-        expect { ActiveTrail::Web::FormTask.create({'nothing' => ''}) }.
+        expect { Floristry::Web::FormTask.create({'nothing' => ''}) }.
           to raise_error("'msg' does not contain an 'exid'")
       end
 
       it "fails if it's missing the nid" do
-        expect { ActiveTrail::Web::FormTask.create({'exid' => 'exid'}) }.
+        expect { Floristry::Web::FormTask.create({'exid' => 'exid'}) }.
           to raise_error("'msg' does not contain an 'nid'")
       end
 
       it "fails if it's missing a playload" do
         expect {
-          ActiveTrail::Web::FormTask.create(
+          Floristry::Web::FormTask.create(
             {
               'exid' => '',
               'nid' => ''
@@ -32,7 +32,7 @@ RSpec.describe ActiveTrail::Web::FormTask, :type => :model do
 
       it "fails if it's missing 'attd'" do
         expect {
-          ActiveTrail::Web::FormTask.create(
+          Floristry::Web::FormTask.create(
             {
               'exid' => '',
               'nid' => '',
@@ -44,7 +44,7 @@ RSpec.describe ActiveTrail::Web::FormTask, :type => :model do
 
       it "fails if exid and nid can't be parsed as a FlowExpressionId" do
         expect {
-          ActiveTrail::Web::FormTask.create(
+          Floristry::Web::FormTask.create(
             {
               'exid' => '',
               'nid' => '',
@@ -70,14 +70,14 @@ RSpec.describe ActiveTrail::Web::FormTask, :type => :model do
 
       it "sets the current state to 'open'" do
 
-        form_task = ActiveTrail::Web::FormTask.create(msg)
+        form_task = Floristry::Web::FormTask.create(msg)
 
         expect(form_task.current_state).to eq('open')
       end
 
       it "initializes a @fei" do
 
-        form_task = ActiveTrail::Web::FormTask.create(msg)
+        form_task = Floristry::Web::FormTask.create(msg)
 
         expect(form_task.fei.exid).to eq(msg[:exid])
         expect(form_task.fei.nid).to eq(msg[:nid])
@@ -99,7 +99,7 @@ RSpec.describe ActiveTrail::Web::FormTask, :type => :model do
 
     it "sets the current state to 'in progress'" do
 
-      form_task = ActiveTrail::Web::FormTask.create(msg)
+      form_task = Floristry::Web::FormTask.create(msg)
 
       form_task.update_attributes({free_text: 'Updated text'})
 
@@ -107,11 +107,11 @@ RSpec.describe ActiveTrail::Web::FormTask, :type => :model do
     end
 
     it "updates the active record model attributes" do
-      form_task = ActiveTrail::Web::FormTask.create(msg)
+      form_task = Floristry::Web::FormTask.create(msg)
       form_task.update_attributes({free_text: 'Updated text'})
       id = form_task.id
 
-      form_task = ActiveTrail::Web::FormTask.find(id)
+      form_task = Floristry::Web::FormTask.find(id)
 
       expect(form_task.free_text).to eq('Updated text')
     end
@@ -131,7 +131,7 @@ RSpec.describe ActiveTrail::Web::FormTask, :type => :model do
 
     it "sets the current state to 'closed'" do
 
-      form_task = ActiveTrail::Web::FormTask.create(msg)
+      form_task = Floristry::Web::FormTask.create(msg)
       form_task.update_attributes({free_text: 'Updated text'})
       form_task.return
 
@@ -140,7 +140,7 @@ RSpec.describe ActiveTrail::Web::FormTask, :type => :model do
 
     it "merges the model's attributes msg the payload" do
 
-      form_task = ActiveTrail::Web::FormTask.create(msg)
+      form_task = Floristry::Web::FormTask.create(msg)
       form_task.update_attributes({free_text: 'Updated text'})
 
       expected_merged_msg = {
@@ -157,7 +157,7 @@ RSpec.describe ActiveTrail::Web::FormTask, :type => :model do
         "vars" => nil
       }
 
-      expect(ActiveTrail::WorkflowEngine)
+      expect(Floristry::WorkflowEngine)
         .to receive(:return).with(msg[:exid], msg[:nid], expected_merged_msg)
 
       form_task.return

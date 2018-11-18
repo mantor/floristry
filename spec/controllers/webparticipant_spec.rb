@@ -1,17 +1,17 @@
 require 'rails_helper'
 
-describe ActiveTrail::WebparticipantController do
+describe Floristry::WebparticipantController do
 
-  set_fixture_class active_trail_trails: ActiveTrail::Trail
-  fixtures :active_trail_trails
+  set_fixture_class floristry_trails: Floristry::Trail
+  fixtures :floristry_trails
 
   it "creates the participant on msg from hook" do
-    sequence = active_trail_trails(:sequence_web_part)
+    sequence = floristry_trails(:sequence_web_part)
 
     msg = get_create_msg(sequence)
     post :create, :message => msg
 
-    form_task = ActiveTrail::Web::FormTask.find("#{msg[:exid]}!#{msg[:nid]}")
+    form_task = Floristry::Web::FormTask.find("#{msg[:exid]}!#{msg[:nid]}")
     expect(form_task.current_state).to eq('open')
   end
 

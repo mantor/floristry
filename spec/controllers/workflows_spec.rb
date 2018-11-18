@@ -1,28 +1,28 @@
 require 'rails_helper'
 
-describe ActiveTrail::WorkflowsController do
+describe Floristry::WorkflowsController do
   describe 'GET /workflows' do
     context 'when flows have been launched' do
-      set_fixture_class active_trail_trails: ActiveTrail::Trail
-      fixtures :active_trail_trails
+      set_fixture_class floristry_trails: Floristry::Trail
+      fixtures :floristry_trails
 
       it 'lists them' do
         get :index
         expect(assigns(:wfs).size).to be > 0
-        expect(assigns(:wfs).first).to be_a(ActiveTrail::Workflow)
+        expect(assigns(:wfs).first).to be_a(Floristry::Workflow)
       end
     end
   end
 
   describe 'GET /workflow/:id/edit' do
     render_views
-    set_fixture_class active_trail_trails: ActiveTrail::Trail
-    fixtures :active_trail_trails
+    set_fixture_class floristry_trails: Floristry::Trail
+    fixtures :floristry_trails
 
     context "branch expressions:" do
       context 'sequence' do
         it 'renders the sequence partial' do
-          sequence = active_trail_trails(:sequence)
+          sequence = floristry_trails(:sequence)
           get :edit, id: sequence.wfid
           expect(response).to render_template(partial: '_sequence')
           expect(response).to render_template(partial: '_sequence_spacer')
@@ -32,7 +32,7 @@ describe ActiveTrail::WorkflowsController do
       context 'concurrence' do
         it 'renders the concurrence partial' do
           skip("not implemented")
-          concurrence = active_trail_trails(:concurrence)
+          concurrence = floristry_trails(:concurrence)
 
           get :edit, id: concurrence.wfid
           expect(response).to render_template(partial: '_concurrence')
@@ -43,7 +43,7 @@ describe ActiveTrail::WorkflowsController do
 
     context "leaf expression" do
       it "renders the leaf-expression layout" do
-        sequence = active_trail_trails(:sequence)
+        sequence = floristry_trails(:sequence)
         get :edit, id: sequence.wfid
         expect(response).to render_template(partial: '_leaf-expression')
       end
@@ -51,7 +51,7 @@ describe ActiveTrail::WorkflowsController do
       context "cron" do
         it 'renders the cron partial' do
           skip("not implemented")
-          sequence = active_trail_trails(:sequence_cron)
+          sequence = floristry_trails(:sequence_cron)
           get :edit, id: sequence.wfid
           expect(response).to render_template(partial: '_cron')
         end
@@ -60,7 +60,7 @@ describe ActiveTrail::WorkflowsController do
       context "if" do
         it 'renders the if partial' do
           skip("not implemented")
-          sequence = active_trail_trails(:sequence_if)
+          sequence = floristry_trails(:sequence_if)
           get :edit, id: sequence.wfid
           expect(response).to render_template(partial: '_if')
         end
@@ -68,7 +68,7 @@ describe ActiveTrail::WorkflowsController do
 
       context "set" do
         it 'renders the set partial' do
-          sequence = active_trail_trails(:sequence_set)
+          sequence = floristry_trails(:sequence_set)
           get :edit, id: sequence.wfid
           expect(response).to render_template(partial: '_set')
         end
@@ -76,7 +76,7 @@ describe ActiveTrail::WorkflowsController do
 
       context "sleep" do
         it 'renders the sleep partial' do
-          sequence = active_trail_trails(:sequence_sleep)
+          sequence = floristry_trails(:sequence_sleep)
           get :edit, id: sequence.wfid
           expect(response).to render_template(partial: '_sleep')
         end
@@ -84,7 +84,7 @@ describe ActiveTrail::WorkflowsController do
 
       context "stall" do
         it 'renders the stall partial' do
-          sequence = active_trail_trails(:sequence_stall)
+          sequence = floristry_trails(:sequence_stall)
           get :edit, id: sequence.wfid
           expect(response).to render_template(partial: '_stall')
         end
@@ -92,7 +92,7 @@ describe ActiveTrail::WorkflowsController do
 
       context "task" do
         it 'renders the task partial' do
-          sequence = active_trail_trails(:sequence)
+          sequence = floristry_trails(:sequence)
           get :edit, id: sequence.wfid
           expect(response).to render_template(partial: '_participant')
         end
@@ -100,7 +100,7 @@ describe ActiveTrail::WorkflowsController do
 
       context "tasker" do
         it 'renders the tasker -> participant partial' do
-          sequence = active_trail_trails(:sequence)
+          sequence = floristry_trails(:sequence)
           get :edit, id: sequence.wfid
           expect(response).to render_template(partial: '_participant')
         end
@@ -108,7 +108,7 @@ describe ActiveTrail::WorkflowsController do
 
       context "wait" do
         it 'renders the wait partial' do
-          sequence = active_trail_trails(:sequence_wait)
+          sequence = floristry_trails(:sequence_wait)
           get :edit, id: sequence.wfid
           expect(response).to render_template(partial: '_wait')
         end
@@ -117,7 +117,7 @@ describe ActiveTrail::WorkflowsController do
       context "web participant" do
         describe 'renders the appropriate web participant partial' do
           it 'renders the form tark participant form partial' do
-            sequence = active_trail_trails(:sequence_web_part)
+            sequence = floristry_trails(:sequence_web_part)
             get :edit, id: sequence.wfid
             expect(response).to render_template(partial: '_form_task')
           end

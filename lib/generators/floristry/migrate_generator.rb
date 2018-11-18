@@ -8,12 +8,12 @@ module Floristry
 
       Rails.application.load_tasks
       Rake::Task['railties:install:migrations'].reenable
-      Rake::Task['active_trail:install:migrations'].invoke
+      Rake::Task['floristry:install:migrations'].invoke
     end
 
     def migrate
 
-      rake("db:migrate SCOPE=active_trail")
+      rake("db:migrate SCOPE=floristry")
     end
 
     def self.next_migration_number path

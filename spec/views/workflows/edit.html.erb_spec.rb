@@ -1,8 +1,8 @@
 require "rails_helper"
 
-describe "active_trail/workflows/edit.html.erb" do
-  set_fixture_class active_trail_trails: ActiveTrail::Trail
-  fixtures :active_trail_trails
+describe "floristry/workflows/edit.html.erb" do
+  set_fixture_class floristry_trails: Floristry::Trail
+  fixtures :floristry_trails
 
   context "terminated workflow" do
     it "display participants as 'closed'" do

@@ -1,6 +1,6 @@
 class CreateTrails < ActiveRecord::Migration
   def change
-    create_table "active_trail_trails", force: :cascade do |t|
+    create_table "floristry_trails", force: :cascade do |t|
       t.string   "wfid"
       t.string   "name"
       t.string   "version"

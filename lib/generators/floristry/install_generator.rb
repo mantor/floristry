@@ -8,22 +8,22 @@ module Floristry
 
     def copy_initializer_template
 
-      copy_file 'initializer.rb', 'config/initializers/active_trail.rb'
+      copy_file 'initializer.rb', 'config/initializers/floristry.rb'
     end
 
     def mount_engine_route
 
       routes = [
-        "# These where added by the `rails g active_trail:install` command)\n",
-        "put   '/hookhandler/:id/launched',  controller: 'active_trail/hookhandler', action: :launched, :constraints => { :id => /[0-9A-Za-z\\-\\.]+/ }",
-        "put   '/hookhandler/:id/returned',  controller: 'active_trail/hookhandler', action: :returned, :constraints => { :id => /[0-9A-Za-z\\-\\.]+/ }",
-        "put   '/hookhandler/:id/error',  controller: 'active_trail/hookhandler', action: :error, :constraints => { :id => /[0-9A-Za-z\\-\\.]+/ }",
-        "put   '/hookhandler/:id/terminated',  controller: 'active_trail/hookhandler', action: :terminated, :constraints => { :id => /[0-9A-Za-z\\-\\.]+/ }",
-        "resources :workflows, controller: 'active_trail/workflows',  except: :update, :constraints => { :id => /([\\w\\.\\-]+)!?([0-9_]+)?+/ }",
-        "patch   '/workflows/:id/edit',  controller: 'active_trail/workflows', action: :update, :constraints => { :id => /([\\w\\.\\-]+)!?([0-9_]+)?+/ }",
-        "put     '/workflows/:id/',  controller: 'active_trail/workflows', action: :update, :constraints => { :id => /([\\w\\.\\-]+)!?([0-9_]+)?+/ }",
-        "put     '/workflows/:id/edit',  controller: 'active_trail/workflows', action: :update, as: :update_workflow, :constraints => { :id => /([\\w\\.\\-]+)!?([0-9_]+)?+/ }",
-        "post    '/webparticipant/create', controller: 'active_trail/webparticipant', action: :create"
+        "# These where added by the `rails g floristry:install` command)\n",
+        "put   '/hookhandler/:id/launched',  controller: 'floristry/hookhandler', action: :launched, :constraints => { :id => /[0-9A-Za-z\\-\\.]+/ }",
+        "put   '/hookhandler/:id/returned',  controller: 'floristry/hookhandler', action: :returned, :constraints => { :id => /[0-9A-Za-z\\-\\.]+/ }",
+        "put   '/hookhandler/:id/error',  controller: 'floristry/hookhandler', action: :error, :constraints => { :id => /[0-9A-Za-z\\-\\.]+/ }",
+        "put   '/hookhandler/:id/terminated',  controller: 'floristry/hookhandler', action: :terminated, :constraints => { :id => /[0-9A-Za-z\\-\\.]+/ }",
+        "resources :workflows, controller: 'floristry/workflows',  except: :update, :constraints => { :id => /([\\w\\.\\-]+)!?([0-9_]+)?+/ }",
+        "patch   '/workflows/:id/edit',  controller: 'floristry/workflows', action: :update, :constraints => { :id => /([\\w\\.\\-]+)!?([0-9_]+)?+/ }",
+        "put     '/workflows/:id/',  controller: 'floristry/workflows', action: :update, :constraints => { :id => /([\\w\\.\\-]+)!?([0-9_]+)?+/ }",
+        "put     '/workflows/:id/edit',  controller: 'floristry/workflows', action: :update, as: :update_workflow, :constraints => { :id => /([\\w\\.\\-]+)!?([0-9_]+)?+/ }",
+        "post    '/webparticipant/create', controller: 'floristry/webparticipant', action: :create"
       ]
 
       routes.each do |r|
@@ -35,7 +35,7 @@ module Floristry
 
     def run_migrate_generator
 
-      generate "active_trail:migrate"
+      generate "floristry:migrate"
     end
 
     def install_flack_and_flor

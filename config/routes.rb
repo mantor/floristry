@@ -1,4 +1,4 @@
-ActiveTrail::Engine.routes.draw do
+Floristry::Engine.routes.draw do
   resources :workflows
   root 'workflows#index'
 end

@@ -22,8 +22,8 @@ group :development do
   gem 'web-console', '~> 2.0'
 end
 
-# Require active-trail gem
-gem 'active-trail', path: '../../../'
+# Require floristry gem
+gem 'floristry', path: '../../../'
 
 gem 'statesman'
 gem 'statesman-events'

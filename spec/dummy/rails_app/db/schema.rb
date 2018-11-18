@@ -13,7 +13,7 @@
 
 ActiveRecord::Schema.define(version: 20170720174041) do
 
-  create_table "active_trail_form_tasks", force: :cascade do |t|
+  create_table "floristry_form_tasks", force: :cascade do |t|
     t.string   "__feid__"
     t.text     "__msg__"
     t.string   "current_state"
@@ -22,7 +22,7 @@ ActiveRecord::Schema.define(version: 20170720174041) do
     t.datetime "updated_at"
   end
 
-  create_table "active_trail_trails", force: :cascade do |t|
+  create_table "floristry_trails", force: :cascade do |t|
     t.string   "wfid"
     t.string   "name"
     t.string   "version"
