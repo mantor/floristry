@@ -1,6 +1,6 @@
 require 'rails/generators/base'
 
-module ActiveTrail
+module Floristry
   class InstallGenerator < Rails::Generators::Base
     class_option :flack_and_flor, :type => :boolean, :default => false, :desc => "Install Flack and Flor"
 

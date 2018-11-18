@@ -1,7 +1,7 @@
 require 'rails/generators/base'
 require 'rails/generators/active_record/model/model_generator'
 
-module ActiveTrail
+module Floristry
   class ParticipantGenerator < ActiveRecord::Generators::ModelGenerator
   source_root File.expand_path("../templates", __FILE__)
   source_paths << File.expand_path(ActiveRecord::Generators::ModelGenerator.default_source_root)

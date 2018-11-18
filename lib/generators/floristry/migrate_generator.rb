@@ -1,4 +1,4 @@
-module ActiveTrail
+module Floristry
   class MigrateGenerator < Rails::Generators::Base
     require 'rails/generators/migration'
     include Rails::Generators::Migration
