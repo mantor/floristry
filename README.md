@@ -86,7 +86,7 @@ TODO
 5. Create new Pull Request
 
 ## License
-MIT
+GPLv2
 
 ## Source
 https://github.com/mantor/floristry
