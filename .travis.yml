@@ -1,4 +1,13 @@
 language: ruby
+cache: bundler
 rvm:
  - 2.1
+
+before_script:
+  - git clone https://github.com/floraison/flack ../flack
+  - cd ../flack
+  - bundle install
+  - make migrate
+  - make start
+
 script: bundle exec rspec
