@@ -28,25 +28,49 @@ namespace :server do
   end
 
   namespace :flack do
-    desc "Start Flack: Rack app for the flor workflow engine"
+    flack_path = "../flack"
+
+    desc "Start Flack: Rack app for the Flor workflow engine"
     task :start do
-       chdir "../flack" do
+       chdir flack_path do
          sh %{ make start }
        end
     end
 
     desc "Stop Flack"
     task :stop do
-      chdir "../flack" do
+      chdir flack_path do
         sh %{ make stop }
       end
     end
 
     desc "Restart Flack"
     task :restart do
-      chdir "../flack" do
+      chdir flack_path do
         sh %{ make restart }
       end
     end
-  end
+
+    desc "Clone Flack"
+    task :clone do
+      sh %{ git clone https://github.com/floraison/flack ../flack }
+    end
+
+    desc "Install Flack's dependencies"
+    task :install_dep do
+      chdir flack_path do
+        sh %{ bundle install }
+      end
+    end
+
+    desc "Run Flack's migration"
+    task :migrate do
+      chdir flack_path do
+        sh %{ make migrate }
+      end
+    end
+
+    desc "Install Flack"
+      task :install => %w[flack:clone flack:install_dep flack:migrate]
+    end
 end

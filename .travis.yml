@@ -4,10 +4,7 @@ rvm:
  - 2.1
 
 before_script:
-  - git clone https://github.com/floraison/flack ../flack
-  - cd ../flack
-  - bundle install
-  - make migrate
-  - make start
+  - bundle exec rake app:server:flack:install
+  - bundle exec rake app:server:flack:start
 
 script: bundle exec rspec
