@@ -10,6 +10,15 @@ namespace :server do
   task :restart => [:'flack:restart', :'rails:restart']
 
   namespace :rails do
+    desc "Precompile assets"
+    task :assets_precompile do
+      chdir "spec/dummy/rails_app" do
+        Bundler.with_clean_env do
+          sh "RAILS_ENV=test bundle exec rake assets:precompile"
+        end
+      end
+    end
+
     desc "Start rails"
     task :start do
       sh %{bundle exec rails s -d}
