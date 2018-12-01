@@ -11,9 +11,6 @@ gem 'jquery-rails'
 # Bootstrap theming
 gem "twitter-bootstrap-rails"
 
-# This is only required in the dummy app, to start flack with `rack server:start`
-gem 'flack'
-
 group :development, :test do
   gem 'byebug'
 end
