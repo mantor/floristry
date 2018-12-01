@@ -25,6 +25,17 @@ namespace :server do
       Rake::Task["server:rails:stop"].invoke
       Rake::Task["server:rails:start"].invoke
     end
+
+    desc "Install rails deps"
+    task :install_dep do
+      chdir "spec/dummy/rails_app" do
+        Bundler.with_clean_env do
+          sh "bundle install"
+        end
+      end
+    end
+
+
   end
 
   namespace :flack do
