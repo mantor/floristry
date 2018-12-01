@@ -37,7 +37,7 @@ is_future?
 ### Extend
 New behaviors ca be added to low-level Expression such as Expression (root), BranchExpression or LeafExpression to affect all Expressions at once, only Leaves or only Branches respectively.
 
-Create a file called /config/initializers/active-trail.rb containing modules with the desired behaviors. Then use the following config to define which module will be included in the which low-level Expression.
+Create a file called /config/initializers/floristry.rb containing modules with the desired behaviors. Then use the following config to define which module will be included in the which low-level Expression.
 
 ```ruby
 module FloristryBranchBehavior

@@ -1,4 +1,4 @@
 # desc "Explaining what the task does"
-# task :active-trail do
+# task :floristry do
 #   # Task goes here
 # end
