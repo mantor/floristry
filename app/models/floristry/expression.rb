@@ -11,7 +11,7 @@ module Floristry
       if id.is_a? FlowExpressionId
 
         @fei = id
-        @id = @fei.to_feid
+        @id = @fei.id
       else
 
         @fei = FlowExpressionId.new(id)

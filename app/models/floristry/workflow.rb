@@ -25,7 +25,7 @@ module Floristry
         self.find_by_scope arg
       else
         fei = FlowExpressionId.new(arg)
-        trail = Trail.find_by_wfid(fei.exid)
+        trail = Trail.find_by_wfid(fei.exid) #TODO migration wfid -> exid
         raise ::ActiveRecord::RecordNotFound unless trail
 
         new(fei, trail)
@@ -78,7 +78,7 @@ module Floristry
       # todo change for is_branch?
       if @children.is_a?(Array)
 
-        @children = branch(ROOT_EXPID, @trail.tree)
+        @children = branch(ROOT_NID, @trail.tree)
       end
 
       @children
@@ -144,10 +144,10 @@ module Floristry
     def find_exp(exp, &comparator)
 
       i = 0
-      s = ROOT_EXPID
+      s = ROOT_NID
       while i < exp.children.size
 
-        s += EXPID_SEP
+        s += NID_SEP
         if comparator.call(exp.children[i])
 
           s += i.to_s

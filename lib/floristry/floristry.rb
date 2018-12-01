@@ -12,8 +12,6 @@ require 'active_model/mass_assignment_security'
 
 module Floristry
 
-  NO_SUBID = 'empty_subid' # Replacement for the subid part of a FEID.
-
   module ExpressionMixin
 
     attr_accessor :era

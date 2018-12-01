@@ -2,7 +2,8 @@ module Floristry::ActiveRecord
 
   # This is the Backend listener Participant of Web participants - the only backend participant implemented by Rails
   # It is called by the transient REST Participant.
-  # It emulates an Expression by implementing interface and using mixins instead of inheritance.
+  # It emulates an Expression by implementing interface and using mixins
+  # instead of inheritance.
   #
   class Base < ::ActiveRecord::Base
 
@@ -16,17 +17,15 @@ module Floristry::ActiveRecord
 
     serialize :__msg__, JSON
 
-    after_find :init_fei, :init_fields_and_params
-    after_create :init_fei, :init_fields_and_params
+    after_find :init_fei, :init_fields_and_params # todo in Flor, fields is a key value pair in the payload
+    after_create :init_fei, :init_fields_and_params # todo
 
     attr_reader :fei, :msg, :params
 
     delegate :trigger!, :available_events, :current_state, to: :state_machine
 
-    # ActiveRecords participants can be search by their Rails ID or Workflow id (feid)
-    #
-    # This is required since the information in hand from a Workflow perspective is always the
-    # Workflow ID, not it's Rails representation.
+    # ActiveRecords participants can be search by their ActiveRecord id or
+    # (Flor) Execution id (exid)
     #
     def self.find id
 
@@ -34,10 +33,12 @@ module Floristry::ActiveRecord
       obj || raise(ActiveRecord::RecordNotFound)
     end
 
-    # The workflow engine pass a message through this method via the Web participant ...
+    # The workflow engine pass a message through this method via the Web tasker
     #
-    # Save the msg as a special attribute to be merged at return. Bypassing validation is necessary
-    # since some Participant's model may have attributes that aren't currently present/valid.
+    # Save the msg as a special attribute to be merged at return.
+    # Bypassing validation is necessary since at this point the data may be
+    # inconsistent. Validations will run when data is fed to the model from
+    # the frontend procedure
     #
     def self.create(msg)
 
@@ -46,7 +47,7 @@ module Floristry::ActiveRecord
 
       attrs = Hash.new
       attrs['__msg__'] = msg
-      attrs['__feid__'] = FlowExpressionId.new("#{msg['exid']}!#{msg['nid']}").feid
+      attrs['__feid__'] = FlowExpressionId.new("#{msg['exid']}!#{msg['nid']}").id
       attrs['current_state'] = StateMachine.initial_state
 
       obj = new(attrs)
@@ -59,7 +60,7 @@ module Floristry::ActiveRecord
 
       @name ||= ActiveSupport::Inflector.demodulize(self.class.name)
     end
-    alias_method :frontend_participant_name, :name
+    alias_method :frontend_procedure_name, :name
 
     def save(*)
 
@@ -72,17 +73,10 @@ module Floristry::ActiveRecord
       super
     end
 
-    def fei=(fei) # TODO is this really required? why? sounds fishy.
+    def fei=(fei)
 
       @fei = fei
-      write_attribute(:__feid__, @fei.to_feid)
-    end
-
-    def image() false end
-
-    def target
-
-      @params['target'] || AssetUser::DEFAULT_ROLE
+      write_attribute(:__feid__, @fei.id)
     end
 
     # Merge back attributes within saved msg and reply to Workflow Engine
@@ -99,7 +93,8 @@ module Floristry::ActiveRecord
       sleep(0.3)
     end
 
-    # Resolution of module is problematic in the isolated engine - used by strong_params in workflow's controller
+    # Resolution of module is problematic in the isolated engine - used by
+    # strong_params in workflow's controller
     #
     def module_name() 'web' end
 
@@ -112,7 +107,7 @@ module Floristry::ActiveRecord
 
     def init_fields_and_params
 
-      @fields = __msg__['payload']
+      @fields = __msg__['payload'] # todo fields are the key:values pairs in the payload
       @params = __msg__['attd'] || {}
     end
 
@@ -121,15 +116,18 @@ module Floristry::ActiveRecord
       @fei = FlowExpressionId.new(__feid__)
     end
 
-    # Provide the original payload with fields merged with model's attributes
+    # Merge Activerecord model attributes to the original workflow payload
     #
-    # The msg submitted by the workflow engine is kept untouched in the __msg__ attribute.
-    # We merge every attributes except a few within the msg.
+    # The msg submitted by the workflow engine is kept untouched in the __msg__
+    # ActiveRecord attribute. Once completed, we merge each of Model's
+    # attributes except a few within the msg.
     def merged_msg
 
       wi = attributes['__msg__']
 
-      new_attrs = attributes.reject { |k, v| %w(id __msg__ __feid__ current_state created_at updated_at).include? k }
+      new_attrs = attributes.reject { |k, v|
+        %w(id __msg__ __feid__ current_state created_at updated_at).include? k
+      }
 
       wi['payload'].merge!(new_attrs)
       wi
@@ -185,8 +183,8 @@ module Floristry::ActiveRecord
       transition from: :in_progress,   to: :late
     end
 
-    # This avoids the default behavior which is to check in the transition history,
-    # in order to return the latest transition 'to_state'.
+    # This avoids the default behavior which is to check in the transition
+    # history, in order to return the latest transition 'to_state'.
     def current_state(force_reload: false)
 
       @object.read_attribute(:current_state)
