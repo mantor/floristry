@@ -58,9 +58,7 @@ namespace :server do
 
     desc "Install Flack's dependencies"
     task :install_dep do
-      chdir flack_path do
-        sh %{ bundle install }
-      end
+      sh %{ bundle install --gemfile=#{flack_path}/Gemfile }
     end
 
     desc "Run Flack's migration"
