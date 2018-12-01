@@ -1,1 +1,1 @@
---exclude-pattern "spec/dummy/flor/spec/**/*_spec.rb,spec/dummy/flor/spec/*,spec/dummy/flack/spec/**/*_spec.rb" -fd
+--exclude-pattern "spec/dummy/flor/spec/**/*_spec.rb,spec/dummy/flor/spec/*,spec/dummy/flack/spec/**/*_spec.rb,spec/dummy/rails_app/vendor/**/*" -fd
