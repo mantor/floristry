@@ -1,14 +1,13 @@
-source "http://rubygems.org"
+source "https://rubygems.org"
+git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 # Declare your gem's dependencies in floristry.gemspec.
 # Bundler will treat runtime dependencies like base dependencies, and
 # development dependencies will be added by default to the :development group.
 gemspec
 
-gem 'httpclient'
-
+# All this is used by the dummy app used for test/specs
 group :test do
-  # All this is used by the dummy app used for test/specs
   gem 'simple_form', '~> 3.1'
   gem 'statesman', '~> 2.0.1'
   gem 'statesman-events', '~> 0.0.1'
@@ -22,5 +21,5 @@ end
 # Git. Remember to move these dependencies to your gemspec before releasing
 # your gem to rubygems.org.
 
-# To use debugger
-# gem 'ruby-debug'
+# To use a debugger
+# gem 'byebug', group: [:development, :test]
