@@ -1,3 +1,6 @@
+env:
+  global:
+    - CC_TEST_REPORTER_ID=e6f123c837b138a2d1408891c4355c8013568887ae04be75f5912e049600ad24
 language: ruby
 cache: 
   - bundler: true
@@ -11,5 +14,11 @@ before_script:
   - bundle exec rake app:server:rails:assets_precompile
   - bundle exec rake app:server:flack:install
   - bundle exec rake app:server:flack:start
+#  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+#  - chmod +x ./cc-test-reporter
+#  - ./cc-test-reporter before-build
 
 script: bundle exec rspec
+
+#after_script:
+#  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
