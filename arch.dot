@@ -1,0 +1,145 @@
+digraph Floristry {
+    rankdir=TB;
+    
+    graph [fontsize=11 fontname="courier" compound=true];
+    node [shape=record fontsize=9 fontname="Courier"];
+  
+    node [colorscheme=pastel19,style=filled];
+    edge [fontsize=9,color=gray];
+    fontname = "Courier";
+    //splines=curved;
+  
+    # Web Tasker
+    { 
+        node [fillcolor=1, color=1];
+        
+        webtasker [label="WebTasker"];
+        webtask [label="WebTask.create()"];
+        
+        webtasker -> webtask [xlabel="calls",labeljust="l"];
+    }
+  
+    # Workflow Management
+    { 
+        node [fillcolor=2, color=2];
+
+        launch_flows [label="WorkflowEngine.launch()"];
+        flack_api [label="/message \n(point: 'launch')"];
+        flow_model [label="Flow model (CRUD)"];
+    
+        flow_model:e -> launch_flows:e;
+        launch_flows:w -> flack_api:s; #[color=red,penwidth=3.0]; # Highlight
+    }
+  
+    # Trail
+    { 
+        node [fillcolor=3, color=3];
+
+        
+        pollen [label="Pollen"];
+        trail [label="Trail"];
+        
+        pollen -> trail [xlabel="updates"];
+    }
+    
+    # Workflow Engine
+    {
+        node [fillcolor=5, color=5];
+        
+        flor [label="Flor"];
+    }
+  
+    # Taskers
+    { 
+        node [fillcolor=4, color=4];
+
+        sshtasker [label="SshTasker"];
+        xyztasker [label="other taskers"]
+    }
+  
+    subgraph cluster_flack {
+        label = "Flack";
+// newrank=true;
+				subgraph cluster_flor {
+						label = "Workflow Engine";
+						color = lightgrey;
+						
+						flor;
+				}
+
+        subgraph cluster_flackmgmt {
+            label = "RESTful API";
+            color = lightgrey;
+      
+            flack_api;
+        }
+    
+        subgraph cluster_observer {
+            label = "Hooker";
+            color = lightgrey;
+      
+            pollen;
+        }
+
+        subgraph cluster_tasker {
+            label = "Tasker";
+            color = lightgrey;
+            
+            sshtasker;
+            webtasker;
+            xyztasker;
+        }
+    
+        flor;
+        
+        flack_api -> flor;
+        flor -> sshtasker [xlabel="execute",lhead=cluster_tasker];
+        pollen -> flor [style=dotted,arrowType=invodot,xlabel="observe"];
+        
+        edge[style=invis];
+        flor -> flack_api;
+        pollen -> flack_api;
+    }
+  
+  
+    # Your App
+    subgraph cluster_yourapp {
+        label = "Your app"
+       
+        # Floristry
+        subgraph cluster_floristry {
+            label = "Floristry";
+            color = lightgrey;
+            
+            subgraph cluster_WorkflowMgmt {
+                label = "Workflow Management";
+                color = lightgrey;
+            
+                launch_flows;
+            }
+        
+            subgraph cluster_representation {
+                label = "Rails representation";
+                color = lightgrey;
+          
+                trail; 
+            }
+
+            subgraph cluster_webtask {
+                label = "WebTask";
+                color = lightgrey;
+            
+                webtask;
+            }
+                        
+            edge[style=invis];
+            trail -> launch_flows -> webtask;
+        }
+        
+        flow_model;
+        
+        edge[style=invis];
+        webtask -> flow_model;
+    }
+  #cd0 -> ca0 [ltail=clusterA, lhead=clusterD]; # arrows to structures
+}
