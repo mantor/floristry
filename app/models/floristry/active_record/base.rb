@@ -1,9 +1,9 @@
 module Floristry::ActiveRecord
 
-  # This is the Backend listener Participant of Web participants - the only backend participant implemented by Rails
-  # It is called by the transient REST Participant.
-  # It emulates an Expression by implementing interface and using mixins
-  # instead of inheritance.
+  # This is the listener part of the WebTasker backend which creates Webtask or 
+  # ActiveRecord backed Flor's tasks. It is called by the transient Web Tasker
+  # RESTful backend (i.e. create()) and emulates a Procedure by implementing its
+  # interfaces and using mixins instead of inheritance.
   #
   class Base < ::ActiveRecord::Base
 
@@ -24,8 +24,8 @@ module Floristry::ActiveRecord
 
     delegate :trigger!, :available_events, :current_state, to: :state_machine
 
-    # ActiveRecords participants can be search by their ActiveRecord id or
-    # (Flor) Execution id (exid)
+    # WebTasks (ActiveRecord backed tasks) can be searched both by their 
+    # ActiveRecord id or Flor's Execution id (exid).
     #
     def self.find id
 
@@ -33,12 +33,12 @@ module Floristry::ActiveRecord
       obj || raise(ActiveRecord::RecordNotFound)
     end
 
-    # The workflow engine pass a message through this method via the Web tasker
+    # The workflow engine pass the message to Rails through this method 
     #
-    # Save the msg as a special attribute to be merged at return.
+    # The msg is then saved as a special attribute to be merged on return/reply.
     # Bypassing validation is necessary since at this point the data may be
-    # inconsistent. Validations will run when data is fed to the model from
-    # the frontend procedure
+    # inconsistent. Validations will run when data is fed to the model from the
+    # frontend procedure.
     #
     def self.create(msg)
 
@@ -79,7 +79,10 @@ module Floristry::ActiveRecord
       write_attribute(:__feid__, @fei.id)
     end
 
-    # Merge back attributes within saved msg and reply to Workflow Engine
+    # Reply/return to the workflow engine
+    #
+    # First it needs to merge back the valuables ActiveRecord Model's attributes
+    # within the original saved msg. See merged_msg().
     #
     def return
 
@@ -89,7 +92,7 @@ module Floristry::ActiveRecord
         trigger!(:return)
       end
 
-      # To keep in sync with Flor's tick
+      # To keep in sync with Flor's tick for atomicity
       sleep(0.3)
     end
 
@@ -116,11 +119,11 @@ module Floristry::ActiveRecord
       @fei = FlowExpressionId.new(__feid__)
     end
 
-    # Merge Activerecord model attributes to the original workflow payload
+    # Merge Activerecord model attributes to the original workflow payload/msg
     #
     # The msg submitted by the workflow engine is kept untouched in the __msg__
     # ActiveRecord attribute. Once completed, we merge each of Model's
-    # attributes except a few within the msg.
+    # attributes except a few within the original msg.
     def merged_msg
 
       wi = attributes['__msg__']
