@@ -1,5 +1,5 @@
 module Floristry
-  class Concurrence < BranchExpression
+  class Concurrence < BranchProcedure
     def spacer_template
       'floristry/concurrence_spacer'
     end

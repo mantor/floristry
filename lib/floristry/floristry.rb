@@ -12,7 +12,7 @@ require 'active_model/mass_assignment_security'
 
 module Floristry
 
-  module ExpressionMixin
+  module ProcedureMixin
 
     attr_accessor :era
 
@@ -35,29 +35,29 @@ module Floristry
     end
   end
 
-  # BranchExpression isn't complete as it requires forwardable for def_delegate
+  # BranchProcedure isn't complete as it requires forwardable for def_delegate
   # and ultimately, @children.
   #
-  module BranchExpressionMixin
+  module BranchProcedureMixin
 
     def is_leaf?() false end
     def is_branch?() true end
     def is_participant?() false end
   end
 
-  module LeafExpressionMixin
+  module LeafProcedureMixin
 
-    include ExpressionMixin
+    include ProcedureMixin
 
     def is_leaf?() true end
     def is_branch?() false end
     def is_participant?() false end
     def instance() self end
     def current_state() 'in_progress' end
-    def layout() 'layouts/floristry/leaf-expression' end
+    def layout() 'layouts/floristry/leaf-procedure' end
   end
 
-  module ParticipantExpressionMixin
+  module ParticipantProcedureMixin
 
     def is_participant?() true end
     def due_at() nil end

@@ -1,5 +1,5 @@
 module Floristry
-  class Stall < LeafExpression
+  class Stall < LeafProcedure
 
   end
 end

@@ -1,5 +1,5 @@
 module Floristry
-  class Wait < LeafExpression
+  class Wait < LeafProcedure
 
   end
 end

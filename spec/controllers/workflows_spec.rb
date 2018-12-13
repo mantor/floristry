@@ -19,7 +19,7 @@ describe Floristry::WorkflowsController do
     set_fixture_class floristry_trails: Floristry::Trail
     fixtures :floristry_trails
 
-    context "branch expressions:" do
+    context "branch procedures:" do
       context 'sequence' do
         it 'renders the sequence partial' do
           sequence = floristry_trails(:sequence)
@@ -41,11 +41,11 @@ describe Floristry::WorkflowsController do
       end
     end
 
-    context "leaf expression" do
-      it "renders the leaf-expression layout" do
+    context "leaf procedure" do
+      it "renders the leaf-procedure layout" do
         sequence = floristry_trails(:sequence)
         get :edit, id: sequence.wfid
-        expect(response).to render_template(partial: '_leaf-expression')
+        expect(response).to render_template(partial: '_leaf-procedure')
       end
 
       context "cron" do

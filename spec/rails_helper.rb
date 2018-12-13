@@ -62,7 +62,7 @@ end
 
 # Reopen Floristry::Workflow, assigning a default value to `@current_nids`
 # and adding an accessor. This allows to have the exact `@current_nids` we
-# need in views spec (which expression(s) is active, in the past, etc)
+# need in views spec (which procedure(s) is active, in the past, etc)
 # and remove the dependency on a running flack instance during spec runs.
 Floristry::Workflow.class_eval do
   alias_method :original_initialize, :initialize

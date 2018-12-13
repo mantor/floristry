@@ -1,8 +1,8 @@
 module Floristry
 
-  class LeafExpression < Expression
+  class LeafProcedure < Procedure
 
-    include LeafExpressionMixin
+    include LeafProcedureMixin
 
     attr_accessor :payload
     attr_reader :param, :params
@@ -19,5 +19,5 @@ module Floristry
   end
 end
 
-mixin = Floristry.configuration.add_leaf_expression_behavior
-Floristry::LeafExpression.send(:include, mixin) if mixin
+mixin = Floristry.configuration.add_leaf_procedure_behavior
+Floristry::LeafProcedure.send(:include, mixin) if mixin

@@ -42,7 +42,7 @@ RSpec.describe Floristry::Web::FormTask, :type => :model do
         }.to raise_error("'msg' is missing 'attd'")
       end
 
-      it "fails if exid and nid can't be parsed as a FlowExpressionId" do
+      it "fails if exid and nid can't be parsed as a FlowExecutionId" do
         expect {
           Floristry::Web::FormTask.create(
             {

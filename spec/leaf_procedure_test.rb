@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-class LeafExpressionTest < ActiveSupport::TestCase
+class LeafProcedureTest < ActiveSupport::TestCase
 
   test "it parses Stall params" do
 

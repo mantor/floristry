@@ -63,7 +63,7 @@ module Floristry
 
     protected
 
-    # Insert hash in a workflow tree based on an expression id.
+    # Insert hash in a workflow tree based on an procedure id.
     #
     def self.insert_in_tree(tree, nid, payload)
       t = [tree]

@@ -1,5 +1,5 @@
 module Floristry
-  class Set < LeafExpression
+  class Set < LeafProcedure
 
   end
 end
