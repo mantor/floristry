@@ -1,20 +1,20 @@
 module Floristry
-  class Expression
+  class Procedure
 
     include Floristry::CommonMixin
-    include ExpressionMixin
+    include ProcedureMixin
 
     attr_reader :id, :name, :payload, :era
 
     def initialize(id, name, payload, vars, era)
 
-      if id.is_a? FlowExpressionId
+      if id.is_a? FlowExecutionId
 
         @fei = id
         @id = @fei.id
       else
 
-        @fei = FlowExpressionId.new(id)
+        @fei = FlowExecutionId.new(id)
         @id = id
       end
 
@@ -22,7 +22,7 @@ module Floristry
       @payload = payload
       @era = era
 
-      mixin = Floristry.configuration.add_expression_behavior
+      mixin = Floristry.configuration.add_procedure_behavior
       self.class.send(:include, mixin) if mixin
     end
   end

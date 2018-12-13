@@ -1,7 +1,7 @@
 module Floristry::CommonMixin
 
-  CHILDREN = 1     # Where branch expressions stores children expressions
-  ROOT_NID = '0'   # Root expression id - yes, it's a string (e.g. 0_1_0)
+  CHILDREN = 1     # Where branch procedures stores children procedures
+  ROOT_NID = '0'   # Root procedure id - yes, it's a string (e.g. 0_1_0)
   FEI_SEP = '!'    # FEI separator 
   NID_SEP = '_'    # NID separator
   FEI_REGEX = /\A([\w\.\-]+)!?([0-9_]+)?\z/ # domain0-u0-20170806.2124.pufatsonaju!0_1
@@ -22,13 +22,13 @@ module Floristry::CommonMixin
 
     def to_exid(fei) fei.split(FEI_SEP).first end
 
-    # The FlowExpressionId (fei for short) is an flow identifier.
+    # The FlowExecutionId (fei for short) is an flow identifier.
     #
     # FEI contain two pieces of information :
     # * exid : execution instance id, the identifier for the flow instance
     # * nid : the node id - the position within the flow 
     #
-    class FlowExpressionId
+    class FlowExecutionId
 
       attr_accessor :id, :exid, :nid
 

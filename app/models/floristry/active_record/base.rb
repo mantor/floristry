@@ -10,8 +10,8 @@ module Floristry::ActiveRecord
     self.abstract_class = true
 
     include Floristry::CommonMixin
-    include Floristry::ExpressionMixin
-    include Floristry::ParticipantExpressionMixin
+    include Floristry::ProcedureMixin
+    include Floristry::ParticipantProcedureMixin
 
     ATTRIBUTES_TO_EXCLUDE = %w(id __feid__ __msg__ )
 
@@ -47,7 +47,7 @@ module Floristry::ActiveRecord
 
       attrs = Hash.new
       attrs['__msg__'] = msg
-      attrs['__feid__'] = FlowExpressionId.new("#{msg['exid']}!#{msg['nid']}").id
+      attrs['__feid__'] = FlowExecutionId.new("#{msg['exid']}!#{msg['nid']}").id
       attrs['current_state'] = StateMachine.initial_state
 
       obj = new(attrs)
@@ -116,7 +116,7 @@ module Floristry::ActiveRecord
 
     def init_fei
 
-      @fei = FlowExpressionId.new(__feid__)
+      @fei = FlowExecutionId.new(__feid__)
     end
 
     # Merge Activerecord model attributes to the original workflow payload/msg

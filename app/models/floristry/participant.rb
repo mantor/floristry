@@ -1,7 +1,7 @@
 module Floristry
-  class Participant < LeafExpression
+  class Participant < LeafProcedure
 
-    include ParticipantExpressionMixin
+    include ParticipantProcedureMixin
   end
 end
 

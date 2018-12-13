@@ -1,5 +1,5 @@
 module Floristry
-  class Cron < BranchExpression
+  class Cron < BranchProcedure
     def spacer_template
       'ruote_trail/sequence_spacer'
     end

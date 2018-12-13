@@ -11,19 +11,19 @@ To override a view, simply create a new one in:
 TODO
 
 ### Hierarchy
-- Expression
-    - Leaf Expression
+- Procedure
+    - Leaf Procedure
         - Tasker
         - If
         - Wait
         - ...
-    - Branch Expression
+    - Branch Procedure
         - Sequence
         - Concurrence
         - ...
         
 ### Era - :pass, :present, :future
-The following methods are available on each Expressions to identify its era:
+The following methods are available on each Procedures to identify its era:
 
 ```
 active?
@@ -35,9 +35,9 @@ is_future?
 ```
 
 ### Extend
-New behaviors ca be added to low-level Expression such as Expression (root), BranchExpression or LeafExpression to affect all Expressions at once, only Leaves or only Branches respectively.
+New behaviors ca be added to low-level Procedure such as Procedure (root), BranchProcedure or LeafProcedure to affect all Procedures at once, only Leaves or only Branches respectively.
 
-Create a file called /config/initializers/floristry.rb containing modules with the desired behaviors. Then use the following config to define which module will be included in the which low-level Expression.
+Create a file called /config/initializers/floristry.rb containing modules with the desired behaviors. Then use the following config to define which module will be included in the which low-level Procedure.
 
 ```ruby
 module FloristryBranchBehavior
@@ -49,9 +49,9 @@ module FloristryBranchBehavior
 end
 
 Floristry.configure do |config|
-  config.add_branch_expression_behavior = FloristryBranchBehavior
-  #config.add_leaf_expression_behavior = FloristryLeafBehavior
-  #config.add_expression_behavior = FloristryBehavior
+  config.add_branch_Procedure_behavior = FloristryBranchBehavior
+  #config.add_leaf_Procedure_behavior = FloristryLeafBehavior
+  #config.add_Procedure_behavior = FloristryBehavior
 end
 ```
 
@@ -81,9 +81,10 @@ TODO
 ## Contributing
 1. Fork it
 2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+3. Do your stuff
+4. Commit your changes (`git commit -am 'Add some feature'`)
+5. Push to the branch (`git push origin my-new-feature`)
+6. Create new Pull Request
 
 ## License
 GPLv2
@@ -91,6 +92,6 @@ GPLv2
 ## Source
 https://github.com/mantor/floristry
 
-## Author(s)
-Danny Fullerton - Mantor Organization  
-Jean-Francois Rioux - Mantor Organization  
+## Authors
+- Danny Fullerton - Mantor Organization
+- Jean-Francois Rioux - Mantor Organization

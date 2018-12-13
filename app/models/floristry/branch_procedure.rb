@@ -1,10 +1,10 @@
 require 'forwardable'
 
 module Floristry
-  class BranchExpression < Expression
+  class BranchProcedure < Procedure
     include Enumerable
     extend Forwardable
-    include BranchExpressionMixin
+    include BranchProcedureMixin
 
     attr_reader :children
 
@@ -14,7 +14,7 @@ module Floristry
 
       @children = Array.new
 
-      mixin = Floristry.configuration.add_branch_expression_behavior
+      mixin = Floristry.configuration.add_branch_procedure_behavior
       self.class.send(:include, mixin) if mixin
     end
 

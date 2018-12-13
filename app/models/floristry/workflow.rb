@@ -2,7 +2,7 @@ module Floristry
   # @FIXME DIRTY HACK: load it. If not, `Set` resolves to stdlib `Set`
   require "#{File.dirname(__FILE__) }/set"
 
-  class Workflow < Floristry::BranchExpression
+  class Workflow < Floristry::BranchProcedure
 
     include Floristry::CommonMixin
     alias_method :id, :exid
@@ -24,7 +24,7 @@ module Floristry
       if arg.is_a? Symbol
         self.find_by_scope arg
       else
-        fei = FlowExpressionId.new(arg)
+        fei = FlowExecutionId.new(arg)
         trail = Trail.find_by_wfid(fei.exid) #TODO migration wfid -> exid
         raise ::ActiveRecord::RecordNotFound unless trail
 
@@ -42,8 +42,8 @@ module Floristry
       self.find(exid).trigger!(:error)
     end
 
-    # A Workflow is a special type of Expression. It has the responsibility to
-    # build the Expressions tree from the Workflow Engine structure thus why its
+    # A Workflow is a special type of Procedure. It has the responsibility to
+    # build the Procedures tree from the Workflow Engine structure thus why its
     # initializer is different.
     #
     def initialize(id, trail)
@@ -138,7 +138,7 @@ module Floristry
       find_exp(@children) do |exp| exp.is_participant? end
     end
 
-    # Recursively search of something in the Expression tree using a comparator block.
+    # Recursively search of something in the Procedure tree using a comparator block.
     # See first_part_pos() for an example.
     #
     def find_exp(exp, &comparator)
@@ -168,7 +168,7 @@ module Floristry
       expid ||= current_pos[0]
       expids = expid.split(NID_SEP).map(&:to_i)
 
-      i = 1 # Skip Workflow (Root) expression i.e. 0
+      i = 1 # Skip Workflow (Root) procedure i.e. 0
       while i < expids.size
         exp = exp.children[expids[i]]
         i += 1
@@ -208,10 +208,10 @@ module Floristry
       end
     end
 
-    # Creates a Branch Expression and its child Expressions.
+    # Creates a Branch Procedure and its child Procedures.
     #
-    # Recursively iterates through a Branch Expression (e.g. sequence, concurrence)
-    # and returns an object with its child Expressions (either Leaves or Branches).
+    # Recursively iterates through a Branch Procedure (e.g. sequence, concurrence)
+    # and returns an object with its child Procedures (either Leaves or Branches).
     #
     # :expid is the relative position in the Workflow
     # :exp is used to navigate within the workflow internal structure
@@ -240,9 +240,9 @@ module Floristry
       factory(expid, find_era(expid), exp)
     end
 
-    # Returns proper Expression type based on its name.
+    # Returns proper Procedure type based on its name.
     #
-    # Anything not an Expression is considered a Participant Expression, e.g.,
+    # Anything not an Procedure is considered a Participant Procedure, e.g.,
     # if == If, sequence == Sequence, admin == Participant, xyz == Participant
     #
     def factory(exid, era, exp)
@@ -250,7 +250,7 @@ module Floristry
       name, payload, params = extract(era, exp)
       klass_name = name.camelize
 
-      if is_expression? (klass_name)
+      if is_procedure? (klass_name)
 
         Floristry.const_get(klass_name).new(exid, name, params, payload, era)
       else
@@ -292,9 +292,9 @@ module Floristry
       frontend_handlers.select { |h| name =~ /#{h[:regex]}/i }.first
     end
 
-    def is_expression?(name)
+    def is_procedure?(name)
 
-      Floristry.const_get(name) <= Floristry::Expression ? true : false
+      Floristry.const_get(name) <= Floristry::Procedure ? true : false
 
     rescue NameError
       false
@@ -304,7 +304,7 @@ module Floristry
 
     def is_branch?(name)
 
-      Floristry.const_get(name) <= Floristry::BranchExpression ? true : false
+      Floristry.const_get(name) <= Floristry::BranchProcedure ? true : false
 
     rescue NameError
       false

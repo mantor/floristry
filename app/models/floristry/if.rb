@@ -1,4 +1,4 @@
 module Floristry
-  class If < LeafExpression
+  class If < LeafProcedure
   end
 end

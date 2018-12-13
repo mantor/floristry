@@ -1,5 +1,5 @@
 module Floristry
-  class Sleep < LeafExpression
+  class Sleep < LeafProcedure
 
   end
 end
