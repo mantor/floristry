@@ -33,6 +33,15 @@ module Floristry
         "#{p.map(&:underscore).join('/')}".freeze
       end
     end
+
+    def as_variable_name()
+
+      if self.class.ancestors.include? (Floristry::Participant)
+        'participant'
+      else
+        "flo#{name.capitalize}"
+      end
+    end
   end
 
   # BranchProcedure isn't complete as it requires forwardable for def_delegate

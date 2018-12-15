@@ -1,10 +1,12 @@
 <div class="rat-cron">
   Cron "<%= cron.params.keys[0] %>"
-  <%- cron.each_with_index do |child, index| %>
+  <%- floCron.each_with_index do |child, index| %>
     <%= render :partial => child.class.to_s.underscore,
                :layout => child.layout,
                :object => child,
-               :locals => {:leaf => child} %>
-    <%= render :partial => 'floristry/sequence_spacer' unless index == cron.size - 1 %>
+               :locals => {:leaf => child},
+               :as => child.as_variable_name
+    %>
+    <%= render :partial => 'floristry/sequence_spacer' unless index == floCron.size - 1 %>
   <%- end %>
 </div>

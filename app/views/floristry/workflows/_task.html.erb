@@ -1,12 +1,12 @@
 <div class="rat-bubble">
   <div class="rat-part-header">
-    <%= task.current_state %>
-    <b><%= task.name %> (<%= task.params[0] %>)</b>
-    for <%= task.scope.to_s %>
+    <%= floTask.current_state %>
+    <b><%= floTask.name %> (<%= floTask.params[0] %>)</b>
+    for <%= floTask.scope.to_s %>
   </div>
   <div class="rat-part">
     <pre>
-      <%= task.payload.except('scoped', 'procedure_id') %>
+      <%= floTask.payload.except('scoped', 'procedure_id') %>
     </pre>
   </div>
 </div>

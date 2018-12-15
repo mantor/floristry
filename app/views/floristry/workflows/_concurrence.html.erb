@@ -1,9 +1,11 @@
 <div class="rat-concurrence">
-  <%- concurrence.each_with_index do |child, index|  %>
+  <%- floConcurrence.each_with_index do |child, index|  %>
     <%= render :partial => child.class.to_s.underscore,
                :layout => child.layout,
                :object => child,
-               :locals => {:leaf => child} %>
-    <%= render :partial => 'concurrence_spacer' unless index == concurrence.size - 1 %>
+               :locals => {:leaf => child},
+               :as => child.as_variable_name
+    %>
+    <%= render :partial => 'concurrence_spacer' unless index == floConcurrence.size - 1 %>
   <%- end %>
 </div>
