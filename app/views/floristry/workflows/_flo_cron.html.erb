@@ -1,6 +1,6 @@
 <div class="rat-cron">
   Cron "<%= flo_cron.params.keys[0] %>"
-  <%- cron.each_with_index do |child, index| %>
+  <%- flo_cron.each_with_index do |child, index| %>
     <%= render :partial => child.class.to_s.underscore,
                :layout => child.layout,
                :object => child,
