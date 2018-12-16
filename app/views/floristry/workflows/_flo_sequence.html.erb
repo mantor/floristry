@@ -1,0 +1,9 @@
+<div class="rat-sequence">
+  <%- flo_sequence.each_with_index do |child, index| %>
+    <%= render :partial => child,
+               :layout => child.layout,
+               :object => child,
+               :locals => {:leaf => child} %>
+    <%= render :partial => 'flo_sequence_spacer' unless index == flo_sequence.size - 1 %>
+  <%- end %>
+</div>
