@@ -30,7 +30,12 @@ module Floristry
 
       @_to_partial_path ||= begin
         p = self.class.name.split('::').drop(1)
-        "#{p.map(&:underscore).join('/')}".freeze
+        if self.class.ancestors.include? (Floristry::ActiveRecord::Base)
+          "#{p.map(&:underscore).join('/')}".freeze
+        else
+          p.last.prepend('flo')
+          "#{p.map(&:underscore).join('/')}".freeze
+        end
       end
     end
   end

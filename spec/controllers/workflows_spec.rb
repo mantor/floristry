@@ -24,8 +24,8 @@ describe Floristry::WorkflowsController do
         it 'renders the sequence partial' do
           sequence = floristry_trails(:sequence)
           get :edit, id: sequence.wfid
-          expect(response).to render_template(partial: '_sequence')
-          expect(response).to render_template(partial: '_sequence_spacer')
+          expect(response).to render_template(partial: '_flo_sequence')
+          expect(response).to render_template(partial: '_flo_sequence_spacer')
         end
       end
 
@@ -36,7 +36,7 @@ describe Floristry::WorkflowsController do
 
           get :edit, id: concurrence.wfid
           expect(response).to render_template(partial: '_concurrence')
-          expect(response).to render_template(partial: '_concurrence_spacer')
+          expect(response).to render_template(partial: '_flo_concurrence_spacer')
         end
       end
     end
@@ -53,7 +53,7 @@ describe Floristry::WorkflowsController do
           skip("not implemented")
           sequence = floristry_trails(:sequence_cron)
           get :edit, id: sequence.wfid
-          expect(response).to render_template(partial: '_cron')
+          expect(response).to render_template(partial: '_flo_cron')
         end
       end
 
@@ -62,7 +62,7 @@ describe Floristry::WorkflowsController do
           skip("not implemented")
           sequence = floristry_trails(:sequence_if)
           get :edit, id: sequence.wfid
-          expect(response).to render_template(partial: '_if')
+          expect(response).to render_template(partial: '_flo_if')
         end
       end
 
@@ -70,7 +70,7 @@ describe Floristry::WorkflowsController do
         it 'renders the set partial' do
           sequence = floristry_trails(:sequence_set)
           get :edit, id: sequence.wfid
-          expect(response).to render_template(partial: '_set')
+          expect(response).to render_template(partial: '_flo_set')
         end
       end
 
@@ -78,7 +78,7 @@ describe Floristry::WorkflowsController do
         it 'renders the sleep partial' do
           sequence = floristry_trails(:sequence_sleep)
           get :edit, id: sequence.wfid
-          expect(response).to render_template(partial: '_sleep')
+          expect(response).to render_template(partial: '_flo_sleep')
         end
       end
 
@@ -86,15 +86,15 @@ describe Floristry::WorkflowsController do
         it 'renders the stall partial' do
           sequence = floristry_trails(:sequence_stall)
           get :edit, id: sequence.wfid
-          expect(response).to render_template(partial: '_stall')
+          expect(response).to render_template(partial: '_flo_stall')
         end
       end
 
       context "task" do
-        it 'renders the task partial' do
+        it 'renders the participant partial' do
           sequence = floristry_trails(:sequence)
           get :edit, id: sequence.wfid
-          expect(response).to render_template(partial: '_participant')
+          expect(response).to render_template(partial: '_flo_participant')
         end
       end
 
@@ -102,7 +102,7 @@ describe Floristry::WorkflowsController do
         it 'renders the tasker -> participant partial' do
           sequence = floristry_trails(:sequence)
           get :edit, id: sequence.wfid
-          expect(response).to render_template(partial: '_participant')
+          expect(response).to render_template(partial: '_flo_participant')
         end
       end
 
@@ -110,7 +110,7 @@ describe Floristry::WorkflowsController do
         it 'renders the wait partial' do
           sequence = floristry_trails(:sequence_wait)
           get :edit, id: sequence.wfid
-          expect(response).to render_template(partial: '_wait')
+          expect(response).to render_template(partial: '_flo_wait')
         end
       end
 

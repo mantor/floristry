@@ -1,0 +1,12 @@
+<div class="rat-bubble">
+  <div class="rat-part-header">
+    <%= flo_task.current_state %>
+    <b><%= flo_task.name %> (<%= flo_task.params[0] %>)</b>
+    for <%= flo_task.scope.to_s %>
+  </div>
+  <div class="rat-part">
+    <pre>
+      <%= flo_task.payload.except('scoped', 'procedure_id') %>
+    </pre>
+  </div>
+</div>
