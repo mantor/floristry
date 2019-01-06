@@ -46,26 +46,32 @@ namespace :server do
   end
 
   namespace :flack do
-    flack_path = "../flack"
+    flack_path = Gem::Specification.find_by_name("floristry").gem_dir + '/../flack'
 
     desc "Start Flack: Rack app for the Flor workflow engine"
     task :start do
-      chdir flack_path do
-        sh %{ make start }
+      Bundler.with_clean_env do
+        chdir flack_path do
+          sh %{ make start }
+        end
       end
     end
 
     desc "Stop Flack"
     task :stop do
-      chdir flack_path do
-        sh %{ make stop }
+      Bundler.with_clean_env do
+        chdir flack_path do
+          sh %{ make stop }
+        end
       end
     end
 
     desc "Restart Flack"
     task :restart do
-      chdir flack_path do
-        sh %{ make restart }
+      Bundler.with_clean_env do
+        chdir flack_path do
+          sh %{ make restart }
+        end
       end
     end
 
