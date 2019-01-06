@@ -43,8 +43,6 @@ namespace :server do
         end
       end
     end
-
-
   end
 
   namespace :flack do
@@ -52,9 +50,9 @@ namespace :server do
 
     desc "Start Flack: Rack app for the Flor workflow engine"
     task :start do
-       chdir flack_path do
-         sh %{ make start }
-       end
+      chdir flack_path do
+        sh %{ make start }
+      end
     end
 
     desc "Stop Flack"
@@ -73,7 +71,7 @@ namespace :server do
 
     desc "Clone Flack"
     task :clone do
-      sh %{ git clone https://github.com/floraison/flack ../flack }
+      sh %{ git clone https://github.com/floraison/flack #{flack_path} }
     end
 
     desc "Install Flack's dependencies"
@@ -83,12 +81,29 @@ namespace :server do
 
     desc "Run Flack's migration"
     task :migrate do
-      chdir flack_path do
-        sh %{ make migrate }
+      Bundler.with_clean_env do
+        chdir flack_path do
+          sh %{ make migrate }
+        end
       end
     end
 
     desc "Install Flack"
-      task :install => %w[flack:clone flack:install_dep flack:migrate]
+    task :install => %w[flack:clone flack:install_dep flack:migrate]
+  end
+end
+
+namespace :floristry do
+
+  desc "Install Floristry and all dependencies"
+  task :setup do
+    Rake::Task["app:server:flack:install"].invoke
+
+    chdir "spec/dummy/rails_app" do
+      Bundler.with_clean_env do
+        sh "bundle install"
+        sh "RAILS_ENV=test bundle exec rake assets:precompile"
+      end
     end
+  end
 end
