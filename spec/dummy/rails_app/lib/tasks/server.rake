@@ -110,15 +110,13 @@ end
 
 namespace :floristry do
 
-  desc "Install Floristry and all dependencies"
-  task :setup do
+  desc "Install Floristry and all dependencies for testing with dummy app"
+  task :setup_dummy do
     Rake::Task["app:server:flack:install"].invoke
 
-    chdir "spec/dummy/rails_app" do
-      Bundler.with_clean_env do
-        sh "bundle install"
-        sh "RAILS_ENV=test bundle exec rake assets:precompile"
-      end
+    Bundler.with_clean_env do
+      Rake::Task["app:server:rails:install_dep"].invoke
+      Rake::Task["app:server:rails:precompile_and_migrate"].invoke
     end
   end
 end
