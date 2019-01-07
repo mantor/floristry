@@ -24,12 +24,18 @@ namespace :server do
 
     desc "Start rails"
     task :start do
-      sh %{bundle exec rails s -d}
+      chdir "spec/dummy/rails_app" do
+        Bundler.with_clean_env do
+          sh %{bundle exec rails s -d}
+        end
+      end
     end
 
     desc "Stop rails"
     task :stop do
-      sh %{if [ -f tmp/pids/server.pid ]; then kill `cat tmp/pids/server.pid`; fi}
+      chdir "spec/dummy/rails_app" do
+        sh %{if [ -f tmp/pids/server.pid ]; then kill `cat tmp/pids/server.pid`; fi}
+      end
     end
 
     desc "Restart rails"
