@@ -1,4 +1,6 @@
 namespace :server do
+  # Default, todo make this configurable.
+  flack_path = Gem::Specification.find_by_name("floristry").gem_dir + '/../flack'
 
   desc "Start all servers"
   task :start => [:'flack:start', :'rails:start']
@@ -41,12 +43,12 @@ namespace :server do
         Bundler.with_clean_env do
           sh "bundle install"
         end
+        sh "rails g floristry:install --flack-dir=#{flack_path}"
       end
     end
   end
 
   namespace :flack do
-    flack_path = Gem::Specification.find_by_name("floristry").gem_dir + '/../flack'
 
     desc "Start Flack: Rack app for the Flor workflow engine"
     task :start do
