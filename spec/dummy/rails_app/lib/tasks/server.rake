@@ -12,11 +12,12 @@ namespace :server do
   task :restart => [:'flack:restart', :'rails:restart']
 
   namespace :rails do
-    desc "Precompile assets"
-    task :assets_precompile do
+    desc "Precompile assets and migrate db"
+    task :precompile_and_migrate do
       chdir "spec/dummy/rails_app" do
         Bundler.with_clean_env do
           sh "RAILS_ENV=test bundle exec rake assets:precompile"
+          sh "RAILS_ENV=test bundle exec rake db:migrate"
         end
       end
     end
