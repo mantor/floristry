@@ -78,11 +78,13 @@ TODO
 ## Testing
 
 1. Clone the gem
-2. Run `rake app:floristry:setup_dummy` form the gem's root directory. This will install [Flack](https://github.com/floraison/flack)
-3. Start Flack and the dummy rails app `rake app:server:start`
-4. Run the specs `bundle exec rspec` (specs need a running flack instance).
-5. Use the dummy app listening at localhost:3000 for testing.
-6. Stop all the servers: `rake app:server:stop`
+2. Run `bundle install`
+3. Run `rake app:floristry:setup_flack` This will install [Flack](https://github.com/floraison/flack)
+3. Run `rake app:floristry:setup_dummy` from the gem's root directory.
+4. Start Flack and the dummy rails app `rake app:server:start`
+5. Run the specs `bundle exec rspec` (specs need a running flack instance).
+6. Use the dummy app listening at localhost:3000 for testing.
+7. Stop all the servers: `rake app:server:stop`
 
 ## Usage
 TODO

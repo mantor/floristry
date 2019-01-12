@@ -110,9 +110,13 @@ end
 
 namespace :floristry do
 
-  desc "Install Floristry and all dependencies for testing with dummy app"
-  task :setup_dummy do
+  desc "Install Flack locally"
+  task :setup_flack do
     Rake::Task["app:server:flack:install"].invoke
+  end
+
+  desc "Install Floristry for testing with dummy app"
+  task :setup_dummy do
 
     Bundler.with_clean_env do
       Rake::Task["app:server:rails:install_dep"].invoke
