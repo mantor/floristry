@@ -3,6 +3,7 @@ require 'rails/generators/base'
 module Floristry
   class InstallGenerator < Rails::Generators::Base
     class_option :flack_and_flor, :type => :boolean, :default => false, :desc => "Install Flack and Flor"
+    class_option :flack_dir, :type => :string, :default => '../flack', :desc => "Flack installation dir"
 
     source_root File.expand_path('../templates', __FILE__)
 
@@ -56,11 +57,14 @@ module Floristry
             run('make migrate')
           end
         end
-
-        say("Copying default Flack hooks and taskers inside ../flack/envs/dev/lib/")
-        directory("flack/lib/hooks/", "../flack/envs/dev/lib/hooks")
-        directory("flack/lib/taskers/", "../flack/envs/dev/lib/taskers")
       end
+    end
+
+    def  pollen_hooks_and_taskers
+
+      say("Copying default Flack hooks and taskers inside #{options[:flack_dir]}")
+      directory("flack/lib/hooks/", "#{options[:flack_dir]}envs/dev/lib/hooks")
+      directory("flack/lib/taskers/", "#{options[:flack_dir]}/flack/envs/dev/lib/taskers")
     end
   end
 end

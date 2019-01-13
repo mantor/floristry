@@ -13,7 +13,7 @@ module Floristry
 
     def migrate
 
-      rake("db:migrate SCOPE=floristry")
+      rake("db:migrate")
     end
 
     def self.next_migration_number path

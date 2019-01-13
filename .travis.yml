@@ -1,19 +1,24 @@
 env:
   global:
     - CC_TEST_REPORTER_ID=e6f123c837b138a2d1408891c4355c8013568887ae04be75f5912e049600ad24
+services:
+  - docker
 language: ruby
-cache: 
+cache:
   - bundler: true
   - directories:
-    - /home/travis/.rvm/
+      - /home/travis/.rvm/
 rvm:
- - 2.1
+  - 2.1
+before_install:
+  - docker build -t flack .
+  - docker run -d flack:latest /bin/sh -c "cd flack/ ; make serve"
+  - CONTAINER=`docker ps -aql`
+  - CONTAINER_IP=`docker inspect $CONTAINER | grep '"IPAddress"' | head -n 1 | grep -oE "([0-9]{1,3}\.){3}[0-9]{1,3}"`
+  - sed -i "s/localhost/$CONTAINER_IP/g" lib/floristry/workflow_engine.rb
 
 before_script:
-  - bundle exec rake app:server:rails:install_dep
-  - bundle exec rake app:server:rails:assets_precompile
-  - bundle exec rake app:server:flack:install
-  - bundle exec rake app:server:flack:start
+  - bundle exec rake app:floristry:setup_dummy
 #  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
 #  - chmod +x ./cc-test-reporter
 #  - ./cc-test-reporter before-build
