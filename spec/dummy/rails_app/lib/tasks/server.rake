@@ -1,6 +1,6 @@
 namespace :server do
   # Default, todo make this configurable.
-  flack_path = Gem::Specification.find_by_name("floristry").gem_dir + '/../flack'
+  flack_path = Gem::Specification.find_by_name("floristry").gem_dir + '/../flack/'
 
   desc "Start all servers"
   task :start => [:'flack:start', :'rails:start']
