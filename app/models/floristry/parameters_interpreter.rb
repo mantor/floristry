@@ -1,11 +1,12 @@
 module Floristry
   class ParametersInterpreter
 
-    attr_reader :params
+    attr_reader :params, :raw_params
 
     def initialize(params)
 
       @params = []
+      @raw_params = params
       interpret params
     end
 
