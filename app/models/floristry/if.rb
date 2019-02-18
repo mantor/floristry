@@ -1,4 +1,5 @@
 module Floristry
-  class If < LeafProcedure
+  class If < BranchProcedure
+
   end
 end
