@@ -1,1 +1,14 @@
-If <pre><%= floIf.inspect %></pre>
+<div class="rat-sequence">
+  <%- flo_if.each_with_index do |child, index| %>
+    <%= render :partial => child,
+    :layout => child.layout,
+    :object => child,
+    :locals => {:leaf => child} %>
+
+    <% if index == 0 %>
+      <p>then</p>
+    <% elsif index != flo_if.size - 1 %>
+      <p>else</p>
+    <% end %>
+  <%- end %>
+</div>

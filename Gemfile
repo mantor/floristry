@@ -12,7 +12,7 @@ group :test do
   gem 'statesman', '~> 2.0.1'
   gem 'statesman-events', '~> 0.0.1'
   gem "jquery-rails"
-  gem "sqlite3"
+  gem "sqlite3", '~> 1.3.6'
   gem "twitter-bootstrap-rails"
 end
 

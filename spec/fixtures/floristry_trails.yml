@@ -12,7 +12,7 @@ sequence_cron:
 
 sequence_if:
   wfid: test-u0-11111111.1337.iftruebob
-  tree: '["sequence",[["if",[["_boo",true,4],["bob",[["_att",[["_",[],5]],5]],5,{"ret":"bob"}]],3]],2,{},{}]'
+  tree: '["sequence",[["if",[["_att",[["\u003e",[["_num",0,3],["_num",3,3]],3]],3],["sequence",[["alice",[["_att",[["_",[],5]],5]],5]],4],["sequence",[["bob",[["_att",[["_",[],7]],7]],7,{"ret":"bob","bob_tstamp":"2019-02-16 10:44:15 -0500"}]],6]],3]],2,{},{"name":"If 0 \u003e 1 alice else bob"}]'
 
 sequence_set:
   wfid: test-u0-11111111.1337.seqthatsets

@@ -227,7 +227,7 @@ module Floristry
         child_nid = "#{expid}#{NID_SEP}#{i}"
         if child_node.is_a? Array # todo -> why does payload ends up ad [3] in a sequence, adding `nil` at [2] ?
           branch_or_leaf = is_branch?(child_node[0].camelize) ? :branch : :leaf
-          obj << self.send(branch_or_leaf, "#{exid}!#{child_nid}", child_node)
+          obj << self.send(branch_or_leaf, child_nid, child_node)
         end
       end
 

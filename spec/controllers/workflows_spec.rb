@@ -59,10 +59,10 @@ describe Floristry::WorkflowsController do
 
       context "if" do
         it 'renders the if partial' do
-          skip("not implemented")
           sequence = floristry_trails(:sequence_if)
           get :edit, id: sequence.wfid
           expect(response).to render_template(partial: '_flo_if')
+          expect(response.body).to match /if \(0 &gt; 3\).*/im
         end
       end
 

@@ -7,7 +7,7 @@ module Floristry
     attr_accessor :payload
     attr_reader :param, :params
     
-    delegate :param, :params, to: :@parameters
+    delegate :param, :params, :raw_params, to: :@parameters
 
     def initialize(id, name, params, payload, era)
 
