@@ -6,7 +6,7 @@ module Floristry
 
     attr_reader :id, :name, :payload, :era
 
-    def initialize(id, name, payload, vars, era)
+    def initialize(id, name, atts, payload, era)
 
       if id.is_a? FlowExecutionId
 

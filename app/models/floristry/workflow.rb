@@ -225,6 +225,8 @@ module Floristry
       parent_node[CHILDREN].each_with_index do |child_node, i|
 
         child_nid = "#{expid}#{NID_SEP}#{i}"
+        child_nid = "#{exid}!#{child_nid}" unless child_nid.start_with?(exid) # avoid issues in nested branches
+
         if child_node.is_a? Array # todo -> why does payload ends up ad [3] in a sequence, adding `nil` at [2] ?
           branch_or_leaf = is_branch?(child_node[0].camelize) ? :branch : :leaf
           obj << self.send(branch_or_leaf, child_nid, child_node)
@@ -247,22 +249,22 @@ module Floristry
     #
     def factory(exid, era, exp)
 
-      name, payload, params = extract(era, exp)
+      name, atts, payload = extract(era, exp)
       klass_name = name.camelize
 
       if is_procedure? (klass_name)
 
-        Floristry.const_get(klass_name).new(exid, name, params, payload, era)
+        Floristry.const_get(klass_name).new(exid, name, atts, payload, era)
       else
 
         fh = self.frontend_handler(name)
-        params = ParametersInterpreter.new(params).to_hash
+        atts = AttributesInterpreter.new(atts).to_hash
 
-        unless params['model'].nil?
-          name = params['model'].classify
+        unless atts['model'].nil?
+          name = atts['model'].classify
         end
 
-        fh[:class].new(exid, name, params, payload, era)
+        fh[:class].new(exid, name, atts, payload, era)
       end
     end
 
@@ -308,25 +310,19 @@ module Floristry
 
     rescue NameError
       false
-
     end
 
     def extract(era, exp)
 
+      atts = exp[1]
       case era
-        when :present, :past
-          # exp[1]['fields'] ||= {}
-          # exp[2]['params'] ||= {}
-          # fields = exp[1]['fields'].except('params')
-          params = exp[1]
-          payload = exp[1][3] ||= exp[3]
-
-        when :future
-          params = exp[1] # Params are directly at [1]
+      when :present, :past
+          payload = exp[3]
+      when :future
           payload = {}
       end
 
-      [ exp[0], payload, params ]
+      [ exp[0], atts, payload ]
     end
   end
 end

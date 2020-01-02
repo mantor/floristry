@@ -3,7 +3,7 @@ module Floristry
 
     def duration
 
-      params[0]
+      atts[0]
     end
   end
 end

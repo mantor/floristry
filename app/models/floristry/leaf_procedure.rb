@@ -5,16 +5,16 @@ module Floristry
     include LeafProcedureMixin
 
     attr_accessor :payload
-    attr_reader :param, :params
+    attr_reader :att, :atts
     
-    delegate :param, :params, :raw_params, to: :@parameters
+    delegate :att, :atts, :raw_atts, to: :@atts
 
-    def initialize(id, name, params, payload, era)
+    def initialize(id, name, atts, payload, era)
 
       super
 
       @payload = payload
-      @parameters = Floristry::ParametersInterpreter.new(params)
+      @atts = Floristry::AttributesInterpreter.new(atts)
     end
   end
 end
