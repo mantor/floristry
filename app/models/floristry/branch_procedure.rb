@@ -8,9 +8,9 @@ module Floristry
 
     attr_reader :children
 
-    def initialize (id, name, payload, vars, era)
+    def initialize (id, name, atts, payload, era)
 
-      super(id, name, payload, vars, era)
+      super(id, name, atts, payload, era)
 
       @children = Array.new
 
