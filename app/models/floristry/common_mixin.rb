@@ -4,7 +4,7 @@ module Floristry::CommonMixin
   ROOT_NID = '0'   # Root procedure id - yes, it's a string (e.g. 0_1_0)
   FEI_SEP = '!'    # FEI separator 
   NID_SEP = '_'    # NID separator
-  FEI_REGEX = /\A([\w\.\-]+)!?([0-9_]+)?\z/ # domain0-u0-20170806.2124.pufatsonaju!0_1
+  FEI_REGEX = /\A([\w\.\-]+)#{FEI_SEP}?([0-9#{NID_SEP}]+)?\z/ # domain0-u0-20170806.2124.pufatsonaju!0_1
 
   attr_reader :exid, :nid
 

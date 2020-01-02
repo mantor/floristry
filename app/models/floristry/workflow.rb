@@ -225,9 +225,11 @@ module Floristry
       parent_node[CHILDREN].each_with_index do |child_node, i|
 
         child_nid = "#{expid}#{NID_SEP}#{i}"
+        child_nid = "#{exid}!#{child_nid}" unless child_nid.start_with?(exid) # avoid issues in nested branches
+
         if child_node.is_a? Array # todo -> why does payload ends up ad [3] in a sequence, adding `nil` at [2] ?
           branch_or_leaf = is_branch?(child_node[0].camelize) ? :branch : :leaf
-          obj << self.send(branch_or_leaf, "#{exid}!#{child_nid}", child_node)
+          obj << self.send(branch_or_leaf, child_nid, child_node)
         end
       end
 

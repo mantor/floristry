@@ -19,7 +19,7 @@ describe "floristry/workflows/edit.html.erb" do
   context "in progress workflow" do
     it "display one participant as 'closed' and the other as 'open'" do
       wf = stub_workflow
-      wf.current_nids = ["0_1"]
+      wf.current_nids = ["test-u0-11111111.1337.testmetobesi!0_1"]
       assign(:wf, wf)
       render
 
