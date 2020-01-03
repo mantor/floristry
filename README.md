@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mantor/floristry.svg?branch=master)](https://travis-ci.org/mantor/floristry)
+
 # Floristry
 The goal of this gem is to help you represent [Flor's workflows](https://github.com/floraison/flor) using standard Rails facilities, e.g. partials, helpers, render, models, etc.
 
