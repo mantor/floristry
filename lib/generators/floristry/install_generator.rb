@@ -63,8 +63,8 @@ module Floristry
     def  pollen_hooks_and_taskers
 
       say("Copying default Flack hooks and taskers inside #{options[:flack_dir]}")
-      directory("flack/lib/hooks/", "#{options[:flack_dir]}envs/dev/lib/hooks")
-      directory("flack/lib/taskers/", "#{options[:flack_dir]}envs/dev/lib/taskers")
+      directory("flack/lib/hooks/", "#{options[:flack_dir]}/envs/dev/lib/hooks")
+      directory("flack/lib/taskers/", "#{options[:flack_dir]}/envs/dev/lib/taskers")
     end
   end
 end
