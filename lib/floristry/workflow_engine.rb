@@ -1,15 +1,11 @@
 module Floristry
   class WorkflowEngine
 
-    PROTO = 'http'
-    HOST = 'localhost'
-    PORT = 7007
-
     def self.engine(res, verb = :get, opts = {})
 
       begin
 
-        uri = "#{PROTO}://#{HOST}:#{PORT}/#{res}"
+        uri = "#{Floristry.configuration.flack_proto}://#{Floristry.configuration.flack_host}:#{Floristry.configuration.flack_port}/#{res}"
         JSONClient.new.send(verb, uri, opts)
 
         # todo do something if HTTP response code is not 2-3xx!
