@@ -9,6 +9,11 @@ Floristry.configure do |config|
   # Floristry::LeafBehavior
   # Floristry::ParticipantBehavior
 
+  # Default values - Flack running on localhost on port 7007
+  config.flack_proto = 'http'
+  config.flack_host = 'localhost'
+  config.flack_port = '7007'
+
   module Floristry
     module WebParticipantFormBehaviour
       extend ActiveSupport::Concern

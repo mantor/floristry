@@ -1,19 +1,17 @@
 require 'jsonclient'
 
 class RestHook
-  def initialize(exe, opts, msg)
+  def initialize(unit)
 
-    @exe = exe
-    @opts = opts
-    @msg = msg
+    @unit = unit
   end
 
   def emit(action , msg)
 
-    prot = @exe.unit.conf['pollen_prot'] || 'http'
-    host = @exe.unit.conf['pollen_host'] || 'localhost'
-    port = @exe.unit.conf['pollen_port'] || '3000'
-    path = @exe.unit.conf['pollen_path'] || 'hookhandler'
+    prot = @unit.conf['pollen_prot'] || 'http'
+    host = @unit.conf['pollen_host'] || 'localhost'
+    port = @unit.conf['pollen_port'] || '3000'
+    path = @unit.conf['pollen_path'] || 'hookhandler'
 
     uri = "#{prot}://#{host}:#{port}/#{path}/#{msg['exid']}/#{action}"
       # e.g. https://host.org:80/hookhandler/dom-u0-20170514.0383.falibi/returned
