@@ -1,9 +1,9 @@
 module Floristry::Web
 
-  # This is the frontend participant for web_participants.
-  # The corresponding backend participant are models which inherit from Floristry::ActiveRecord::Base
+  # This is the frontend for web_tasks.
+  # The corresponding backend are models inheriting from Floristry::ActiveRecord::Base
   #
-  class Participant < Floristry::Participant
+  class Task < Floristry::Task
 
     PREFIX = 'web'
     REGEX = /^#{PREFIX}/
@@ -18,7 +18,7 @@ module Floristry::Web
       instance.errors
     end
 
-    # TODO this is a workaround to mix the actual participants
+    # TODO this is a workaround to mix the actual tasks
     def instance
 
       return @instance unless @instance.nil?

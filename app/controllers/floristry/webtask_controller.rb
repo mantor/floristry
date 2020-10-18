@@ -1,5 +1,5 @@
 module Floristry
-  class WebparticipantController < ::ApplicationController
+  class WebTaskController < ::ApplicationController
 
     skip_before_action :verify_authenticity_token
 

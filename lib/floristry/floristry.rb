@@ -47,7 +47,7 @@ module Floristry
 
     def is_leaf?() false end
     def is_branch?() true end
-    def is_participant?() false end
+    def is_task?() false end
   end
 
   module LeafProcedureMixin
@@ -56,15 +56,15 @@ module Floristry
 
     def is_leaf?() true end
     def is_branch?() false end
-    def is_participant?() false end
+    def is_task?() false end
     def instance() self end
     def current_state() 'in_progress' end
     def layout() 'layouts/floristry/leaf-procedure' end
   end
 
-  module ParticipantProcedureMixin
+  module TaskProcedureMixin
 
-    def is_participant?() true end
+    def is_task?() true end
     def due_at() nil end
     def instance() self end
 

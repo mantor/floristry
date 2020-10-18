@@ -126,20 +126,20 @@ module Floristry
       end
     end
 
-    # Default to first active exp but if there's none select the first participant
+    # Default to first active exp but if there's none select the first node
     #
     def default_focus
 
-      current_pos.empty? ? first_part_pos : current_pos.first
+      current_pos.empty? ? first_node_pos : current_pos.first
     end
 
-    def first_part_pos
+    def first_node_pos
 
-      find_exp(@children) do |exp| exp.is_participant? end
+      find_exp(@children) do |exp| exp.is_node? end
     end
 
     # Recursively search of something in the Procedure tree using a comparator block.
-    # See first_part_pos() for an example.
+    # See first_node_pos() for an example.
     #
     def find_exp(exp, &comparator)
 
@@ -244,8 +244,8 @@ module Floristry
 
     # Returns proper Procedure type based on its name.
     #
-    # Anything not an Procedure is considered a Participant Procedure, e.g.,
-    # if == If, sequence == Sequence, admin == Participant, xyz == Participant
+    # Anything not an Procedure is considered a Task Procedure, e.g.,
+    # if == If, sequence == Sequence, admin == Task, xyz == Task
     #
     def factory(exid, era, exp)
 
@@ -268,25 +268,25 @@ module Floristry
       end
     end
 
-    # Participant frontend handler defining how the participant will be rendered
+    # Task frontend handler defining how the task will be rendered
     #
     def frontend_handler(name)
 
       # TODO this should come from the DB, and the admin should have an interface
       frontend_handlers = [
           {
-              :regex => Floristry::Ssh::Participant::PREFIX,
-              :class => Floristry::Ssh::Participant,
+              :regex => Floristry::Ssh::Task::PREFIX,
+              :class => Floristry::Ssh::Task,
               :options => {}
           },
           {
-              regex: Floristry::Web::Participant::PREFIX,
-              class: Floristry::Web::Participant,
+              regex: Floristry::Web::Task::PREFIX,
+              class: Floristry::Web::Task,
               options: {}
           },
           {   # Default: This one should not be editable by the user
               regex: '.*',
-              class: Participant,
+              class: Task,
               options: {}
           }
       ]

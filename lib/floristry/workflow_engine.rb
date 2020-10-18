@@ -35,14 +35,14 @@ module Floristry
       engine('message', :post, { point: 'reply', exid: exid, nid: nid, payload: payload } )
     end
 
-    def self.register_participant(regex, handler)
+    def self.register_task(regex, handler)
 
       # engine.register(regex, handler) # TODO
     end
 
-    def self.register_participant_list(plist)
+    def self.register_task_list(plist)
 
-      # engine.participant_list= plist # TODO
+      # engine.task_list= plist # TODO
     end
 
     class LaunchError < Exception
