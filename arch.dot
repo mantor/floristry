@@ -2,8 +2,7 @@ digraph Floristry {
     rankdir=TB;
     
     graph [fontsize=11 fontname="courier" compound=true];
-    node [shape=record fontsize=9 fontname="Courier"];
-  
+    node [shape=box fontsize=9 fontname="Courier"];
     node [colorscheme=pastel19,style=filled];
     edge [fontsize=9,color=gray];
     fontname = "Courier";
@@ -14,9 +13,9 @@ digraph Floristry {
         node [fillcolor=1, color=1];
         
         webtasker [label="WebTasker"];
-        webtask [label="WebTask.create()"];
+        webtask [label="WebTask.create()", shape=cds];
         
-        webtasker -> webtask [xlabel="calls",labeljust="l"];
+        webtasker -> webtask [xlabel="calls",labeljust="l",constraint=false];
     }
   
     # Workflow Management
@@ -24,22 +23,22 @@ digraph Floristry {
         node [fillcolor=2, color=2];
 
         launch_flows [label="WorkflowEngine.launch()"];
-        flack_api [label="/message \n(point: 'launch')"];
+        flack_api [label="/message \n(point: 'launch')", shape=cds];
         flow_model [label="Flow model (CRUD)"];
     
-        flow_model:e -> launch_flows:e;
-        launch_flows:w -> flack_api:s; #[color=red,penwidth=3.0]; # Highlight
+        //flow_model:s -> launch_flows:n;
+        launch_flows:w -> flack_api:s [xlabel="calls", constraint=false]; //[color=red,penwidth=3.0];
     }
   
     # Trail
     { 
         node [fillcolor=3, color=3];
-
         
-        pollen [label="Pollen"];
+        pollen [label="Pollen", shape=parallelogram];
+
         trail [label="Trail"];
         
-        pollen -> trail [xlabel="updates"];
+        pollen -> trail [xlabel="updates",constraint=false];
     }
     
     # Workflow Engine
@@ -59,13 +58,14 @@ digraph Floristry {
   
     subgraph cluster_flack {
         label = "Flack";
-// newrank=true;
-				subgraph cluster_flor {
-						label = "Workflow Engine";
-						color = lightgrey;
-						
-						flor;
-				}
+		// newrank=true;
+
+		subgraph cluster_flor {
+			label = "Workflow Engine";
+			color = lightgrey;
+			
+			flor;
+		}
 
         subgraph cluster_flackmgmt {
             label = "RESTful API";
@@ -92,13 +92,12 @@ digraph Floristry {
     
         flor;
         
-        flack_api -> flor;
+        flack_api -> flor [constraint=false];
         flor -> sshtasker [xlabel="execute",lhead=cluster_tasker];
-        pollen -> flor [style=dotted,arrowType=invodot,xlabel="observe"];
+        pollen:w -> flor:w [style=dotted,arrowType=invodot,xlabel="observe"];
         
-        edge[style=invis];
-        flor -> flack_api;
-        pollen -> flack_api;
+//        edge[style=invis];
+//        pollen -> flack_api;
     }
   
   
@@ -137,9 +136,9 @@ digraph Floristry {
         }
         
         flow_model;
+		flow_model:e -> launch_flows:e;
         
-        edge[style=invis];
-        webtask -> flow_model;
+//        edge[style=invis];
+//        webtask -> flow_model;
     }
-  #cd0 -> ca0 [ltail=clusterA, lhead=clusterD]; # arrows to structures
 }
