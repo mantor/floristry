@@ -9,7 +9,7 @@ module Floristry
 
     def copy_initializer_template
 
-      copy_file 'initializer.rb', 'config/initializers/floristry.rb'
+      template 'initializer.rb', 'config/initializers/floristry.rb', force: true
     end
 
     def mount_engine_route
