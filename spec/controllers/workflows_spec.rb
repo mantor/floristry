@@ -117,7 +117,7 @@ describe Floristry::WorkflowsController do
       context "web task" do
         describe 'renders the appropriate web task partial' do
           it 'renders the form task form partial' do
-            sequence = floristry_trails(:sequence_web_part)
+            sequence = floristry_trails(:sequence_web_task)
             get :edit, id: sequence.wfid
             expect(response).to render_template(partial: '_form_task')
           end

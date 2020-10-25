@@ -126,20 +126,20 @@ module Floristry
       end
     end
 
-    # Default to first active exp but if there's none select the first node
+    # Default to first active exp but if there's none select the first task
     #
     def default_focus
 
-      current_pos.empty? ? first_node_pos : current_pos.first
+      current_pos.empty? ? first_task_pos : current_pos.first
     end
 
-    def first_node_pos
+    def first_task_pos
 
-      find_exp(@children) do |exp| exp.is_node? end
+      find_exp(@children) do |exp| exp.is_task? end
     end
 
     # Recursively search of something in the Procedure tree using a comparator block.
-    # See first_node_pos() for an example.
+    # See first_task_pos() for an example.
     #
     def find_exp(exp, &comparator)
 
