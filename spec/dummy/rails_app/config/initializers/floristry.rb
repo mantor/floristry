@@ -7,7 +7,7 @@ Floristry.configure do |config|
   # Floristry::TrailBehavior
   # Floristry::ActiveRecordBehaviour
   # Floristry::LeafBehavior
-  # Floristry::ParticipantBehavior
+  # Floristry::TaskBehavior
 
   # Default values - Flack running on localhost on port 7007
   config.flack_proto = 'http'
@@ -15,7 +15,7 @@ Floristry.configure do |config|
   config.flack_port = '7007'
 
   module Floristry
-    module WebParticipantFormBehaviour
+    module WebTaskFormBehaviour
       extend ActiveSupport::Concern
 
       included do
@@ -23,12 +23,12 @@ Floristry.configure do |config|
         def simple_form_for(record, options = {}, &block)
 
           if record.class.to_s.deconstantize == "Floristry::Web"
-            # Disable participant form fields if the participant is inactive
+            # Disable task's form fields if the task is inactive
             defaults = options[:defaults] || {}
             defaults.merge!(disabled: true) if record.inactive?
             options[:defaults] = defaults
 
-            # Form action URL: It's a custom thing for participants
+            # Form action URL: It's a custom thing for tasks
             options[:url] = workflows_path + "/#{record.__feid__}/edit"
           end
 
@@ -38,5 +38,5 @@ Floristry.configure do |config|
     end
   end
 
-  SimpleForm::ActionViewExtensions::FormHelper.send(:include, Floristry::WebParticipantFormBehaviour)
+  SimpleForm::ActionViewExtensions::FormHelper.send(:include, Floristry::WebTaskFormBehaviour)
 end

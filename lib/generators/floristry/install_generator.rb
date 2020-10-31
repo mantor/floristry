@@ -9,7 +9,7 @@ module Floristry
 
     def copy_initializer_template
 
-      copy_file 'initializer.rb', 'config/initializers/floristry.rb'
+      template 'initializer.rb', 'config/initializers/floristry.rb', force: true
     end
 
     def mount_engine_route
@@ -24,7 +24,7 @@ module Floristry
         "patch   '/workflows/:id/edit',  controller: 'floristry/workflows', action: :update, :constraints => { :id => /([\\w\\.\\-]+)!?([0-9_]+)?+/ }",
         "put     '/workflows/:id/',  controller: 'floristry/workflows', action: :update, :constraints => { :id => /([\\w\\.\\-]+)!?([0-9_]+)?+/ }",
         "put     '/workflows/:id/edit',  controller: 'floristry/workflows', action: :update, as: :update_workflow, :constraints => { :id => /([\\w\\.\\-]+)!?([0-9_]+)?+/ }",
-        "post    '/webparticipant/create', controller: 'floristry/webparticipant', action: :create"
+        "post    '/webtask/create', controller: 'floristry/webtask', action: :create"
       ]
 
       routes.each do |r|

@@ -91,18 +91,18 @@ describe Floristry::WorkflowsController do
       end
 
       context "task" do
-        it 'renders the participant partial' do
+        it 'renders the task partial' do
           sequence = floristry_trails(:sequence)
           get :edit, id: sequence.wfid
-          expect(response).to render_template(partial: '_flo_participant')
+          expect(response).to render_template(partial: '_flo_task')
         end
       end
 
       context "tasker" do
-        it 'renders the tasker -> participant partial' do
+        it 'renders the tasker -> task partial' do
           sequence = floristry_trails(:sequence)
           get :edit, id: sequence.wfid
-          expect(response).to render_template(partial: '_flo_participant')
+          expect(response).to render_template(partial: '_flo_task')
         end
       end
 
@@ -114,10 +114,10 @@ describe Floristry::WorkflowsController do
         end
       end
 
-      context "web participant" do
-        describe 'renders the appropriate web participant partial' do
-          it 'renders the form tark participant form partial' do
-            sequence = floristry_trails(:sequence_web_part)
+      context "web task" do
+        describe 'renders the appropriate web task partial' do
+          it 'renders the form task form partial' do
+            sequence = floristry_trails(:sequence_web_task)
             get :edit, id: sequence.wfid
             expect(response).to render_template(partial: '_form_task')
           end

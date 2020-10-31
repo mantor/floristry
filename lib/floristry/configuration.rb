@@ -19,7 +19,7 @@ module Floristry
                   :add_workflow_behavior,
                   :add_active_record_base_behavior,
                   :add_trail_behavior,
-                  :add_participant_behavior,
+                  :add_task_behavior,
                   :flack_proto,
                   :flack_host,
                   :flack_port

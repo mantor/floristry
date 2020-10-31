@@ -11,7 +11,7 @@ module Floristry::ActiveRecord
 
     include Floristry::CommonMixin
     include Floristry::ProcedureMixin
-    include Floristry::ParticipantProcedureMixin
+    include Floristry::TaskProcedureMixin
 
     ATTRIBUTES_TO_EXCLUDE = %w(id __feid__ __msg__ )
 

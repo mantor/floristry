@@ -1,12 +1,12 @@
 require 'rails_helper'
 
-describe Floristry::WebparticipantController do
+describe Floristry::WebtaskController do
 
   set_fixture_class floristry_trails: Floristry::Trail
   fixtures :floristry_trails
 
-  it "creates the participant on msg from hook" do
-    sequence = floristry_trails(:sequence_web_part)
+  it "creates the task on msg from hook" do
+    sequence = floristry_trails(:sequence_web_task)
 
     msg = get_create_msg(sequence)
     post :create, :message => msg

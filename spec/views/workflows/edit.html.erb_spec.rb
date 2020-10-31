@@ -5,7 +5,7 @@ describe "floristry/workflows/edit.html.erb" do
   fixtures :floristry_trails
 
   context "terminated workflow" do
-    it "display participants as 'closed'" do
+    it "display tasks as 'closed'" do
       wf = stub_workflow
       wf.current_nids = []
       assign(:wf, wf)
@@ -17,7 +17,7 @@ describe "floristry/workflows/edit.html.erb" do
   end
 
   context "in progress workflow" do
-    it "display one participant as 'closed' and the other as 'open'" do
+    it "display one task as 'closed' and the other as 'open'" do
       wf = stub_workflow
       wf.current_nids = ["test-u0-11111111.1337.testmetobesi!0_1"]
       assign(:wf, wf)

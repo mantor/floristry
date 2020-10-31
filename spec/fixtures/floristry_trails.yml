@@ -30,6 +30,6 @@ sequence_wait:
   wfid: test-u0-11111111.1337.waitwait
   tree: '["sequence",[["alice",[["_att",[["_",[],3]],3]],3,{"ret":"alice"}],["wait",[["_att",[["_sqs","1d",4]],4]],4],["bob",[["_att",[["_",[],5]],5]],5]],2,{},{}]'
 
-sequence_web_part:
-  wfid: test-u0-11111111.1337.webpart
+sequence_web_task:
+  wfid: test-u0-11111111.1337.webtask
   tree: '["sequence",[["alice",[["_att",[["_",[],2]],2]],2,{"ret":"alice","alice_tstamp":"2017-08-20 11:43:39 -0400"}],["web",[["_att",[["model",[],3],["_sqs","form_task",3]],3]],3],["bob",[["_att",[["_",[],4]],4]],4]],0,{},{}]'

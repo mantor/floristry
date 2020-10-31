@@ -12,5 +12,5 @@ Rails.application.routes.draw do
 	patch   '/workflows/:id/edit',  controller: 'floristry/workflows', action: :update, :constraints => { :id => /([\w\.\-]+)!?([0-9_]+)?+/ }
 	put     '/workflows/:id/',  controller: 'floristry/workflows', action: :update, :constraints => { :id => /([\w\.\-]+)!?([0-9_]+)?+/ }
 	put     '/workflows/:id/edit',  controller: 'floristry/workflows', action: :update, as: :update_workflow, :constraints => { :id => /([\w\.\-]+)!?([0-9_]+)?+/ }
-	post    '/webparticipant/create', controller: 'floristry/webparticipant', action: :create
+	post    '/webtask/create', controller: 'floristry/webtask', action: :create
 end
