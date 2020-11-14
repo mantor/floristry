@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  
+
   resources :flows
   post '/flows/:id/launch', controller: 'flows', action: :launch
 	# These where added by the `rails g floristry:install` command)
@@ -13,4 +13,6 @@ Rails.application.routes.draw do
 	put     '/workflows/:id/',  controller: 'floristry/workflows', action: :update, :constraints => { :id => /([\w\.\-]+)!?([0-9_]+)?+/ }
 	put     '/workflows/:id/edit',  controller: 'floristry/workflows', action: :update, as: :update_workflow, :constraints => { :id => /([\w\.\-]+)!?([0-9_]+)?+/ }
 	post    '/webtask/create', controller: 'floristry/webtask', action: :create
+
+	root 'flows#index'
 end
