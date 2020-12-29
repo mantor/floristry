@@ -16,7 +16,7 @@ before_install:
   - CONTAINER=`docker ps -aql`
   - CONTAINER_IP=`docker inspect $CONTAINER | grep '"IPAddress"' | head -n 1 | grep -oE "([0-9]{1,3}\.){3}[0-9]{1,3}"`
   - ip addr
-  - HOST_IP=`ip a s eth0 | egrep -o 'inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | cut -d' ' -f2'`
+  - HOST_IP=`ip a s ens4 | egrep -o 'inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | cut -d' ' -f2`
   - echo
   - echo
   - echo $HOST_IP
