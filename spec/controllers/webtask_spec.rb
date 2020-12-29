@@ -16,7 +16,24 @@ describe Floristry::WebtaskController do
   end
 
   it "handles the reply msg" do
-    skip("not implemented")
+    exid = Floristry::WorkflowEngine.launch(
+      %{
+        alice _
+        web model: 'form_task' _
+      })
+
+    sleep 1
+
+    r = Floristry::WorkflowEngine.process(exid)
+    expect(r).to be_a(Hash)
+    expect(r['status']).to eq('active')
+
+    form_task = call_return_on_form_task exid, '0_1'
+    expect(form_task.current_state).to eq('closed')
+
+    r = Floristry::WorkflowEngine.process(exid)
+    expect(r).to be_a(Hash)
+    expect(r['status']).to eq('terminated')
   end
 
   # This is what flack sends through the WebTasker.

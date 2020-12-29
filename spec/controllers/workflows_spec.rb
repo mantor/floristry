@@ -39,6 +39,15 @@ describe Floristry::WorkflowsController do
           expect(response).to render_template(partial: '_flo_concurrence_spacer')
         end
       end
+
+      context "if" do
+        it 'renders the if partial' do
+          sequence = floristry_trails(:sequence_if)
+          get :edit, id: sequence.wfid
+          expect(response).to render_template(partial: '_flo_if')
+          expect(response.body).to match /if \(0 &gt; 3\).*/im
+        end
+      end
     end
 
     context "leaf procedure" do
@@ -54,15 +63,6 @@ describe Floristry::WorkflowsController do
           sequence = floristry_trails(:sequence_cron)
           get :edit, id: sequence.wfid
           expect(response).to render_template(partial: '_flo_cron')
-        end
-      end
-
-      context "if" do
-        it 'renders the if partial' do
-          sequence = floristry_trails(:sequence_if)
-          get :edit, id: sequence.wfid
-          expect(response).to render_template(partial: '_flo_if')
-          expect(response.body).to match /if \(0 &gt; 3\).*/im
         end
       end
 

@@ -1,0 +1,6 @@
+
+# dan tasker
+
+require: 'tasker.rb'
+class: DanTasker
+

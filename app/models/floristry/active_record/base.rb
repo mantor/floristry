@@ -126,13 +126,13 @@ module Floristry::ActiveRecord
     # attributes except a few within the original msg.
     def merged_msg
 
-      wi = attributes['__msg__']
+      wi = attributes['__msg__']['payload']
 
       new_attrs = attributes.reject { |k, v|
         %w(id __msg__ __feid__ current_state created_at updated_at).include? k
       }
 
-      wi['payload'].merge!(new_attrs)
+      wi.merge!(new_attrs)
       wi
     end
 
