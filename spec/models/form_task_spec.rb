@@ -143,18 +143,9 @@ RSpec.describe Floristry::Web::FormTask, :type => :model do
       form_task = Floristry::Web::FormTask.create(msg)
       form_task.update_attributes({free_text: 'Updated text'})
 
-      expected_merged_msg = {
-        "exid" => "test0-u0-20170831.0132.dijoshiyudu",
-        "nid" => "0_1",
-        "payload" => {
-          "ret" => nil,
-          "post_tstamp" => "2017-08-23 11:11:00 -0400",
-          "free_text" => "Updated text"
-        },
-        "tasker" => "web",
-        "attl" => ["web"],
-        "attd" => {"model"=>"form_task"},
-        "vars" => nil
+      expected_merged_msg = {"ret"=>nil,
+         "post_tstamp"=>"2017-08-23 11:11:00 -0400",
+         "free_text"=>"Updated text"
       }
 
       expect(Floristry::WorkflowEngine)

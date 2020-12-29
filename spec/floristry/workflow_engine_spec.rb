@@ -19,7 +19,7 @@ describe Floristry::WorkflowEngine do
 
   it "should retrieve a flow by it's exid" do
 
-    exid = Floristry::WorkflowEngine.launch(%{ alice_ })
+    exid = Floristry::WorkflowEngine.launch(%{ alice _ })
 
     sleep 1
     r = Floristry::WorkflowEngine.process(exid)
