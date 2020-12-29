@@ -22,7 +22,7 @@ before_install:
   - echo $HOST_IP
   - echo
   - echo
-  - docker exec $CONTAINER sed -i "s#:\/\/floristry#:\/\/$HOST_IP#g" /flack/envs/dev/lib/taskers/web/tasker.rb
+  - docker exec $CONTAINER sed -i "s#:\/\/localhost#:\/\/$HOST_IP#g" /flack/envs/dev/lib/taskers/web/tasker.rb
 
 before_script:
   - bundle exec rake app:floristry:setup_dummy
