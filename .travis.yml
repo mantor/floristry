@@ -15,7 +15,7 @@ before_install:
   - docker run -d flack:latest /bin/sh -c "cd flack/ ; make serve"
   - CONTAINER=`docker ps -aql`
   - CONTAINER_IP=`docker inspect $CONTAINER | grep '"IPAddress"' | head -n 1 | grep -oE "([0-9]{1,3}\.){3}[0-9]{1,3}"`
-  - HOST_IP=(/sbin/ip route|awk '/default/ { print $3 }')
+  - HOST_IP=`/sbin/ip route|awk '/default/ { print $3 }'`
   - echo
   - echo
   - echo $HOST_IP
