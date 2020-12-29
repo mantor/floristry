@@ -154,4 +154,62 @@ RSpec.describe Floristry::Web::FormTask, :type => :model do
       form_task.return
     end
   end
+
+  describe "when combined with other flor units" do
+    it "sets payload field(s)" do
+      exid = Floristry::WorkflowEngine.launch(
+        %{
+          web model: 'form_task' _
+        })
+
+      sleep 1
+      call_return_on_form_task exid, '0'
+
+      r = Floristry::WorkflowEngine.process(exid)
+      expect(r).to be_a(Hash)
+      expect(r['data']['closing_messages'][0]['payload']).to have_key('free_text')
+      expect(r['data']['closing_messages'][0]['payload']['free_text']).to eq('Testati testato')
+    end
+
+    it "does not interfere with other taskers payload fields" do
+      control_exid = Floristry::WorkflowEngine.launch(
+        %{
+          alice _
+          web model: 'form_task' _
+        })
+
+      sleep 1
+      call_return_on_form_task control_exid, '0_1'
+
+      r = Floristry::WorkflowEngine.process(control_exid)
+      expect(r).to be_a(Hash)
+
+      expect(r['data']['closing_messages'][0]['payload']).to have_key('alice_tstamp')
+      expect(r['data']['closing_messages'][0]['payload']).to have_key('free_text')
+    end
+
+    it "sets fields to be used by other procs" do
+      control_exid = Floristry::WorkflowEngine.launch(
+        %{
+          alice _
+          web model: 'form_task' _
+          if (f.free_text == 'Testati testato')
+            bob _
+          if (f.free_text != 'Testati testato')
+            charlie _
+        })
+
+      sleep 1
+      call_return_on_form_task control_exid, '0_1'
+
+      r = Floristry::WorkflowEngine.process(control_exid)
+      expect(r).to be_a(Hash)
+
+      expect(r['data']['closing_messages'][0]['payload']).to have_key('alice_tstamp')
+      expect(r['data']['closing_messages'][0]['payload']).to have_key('free_text')
+      expect(r['data']['closing_messages'][0]['payload']).to have_key('bob_tstamp')
+      # Charlie is not called, condition is false
+      expect(r['data']['closing_messages'][0]['payload']).not_to have_key('charlie_tstamp')
+    end
+  end
 end
