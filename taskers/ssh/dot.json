@@ -1,6 +1,0 @@
-
-# SSH tasker
-
-require: 'tasker.rb'
-class: SshTasker
-

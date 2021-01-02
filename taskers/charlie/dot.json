@@ -1,6 +1,0 @@
-
-# charlie tasker
-
-require: 'tasker.rb'
-class: CharlieTasker
-

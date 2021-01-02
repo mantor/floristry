@@ -1,6 +1,0 @@
-
-# Web taskers
-
-require: 'tasker.rb'
-class: WebTasker
-
