@@ -41,11 +41,18 @@ describe Floristry::WorkflowsController do
       end
 
       context "if" do
-        it 'renders the if partial' do
-          sequence = floristry_trails(:sequence_if)
+        it 'renders the if partial with number comparison' do
+          sequence = floristry_trails(:sequence_if_nums)
           get :edit, id: sequence.wfid
           expect(response).to render_template(partial: '_flo_if')
-          expect(response.body).to match /if \(0 &gt; 3\).*/im
+          expect(response.body).to match /if \(3 &gt; 0\).*/i
+        end
+
+        it 'renders the if partial with field and string comparison' do
+          sequence = floristry_trails(:sequence_if_field_string)
+          get :edit, id: sequence.wfid
+          expect(response).to render_template(partial: '_flo_if')
+          expect(response.body).to match /if \(f.comment == yes\).*/i
         end
       end
     end
