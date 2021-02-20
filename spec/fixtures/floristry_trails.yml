@@ -10,10 +10,13 @@ sequence_cron:
   wfid: test-u0-11111111.1337.cronnewyear
   tree: '["sequence",[["schedule",[["_att",[["cron",[],3],["_sqs","0 0 1 jan *",3]],3],["alice",[["_att",[["_",[],4]],4]],4,{"ret":"alice"}]],3]],2,{},{}]'
 
-sequence_if:
-  wfid: test-u0-11111111.1337.iftruebob
-  tree: '["sequence",[["if",[["_att",[["\u003e",[["_num",0,3],["_num",3,3]],3]],3],["sequence",[["alice",[["_att",[["_",[],5]],5]],5]],4],["sequence",[["bob",[["_att",[["_",[],7]],7]],7,{"ret":"bob","bob_tstamp":"2019-02-16 10:44:15 -0500"}]],6]],3]],2,{},{"name":"If 0 \u003e 1 alice else bob"}]'
+sequence_if_nums:
+  wfid: test-u0-11111111.1337.ifnumsbob
+  tree: '["sequence",[["alice",[["_att",[["_",[],3]],3]],3,{"ret":"alice","alice_tstamp":"2021-02-07 12:49:57 -0500"}],["if",[["_att",[["\u003e",[["_num",3,4],["_num",0,4]],4]],4],["bob",[["_att",[["_",[],5]],5]],5,{"ret":"bob","alice_tstamp":"2021-02-07 12:49:57 -0500","bob_tstamp":"2021-02-07 12:49:57 -0500"}]],4]],2,{},{"name":"playing with if"}]'
 
+sequence_if_field_string:
+  wfid: test-u0-11111111.1337.ifstringbob
+  tree: '["sequence",[["web",[["_att",[["model",[],3],["_sqs","form_task",3]],3],["_att",[["_",[],3]],3]],3,{"ret":null,"post_tstamp":"2021-02-07 12:59:36 -0500","comment":"yes"}],["if",[["_att",[["==",[["_ref",[["_sqs","f",4],["_sqs","comment",4]],4],["_sqs","yes",4]],4]],4],["bob",[["_att",[["_",[],5]],5]],5,{"ret":"bob","post_tstamp":"2021-02-07 12:59:36 -0500","comment":"yes","bob_tstamp":"2021-02-07 12:59:51 -0500"}]],4]],2,{},{"name":"playing with if"}]'
 sequence_set:
   wfid: test-u0-11111111.1337.seqthatsets
   tree: '["sequence",[["alice",[["_att",[["_",[],3]],3]],3,{"ret":"alice"}],["set",[["_att",[["f.a",[],4]],4],["_num",2,5]],4]],2,{},{}]'

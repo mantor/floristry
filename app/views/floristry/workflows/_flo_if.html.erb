@@ -1,14 +1,18 @@
 <div class="flo-sequence">
-  <%- flo_if.each_with_index do |child, index| %>
-    <%= render :partial => child,
-    :layout => child.layout,
-    :object => child,
-    :locals => {:leaf => child} %>
 
-    <% if index == 0 %>
-      <p>then</p>
-    <% elsif index != flo_if.size - 1 %>
-      <p>else</p>
+  <strong><%= flo_if.comparison %></strong>
+  <p>then</p>
+  <%- flo_if.each_with_index do |child, index| %>
+    <% unless child.class == Floristry::Att %>
+      <%= render :partial => child,
+      :layout => child.layout,
+      :object => child,
+      :locals => {:leaf => child}
+      %>
+
+      <% if index > 0 && index != flo_if.size - 1 %>
+        <p>else</p>
+      <% end %>
     <% end %>
-  <%- end %>
+  <% end %>
 </div>
